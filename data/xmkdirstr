@@ -1,0 +1,35 @@
+#!/bin/sh
+
+species=$1
+study=$2
+sample=$3
+nreps=$4
+pors=$5
+
+mkdir $species
+cd $species
+mkdir genome
+cd genome
+cp ../../../bin/Makefile_parse_GFF3_template ./
+cd ..
+mkdir $study
+cd $study
+mkdir $sample
+cd $sample
+cp ../../../../bin/Makefile_merge"$nreps"_template ./
+r=0
+while [ $r -lt $nreps ]; do
+ ((r++))
+ mkdir replicate$r
+ cd replicate$r
+ ln -s ../../../genome
+ if [ $pors == "p" ]; then
+   cp ../../../../../bin/Makefile_WF1-6pe_template ./
+ else
+   cp ../../../../../bin/Makefile_WF1-6se_template ./
+ fi
+ cd ..
+done
+cd ../../..
+
+ls -RC $species
