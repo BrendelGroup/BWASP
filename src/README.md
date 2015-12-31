@@ -1,5 +1,7 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 BWASP - system wide installation of required software
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 README
@@ -27,7 +29,6 @@ README
 	Source of the programs are listed.  Please see the cited URLs for
 	details on the software and installation.
 
-##!/bin/bash
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
