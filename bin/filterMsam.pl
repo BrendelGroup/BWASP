@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+#
 #filterMsam.pl
 # - BWASP Perl script to filter Msam records
 

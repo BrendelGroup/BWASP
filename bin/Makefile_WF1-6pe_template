@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the paired-read version.  For single-read analysis, use Makefile_WF1-6se_template.
-#Version: January 1, 2015.
+#Version: January 1, 2016.
 
 #Typical usage:
 #
@@ -43,9 +43,11 @@ SYNONYM = Pcan-21Q
 
 SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR151/$(SAMPLE)"
 
-#The following variables set the directories where BWASP requrired binaries reside.
+#The following variables set the directories where BWASP requrired binaries reside.  In this
+#template, the BWASP package was cloned in a user's ~/gitwd directory, and required other
+#software was installed under /usr/local/src/BWASP.
 #
-BINDIR  = /home/vbrendel/gitwd/BWASP/bin
+BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
 BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.14.5
