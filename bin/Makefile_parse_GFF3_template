@@ -1,0 +1,43 @@
+#Makefile_parse_GFF3_template
+#
+#Makefile to parse genome annotation as needed for BWASP methylation
+#site analyses.
+
+#Version: January 1, 2016.
+
+#Usage: make -f Makefile_parse_GFF3
+
+#Please be careful while editing the Makefile as it is 'tab-sensitive'.
+#Typical customization should only involve apppropriate editing of the variables in the next section.
+
+##########################Variable Settings#####################################
+###
+#The following variable sets the directory where BWASP requrired binaries reside.  In this
+#template, the BWASP package was cloned in a user's ~/gitwd directory.
+#
+BINDIR   = ~/gitwd/BWASP/bin
+
+#The following variables specify the data sets and labels to be used.
+#
+#This template illustrates the settings for analysis of a Polistes canadensis data set.  Typcially
+#an edited copy of this makefile is deposited into a BWASP genome directory where the GDNAFILE
+#and GFF3FILE files reside.  If run successfully, a GFF3DIR directory will be produced containing
+#various GFF3 files needed for BWASP methylation site analyses.
+#
+GDNAFILE = ./Pcan.gdna.fa#                    input genome file (FASTA format)
+GFF3FILE = ./Pcan.gff3#                       input GFF3 file 
+SPECIES  = Pcan#                              species label
+GFF3DIR  = ./GFF3DIR#                         output directory
+################################################################################
+### ! Typically there would be no need for further editing below this line ! ###
+
+
+all:	parsed_gff3
+
+parsed_gff3:	$(GDNAFILE) $(GFF3FILE) $(GFF3DIR)
+	$(BINDIR)/parse_gff3_input.sh $(BINDIR) $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
+
+$(GFF3DIR):	
+ifeq ("$(wildcard $(GFF3DIR))","")
+	mkdir $(GFF3DIR)
+endif
