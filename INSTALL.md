@@ -31,17 +31,17 @@ paper!
 BWASP is a workflow that invokes easily available third-party software as well
 as scripts developed in our group.  As a first step, go to the [src](./src)
 directory and install required programs as per instructions in the
-[README](../src/README.md) file in that directory.  You will need to keep
+[README](./src/README.md) file in that directory.  You will need to keep
 track of the paths to the installed binaries, and you will need to copy the
 [AEGeAn](https://github.com/BrendelGroup/AEGeAn) binaries _canon-gff3_ and
-_pmrna_ into the [bin](../bin) directory.  Although quite a few external
+_pmrna_ into the [bin](./bin) directory.  Although quite a few external
 programs are involved, typical installation can be scripted (as described) and
 would not take more than a few minutes.
 
 BWASP relies on a number of bash, Perl, and python scripts that are placed in
-the [bin](../bin) directory.  The Perl and python scripts use various packages
+the [bin](./bin) directory.  The Perl and python scripts use various packages
 that must be pre-installed on your system.  Run the _xcheckprequisites_ bash
-script in the [bin](../bin) directory to see what is available.  If packages
+script in the [bin](./bin) directory to see what is available.  If packages
 are missing, you need to install them prior to running the BWASP workflow
 (there are many ways to install Perl and python packages; if in doubt, ask your
 systems administrator).
