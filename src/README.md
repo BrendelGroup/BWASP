@@ -1,33 +1,35 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-BWASP - system wide installation of required software
+## BWASP - system wide installation of required software
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-README
-	Sources and installation notes (current as of December 31, 2015)
+##### README
+Sources and installation notes (current as of January 2, 2016)
 
-	Our recommendation is to install the required programs system-wide.
-	Typical would be to run the installation steps as superuser after
-	"cd /usr/local/src".  Even better might be to create a directory
-	/usr/local/src/BWASP and install the programs there; this might
-	avoid clashes with other programs you are running that possibly
-	depend on earlier versions of the same packages.
+Our recommendation is to install the required programs system-wide.
+Typical would be to run the installation steps as superuser after
+_"cd /usr/local/src"_.  Even better might be to create a directory
+_/usr/local/src/BWASP_ and install the programs there; this might
+avoid clashes with other programs you are running that possibly
+depend on earlier versions of the same packages.
 
-	For a quick install (at your own risk), you can try:
+For a quick install (at your own risk), you can try:
 
-		mkdir <preferred-install-directory>
-		cp README.txt <preferred-install-directory>
-		cd <preferred-install-directory>
-		egrep "^#" README.txt | cut -c2- > xinstall
-		chmod a+x xinstall
-		./xinstall
+```bash
+mkdir <preferred-install-directory>
+cp README.txt <preferred-install-directory>
+cd <preferred-install-directory>
+egrep "^#" README.txt | cut -c2- > xinstall
+chmod a+x xinstall
+./xinstall
+```
 
-	We would recommend you look at xinstall first and decide whether
-	this script represents how you want to install the programs.
+We would recommend you look at xinstall first and decide whether
+this script represents how you want to install the programs.
 
-	Source of the programs are listed.  Please see the cited URLs for
-	details on the software and installation.
+Source of the programs are listed.  Please see the cited URLs for
+details on the software and installation.
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -112,7 +114,7 @@ GENOMETOOLS
 	from http://genometools.org/
 mkdir GENOMETOOLS; cd GENOMETOOLS
 curl -O http://genometools.org/pub/genometools-1.5.7.tar.gz
-tar -xzf genometools-1.5.7.tar.gz 
+tar -xzf genometools-1.5.7.tar.gz
 cd genometools-1.5.7/
 make
 make install

@@ -3,7 +3,7 @@ BWASP - system wide installation of required software
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 README
-	Sources and installation notes (current as of December 31, 2015)
+	Sources and installation notes (current as of January 2, 2016)
 
 	Our recommendation is to install the required programs system-wide.
 	Typical would be to run the installation steps as superuser after
