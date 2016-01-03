@@ -118,7 +118,9 @@ the disk space used.  The remaining output files should be as follows:
 * Pcan-21Q.CHGhsm.mcalls Pcan-21Q.CHGnsm.mcalls Pcan-21Q.CHGscd.mcalls
 * Pcan-21Q.HSMthresholds
 
-* SRR1519132.stats
+<!-- -->
+
+- SRR1519132.stats
 
 ### Read preparation, mapping, and quality reports
 * SRR1519132.stats
@@ -127,25 +129,28 @@ the disk space used.  The remaining output files should be as follows:
 * CpG_OT_Pcan-21Q.txt
 * CpG_OB_Pcan-21Q.txt
 
+<!-- -->
 
-* Pcan-21Q.M-bias.eval
-* Pcan-21Q_mbias_only_splitting_report.txt
-* Pcan-21Q.M-bias_R1.png
-* Pcan-21Q.M-bias_R2.png
-* Pcan-21Q.M-bias.txt
+- Pcan-21Q.M-bias.eval
+- Pcan-21Q_mbias_only_splitting_report.txt
+- Pcan-21Q.M-bias_R1.png
+- Pcan-21Q.M-bias_R2.png
+- Pcan-21Q.M-bias.txt
 
+<!-- -->
 
 * FilterMsam-Report-Pcan-21Q-deduplicated
 * Rejected-Reads10-Pcan-21Q-deduplicated.sam
 * Rejected-Reads01-Pcan-21Q-deduplicated.sam
 * Rejected-Reads11-Pcan-21Q-deduplicated.sam
 
+<!-- -->
 
-* SRR1519132_1_val_1.fq_bismark_bt2_pe.deduplication_report.txt
-* SRR1519132_1_val_1.fq_bismark_bt2_PE_report.txt
-* FastQC/
-* SRR1519132_2.fastq_trimming_report.txt
-* SRR1519132_1.fastq_trimming_report.txt
+- SRR1519132_1_val_1.fq_bismark_bt2_pe.deduplication_report.txt
+- SRR1519132_1_val_1.fq_bismark_bt2_PE_report.txt
+- FastQC/
+- SRR1519132_2.fastq_trimming_report.txt
+- SRR1519132_1.fastq_trimming_report.txt
 
 ### Genome statistics
 * Pcan.gdna.stats
@@ -161,4 +166,3 @@ comparing between samples/conditions (_e.g._, Queen versus Worker samples).
 The _bin_ directory contains template _makefiles_ for this step, and in fact
 the _xmkdirstr_ script in our example already set this up for us in the
 _Queen_ directory.
-                                                                                           43,1          All
