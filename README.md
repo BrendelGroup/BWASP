@@ -27,5 +27,5 @@ the size and dynamics of the CpG methylome of social insects._ To be submitted.
 ## Contact
 
 Please direct all comments and suggestions to
-[Volker Brendel](<mailto:vpbrendel@indiana.edu>)
+[Volker Brendel](<mailto:vbrendel@indiana.edu>)
 at [Indiana University](http://brendelgroup.org/).
