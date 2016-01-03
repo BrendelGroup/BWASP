@@ -93,3 +93,72 @@ could start _make_ in the other _replicate_ directories - however, we strongly
 suggest you finish one run first to make sure that everything works and you
 have enough resources on your computer to run multiple __BWASP__ workflows
 simultaneously.  Check the _err_ file and your system monitor frequently.
+
+## Output
+After completion of the BWASP workflow, the working directory should contain a
+fair number of output files.  Please refer to the documentation of the various
+constituent programs for details as well as our
+[manuscript](http://brendelgroup.org/research/publications.php).
+To remove unneeded intermediate files and archive files that may be of
+interest later but are not needed in subsequent __BWASP__ analysis steps
+we recommend running the following commands at this stage:
+
+```bash
+make -f Makefile_WF1-6pe_PcQ1 cleanup
+make -f Makefile_WF1-6pe_PcQ1 finishup
+```
+
+This will crate the archive _STORE-SRR1519132.zip_ and substantially reduce
+the disk space used.  The remaining output files should be as follows:
+
+#### Methylation calls and statistics
+* Pcan-21Q.mstats
+* Pcan-21Q.CHHhsm.mcalls Pcan-21Q.CHHnsm.mcalls Pcan-21Q.CHHscd.mcalls
+* Pcan-21Q.CpGhsm.mcalls Pcan-21Q.CpGnsm.mcalls Pcan-21Q.CpGscd.mcalls
+* Pcan-21Q.CHGhsm.mcalls Pcan-21Q.CHGnsm.mcalls Pcan-21Q.CHGscd.mcalls
+* Pcan-21Q.HSMthresholds
+
+* SRR1519132.stats
+
+### Read preparation, mapping, and quality reports
+* SRR1519132.stats
+* Pcan-21Q.bam
+* Pcan-21Q_splitting_report.txt
+* CpG_OT_Pcan-21Q.txt
+* CpG_OB_Pcan-21Q.txt
+
+
+* Pcan-21Q.M-bias.eval
+* Pcan-21Q_mbias_only_splitting_report.txt
+* Pcan-21Q.M-bias_R1.png
+* Pcan-21Q.M-bias_R2.png
+* Pcan-21Q.M-bias.txt
+
+
+* FilterMsam-Report-Pcan-21Q-deduplicated
+* Rejected-Reads10-Pcan-21Q-deduplicated.sam
+* Rejected-Reads01-Pcan-21Q-deduplicated.sam
+* Rejected-Reads11-Pcan-21Q-deduplicated.sam
+
+
+* SRR1519132_1_val_1.fq_bismark_bt2_pe.deduplication_report.txt
+* SRR1519132_1_val_1.fq_bismark_bt2_PE_report.txt
+* FastQC/
+* SRR1519132_2.fastq_trimming_report.txt
+* SRR1519132_1.fastq_trimming_report.txt
+
+### Genome statistics
+* Pcan.gdna.stats
+
+Take a look and explore.  The _.stats_ and _report_ files would be good
+starting points.
+
+
+## Merging data from multiple replicates
+While it is of interest to look at the methylation statistics across
+different replicate data sets, typically the replicate data are pooled when
+comparing between samples/conditions (_e.g._, Queen versus Worker samples).
+The _bin_ directory contains template _makefiles_ for this step, and in fact
+the _xmkdirstr_ script in our example already set this up for us in the
+_Queen_ directory.
+                                                                                           43,1          All
