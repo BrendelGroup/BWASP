@@ -27,22 +27,22 @@ cd data
 
 First we need to put the _Polistes canadensis_ genome assembly and
 annotation files into the _Pcan/genome_ directory.  We download the files
-from the links suggested at the relevant [NCBI assembly](http://www.ncbi.nlm.nih.gov/assembly/GCF_001313835.1/)
-page:
+from the RefSeq FTP site link provided at the relevant
+[NCBI assembly](http://www.ncbi.nlm.nih.gov/assembly/GCF_001313835.1/) page:
 
 ```bash
 cd Pcan/genome
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001313835.1_ASM131383v1/GCA_001313835.1_ASM131383v1_genomic.fna.gz
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001313835.1_ASM131383v1/GCA_001313835.1_ASM131383v1_genomic.gff.gz
+curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
+curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
 ```
 
 Assuming that everything was downloaded nicely, we link the files to more
 suggestive file names:
 
 ```bash
-gunzip GCA*
-ln -s GCA_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
-ln -s GCA_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
+gunzip GCF*
+ln -s GCF_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
+ln -s GCF_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
 ```
 
 A last step for preparatory processing is to run the _Makefile_\__parse_\__GFF3_\__template_ workflow step:
