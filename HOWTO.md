@@ -113,9 +113,9 @@ the disk space used.  The remaining output files should be as follows:
 
 #### Methylation calls and statistics
 * Pcan-21Q.mstats
+* Pcan-21Q.CHGhsm.mcalls Pcan-21Q.CHGnsm.mcalls Pcan-21Q.CHGscd.mcalls
 * Pcan-21Q.CHHhsm.mcalls Pcan-21Q.CHHnsm.mcalls Pcan-21Q.CHHscd.mcalls
 * Pcan-21Q.CpGhsm.mcalls Pcan-21Q.CpGnsm.mcalls Pcan-21Q.CpGscd.mcalls
-* Pcan-21Q.CHGhsm.mcalls Pcan-21Q.CHGnsm.mcalls Pcan-21Q.CHGscd.mcalls
 * Pcan-21Q.HSMthresholds
 
 <!-- -->
@@ -165,4 +165,21 @@ different replicate data sets, typically the replicate data are pooled when
 comparing between samples/conditions (_e.g._, Queen versus Worker samples).
 The _bin_ directory contains template _makefiles_ for this step, and in fact
 the _xmkdirstr_ script in our example already set this up for us in the
-_Queen_ directory.
+_Queen_ directory.  Just copy the _Makefile_\__merge_\__3replicates_ into
+_Makefile\_\__merge_\__PcQ_, then edit and run as per instructions in the
+_makefile_.  You will likely want to run the _cleanup_ and _finishup_
+targets here as well:
+
+```bash
+make -f Makefile_merge_PcQ cleanup
+make -f Makefile_merge_PcQ finishup
+```
+
+This will leave you with the
+
+#### Combined methylation calls and statistics
+* Pcan-queen.mstats
+* Pcan-queen.CHGhsm.mcalls Pcan-queen.CHGnsm.mcalls Pcan-queen.CHGscd.mcalls
+* Pcan-queen.CHHhsm.mcalls Pcan-queen.CHHnsm.mcalls Pcan-queen.CHHscd.mcalls
+* Pcan-queen.CpGhsm.mcalls Pcan-queen.CpGnsm.mcalls Pcan-queen.CpGscd.mcalls
+* Pcan-queen.HSMthresholds
