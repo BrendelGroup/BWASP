@@ -36,8 +36,6 @@ SAMPLE1     = SRR.....1
 SYNONYM1    = Species-sample1
 SAMPLE2     = SRR.....2
 SYNONYM2    = Species-sample2
-SAMPLE3     = SRR.....3
-SYNONYM3    = Species-sample3
 
 CreportStore1       = ./replicate1/STORE-$(SAMPLE1).zip
 CreportFile1        = STORE-$(SAMPLE1)/$(SYNONYM1).Creport
