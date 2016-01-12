@@ -1,0 +1,140 @@
+#!/bin/tcsh -f
+#
+#xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
+#              input (Bismark-produced) BS-seq SAM file.
+#
+#              Version:	December 29, 2015	Author: Volker Brendel (vbrendel@indiana.edu)
+
+if ( $#argv != 3 ) then
+  echo "Usage: xfilterMsam <path> [p|s] <MsamFile>.sam"
+  echo ""
+  echo "       <path> = path to BWASP script filterMsam.pl"
+  echo ""
+  echo "       p - for paired-end alignment input; s - for single read alignment input"
+  echo ""
+  echo "       Note that the file argument to xfilterMsam is the stem of the filename with extension .sam."
+  echo "       Example:  xfilterMsam /usr/local/src/BWASP/bin p sample"
+  echo "                 (this will process the sample.sam input file)"
+  echo ""
+  echo "       Any header lines in the input file are ignored.  If you need the header in the output,"
+  echo "       you need to re-attach it.  Example:"
+  echo "         samtools view -SH sample.sam > header.sam"
+  echo "         cat header.sam Accepted-Reads-sample.sam > Cleaned-sample.sam"
+  echo ""
+  exit
+else if ( !($argv[2] == "p" || $argv[2] == "s")  ||  ! -e $argv[3].sam ) then
+  echo "Usage: xfilterMsam path [p|s] <MsamFile>.sam"
+  echo ""
+  echo "       path = path to BWASP script filterMsam.pl"
+  echo ""
+  echo "       p - for paired-end alignment input; s - for single read alignment input"
+  echo ""
+  echo "       Note that the file argument to xfilterMsam is the stem of the filename with extension .sam."
+  echo "       Example:  xfilterMsam /usr/local/src/BWASP/bin p sample"
+  echo "                 (this will process the sample.sam input file)"
+  echo ""
+  echo "       Any header lines in the input file are ignored.  If you need the header in the output,"
+  echo "       you need to re-attach it.  Example:"
+  echo "         samtools view -SH sample.sam > header.sam"
+  echo "         cat header.sam Accepted-Reads-sample.sam > Cleaned-sample.sam"
+  echo ""
+  if ( ! -e $argv[3].sam ) then
+    echo ""
+    echo "! file $argv[3].sam not found; please check."
+    echo ""
+  endif
+  exit
+else
+  set BWASPBIN = $argv[1]
+  set psflag   = $argv[2]
+  set MsamFile = $argv[3]
+endif
+
+
+set i = 1
+while ( $i <= 10 )
+  if ( $i == 1 ) then
+    set inputfile = $MsamFile.sam
+  else
+    @ j = $i - 1
+    set inputfile = $MsamFile-$j.pass
+  endif
+  if ( $i > 2 ) then
+    @ k = $i - 2
+    \rm $MsamFile-$k.pass
+  endif
+  echo "Now running:"
+  if ( $psflag == "p" ) then
+    echo "$BWASPBIN/filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+    echo ""
+    $BWASPBIN/filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    set x11 = `egrep "^f11cnt" $MsamFile-$i.summary | cut -d"	" -f2`
+    set x01 = `egrep "^f01cnt" $MsamFile-$i.summary | cut -d"	" -f2`
+    set x10 = `egrep "^f10cnt" $MsamFile-$i.summary | cut -d"	" -f2`
+    @ x = $x11 + $x01 + $x10
+  else 
+    echo "$BWASPBIN/filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+    echo ""
+    $BWASPBIN/filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    set x = `tail -n 1 $MsamFile-$i.summary | cut -d"	" -f2`
+  endif
+  if ( $x == 0 ) then
+    break
+  endif
+  @ i = $i + 1
+end
+
+echo "Summary of xfilterMsam results" >  FilterMsam-Report-$MsamFile
+echo ""                               >> FilterMsam-Report-$MsamFile
+
+echo "Starting point: $MsamFile"      >> FilterMsam-Report-$MsamFile
+egrep "^Number" $MsamFile-1.summary   >> FilterMsam-Report-$MsamFile
+egrep "^Prob" $MsamFile-1.summary     >> FilterMsam-Report-$MsamFile
+echo ""                               >> FilterMsam-Report-$MsamFile
+
+echo "After $j rounds of filtering:"  >> FilterMsam-Report-$MsamFile
+egrep "^Number" $MsamFile-$i.summary  >> FilterMsam-Report-$MsamFile
+egrep "^Prob" $MsamFile-$i.summary    >> FilterMsam-Report-$MsamFile
+
+
+set inputfile = $MsamFile.sam
+set a = `cat $inputfile | egrep -v "^@[A-Za-z][A-Za-z]	[A-Za-z][A-Za-z0-9]:|^@CO	" | wc -l`
+
+mv $MsamFile-$i.pass      Accepted-Reads-$inputfile
+\rm $MsamFile-$j.pass
+set x = `cat Accepted-Reads-$inputfile | wc -l`
+set r = `echo "scale=3; 100*$x/$a" | bc`
+echo ""                               >> FilterMsam-Report-$MsamFile
+echo "Number of accepted reads (file: Accepted-Reads-$inputfile): $x ($r%)" >> FilterMsam-Report-$MsamFile
+
+if ( $psflag == "p" ) then
+  cat $MsamFile-*.11fail    > Rejected-Reads11-$inputfile
+  cat $MsamFile-*.01fail    > Rejected-Reads01-$inputfile
+  cat $MsamFile-*.10fail    > Rejected-Reads10-$inputfile
+  \rm $MsamFile-*.*fail
+  set x11 = `cat Rejected-Reads11-$inputfile | wc -l`
+  set r = `echo "scale=3; 100*$x11/$a" | bc`
+  echo "Number of rejected reads 11 (file: Rejected-Reads11-$inputfile): $x11 ($r%)" >> FilterMsam-Report-$MsamFile
+  set x01 = `cat Rejected-Reads01-$inputfile | wc -l`
+  set r = `echo "scale=3; 100*$x01/$a" | bc`
+  echo "Number of rejected reads 01 (file: Rejected-Reads01-$inputfile): $x01 ($r%)" >> FilterMsam-Report-$MsamFile
+  set x10 = `cat Rejected-Reads10-$inputfile | wc -l`
+  set r = `echo "scale=3; 100*$x10/$a" | bc`
+  echo "Number of rejected reads 10 (file: Rejected-Reads10-$inputfile): $x10 ($r%)" >> FilterMsam-Report-$MsamFile
+  @ x = $x11 + $x01 + $x10
+  set r = `echo "scale=3; 100*$x/$a" | bc`
+  echo "Total number of rejected reads: $x ($r%)" >> FilterMsam-Report-$MsamFile
+else
+  cat $MsamFile-*.fail    > Rejected-Reads-$inputfile
+  \rm $MsamFile-*.fail
+  set x = `cat Rejected-Reads-$inputfile | wc -l`
+  set r = `echo "scale=3; 100*$x/$a" | bc`
+  echo "Number of rejected reads (file: Rejected-Reads-$inputfile): $x ($r%)" >> FilterMsam-Report-$MsamFile
+endif
+
+echo ""                               >> FilterMsam-Report-$MsamFile
+echo ""                               >> FilterMsam-Report-$MsamFile
+echo "Round by round record"          >> FilterMsam-Report-$MsamFile
+
+cat $MsamFile-*.summary               >> FilterMsam-Report-$MsamFile
+\rm $MsamFile-*.summary

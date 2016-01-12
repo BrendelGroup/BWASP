@@ -1,0 +1,37 @@
+#!/bin/tcsh -f
+#
+#xcheckprerequisites -
+#              input (Bismark-produced) BS-seq SAM file.
+#
+
+echo "================================================================================"
+if ( ! -e canon-gff3  ||   ! -e pmrna ) then
+  echo ""
+  echo "! At least one of the AEGeAn binaries canon-gff3 and pmrna is not found in this directory."
+  echo "  Please see ../src/README* how to install AEGeAn and copy the binaries produced in the"
+  echo "  process."
+  echo ""
+else
+  echo ""
+  echo "! Great: canon-gff3 and pmrna are found in this directory, as required."
+  echo ""
+endif
+echo "================================================================================"
+
+echo ""
+echo ""
+echo "Now running python checkprerequisites.pl"
+echo "If the script results in errors, then you will need to install required Perl packages."
+echo "Check with your system administrator on how to do that."
+echo ""
+bash checkprerequisites.pl
+echo "================================================================================"
+
+echo ""
+echo ""
+echo "Now running python checkprerequisites.py"
+echo "If the script results in errors, then you will need to install required python packages."
+echo "Check with your system administrator on how to do that."
+echo ""
+python checkprerequisites.py
+echo "================================================================================"
