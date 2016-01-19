@@ -1,15 +1,7 @@
 # BWASP
 Bisulfite-seq data Workflow Automation Software and Protocols
 
-<<<<<<< HEAD
 The BWASP repository encompasses code we developed in the [Brendel Group](http://brendelgroup.org/) for scalable, reproducible analyses of bisulfite sequencing data.
-
-##Getting Started
-Before you can use the BWASP workflow, you must install a few third-party software packages.
-=======
-The BWASP repository encompasses code we developed in the
-[Brendel Group](http://brendelgroup.org/) for scalable, reproducible analyses of
-bisulfite sequencing data.
 
 ## Getting Started
 
@@ -35,4 +27,3 @@ the size and dynamics of the CpG methylome of social insects._ To be submitted.
 Please direct all comments and suggestions to
 [Volker Brendel](<mailto:vbrendel@indiana.edu>)
 at [Indiana University](http://brendelgroup.org/).
->>>>>>> 5e5a169bf20e434fd3965fd7da73dd760e967a51
