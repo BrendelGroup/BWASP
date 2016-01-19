@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the paired-read version.  For single-read analysis, use Makefile_WF1-6se_template.
-#Version: January 1, 2016.
+#Version: January 18, 2016.
 
 #Typical usage:
 #
@@ -76,10 +76,11 @@ BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
 
 
 all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport \
-	CXreports CpGmcalls CHGmcalls CHHmcalls mstats \
-	genome_size sample_stats
+	CXreports CpGmcalls CHGmcalls CHHmcalls $(SYNONYM).mstats \
+	sample_stats
 sample_stats:	rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
-.PHONY:	./genome/$(GENOME) Bisulfite_Genome
+.PHONY:	./genome/$(GENOME) Bisulfite_Genome \
+	sample_stats rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
 
 
 ###1.1 bismark genome preparation.
@@ -93,7 +94,10 @@ ifeq ("$(wildcard ./genome/$(GENOME).fa)","")
 endif
 
 Bisulfite_Genome:	
-ifeq ("$(wildcard ./genome/Bisulfite_Genome/*_conversion/*.fa)","")
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa)","")
+	$(BISMARK)/bismark_genome_preparation --path_to_bowtie $(BOWTIE2) --bowtie2 ./genome
+endif
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa)","")
 	$(BISMARK)/bismark_genome_preparation --path_to_bowtie $(BOWTIE2) --bowtie2 ./genome
 endif
 
@@ -116,10 +120,10 @@ ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
 
-FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt:	$(SAMPLE)_1.fastq
+FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt:	FastQCdir $(SAMPLE)_1.fastq
 	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1.fastq
 
-FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2.fastq
+FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	FastQCdir $(SAMPLE)_2.fastq
 	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2.fastq
 
 
@@ -138,10 +142,10 @@ FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2.fastq
 #
 fastqc2:	FastQCdir FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt
 
-FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt:	$(SAMPLE)_1_val_1.fq
+FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt:	FastQCdir $(SAMPLE)_1_val_1.fq
 	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1_val_1.fq
 
-FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2_val_2.fq
+FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt:	FastQCdir $(SAMPLE)_2_val_2.fq
 	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2_val_2.fq
 
 
@@ -231,19 +235,15 @@ CHHmcalls:	$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.m
 
 ###6.1. Print methylation statistics.
 #
-mstats:	$(SYNONYM).Creport CpGmcalls CHGmcalls CHHmcalls
+$(SYNONYM).mstats:	$(SYNONYM).Creport CpGmcalls CHGmcalls CHHmcalls
 	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
 
 
-#Genome size
+#Genome statistics:
 #
 $(GENOME).stats:	./genome/$(GENOME).fa
 	$(BINDIR)/asmbleval.pl < ./genome/$(GENOME).fa > $(GENOME).stats
-
-genome_size:	$(GENOME).stats
-	$(eval genome_size = $(shell awk 'NR==1{print $$4}' $(GENOME).stats))
-	@echo "Genome size: $(genome_size) bp"
 
 
 #Number of raw reads:
