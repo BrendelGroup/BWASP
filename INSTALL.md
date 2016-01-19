@@ -2,8 +2,6 @@
 
 ## Obtaining BWASP
 
-<<<<<<< HEAD
-=======
 Presumably you are reading this file on our github site and thus you are
 likely to know that the following commands on your local machine should get
 you going:
@@ -52,4 +50,3 @@ systems administrator).
 
 proceed to the [HOWTO](./HOWTO.md) document, and we'll tell you how to execute
 sample workflows (or, equally easy, your very own data analyses).
->>>>>>> 5e5a169bf20e434fd3965fd7da73dd760e967a51
