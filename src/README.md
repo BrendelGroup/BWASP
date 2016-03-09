@@ -5,7 +5,7 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ##### README
-Sources and installation notes (current as of January 2, 2016)
+Sources and installation notes (current as of March 8, 2016)
 
 Our recommendation is to install the required programs system-wide.
 Typical would be to run the installation steps as superuser after
@@ -38,9 +38,9 @@ BISMARK
 from http://www.bioinformatics.babraham.ac.uk/projects/bismark/
 ```
 mkdir BISMARK; cd BISMARK
-wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.14.5.tar.gz
-tar -xzf bismark_v0.14.5.tar.gz
-cd bismark_v0.14.5/
+wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.15.0.tar.gz
+tar -xzf bismark_v0.15.0.tar.gz
+cd bismark_v0.15.0/
 #cp bismark bismark2* bismark_genome_preparation bismark_methylation_extractor coverage2cytosine deduplicate_bismark /usr/local/bin/
 cd ../..
 ```
@@ -50,10 +50,10 @@ BOWTIE2
 from http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 ```
 mkdir BOWTIE2; cd BOWTIE2
-wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/bowtie2-2.2.6-linux-x86_64.zip/download
-mv download bowtie2-2.2.6-linux-x86_64.zip
-unzip bowtie2-2.2.6-linux-x86_64.zip
-cd bowtie2-2.2.6/
+wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.7/bowtie2-2.2.7-linux-x86_64.zip/download
+mv download bowtie2-2.2.7-linux-x86_64.zip
+unzip bowtie2-2.2.7-linux-x86_64.zip
+cd bowtie2-2.2.7/
 #cp bowtie2* /usr/local/bin/
 cd ../..
 ```
@@ -113,9 +113,9 @@ cd ..
 GENOMETOOLS
 	from http://genometools.org/
 mkdir GENOMETOOLS; cd GENOMETOOLS
-curl -O http://genometools.org/pub/genometools-1.5.7.tar.gz
-tar -xzf genometools-1.5.7.tar.gz
-cd genometools-1.5.7/
+curl -O http://genometools.org/pub/genometools-1.5.8.tar.gz
+tar -xzf genometools-1.5.8.tar.gz
+cd genometools-1.5.8/
 make
 make install
 cd ../..

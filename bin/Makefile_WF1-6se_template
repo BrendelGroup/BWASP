@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: January 18, 2016.
+#Version: March 8, 2016.
 
 #Typical usage:
 #
@@ -50,8 +50,8 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.14.5
-BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.6
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.15.0
+BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
 SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.5.7-centos_linux64/bin
