@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: April 20, 2015	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: March 24, 2016	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -34,6 +34,7 @@ Paired reads are rejected if either one of the reads fails the criterion (output
 #use strict;
 use Getopt::Long;
 use Math::Pari qw(binomial gpui);
+use Math::BigFloat ':constant';
 
 # Set command line usage
 my $usage = "
