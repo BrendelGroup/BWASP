@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: March 25, 2016.
+#Version: March 26, 2016.
 
 #Typical usage:
 #
@@ -73,13 +73,20 @@ BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
 ###
 ########################################################################################################################
 ### ! Typically there would be no need for further editing below this line ! ###
+run_gprep = no
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa)","")
+	run_gprep = yes
+endif
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa)","")
+	run_gprep = yes
+endif
 
 
 all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport \
 	CXreports CpGmcalls CHGmcalls CHHmcalls $(SYNONYM).mstats \
 	sample_stats
 sample_stats:	rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
-.PHONY:	./genome/$(GENOME) Bisulfite_Genome \
+.PHONY:	genome Bisulfite_Genome \
 	sample_stats rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
 
 
@@ -93,16 +100,8 @@ ifeq ("$(wildcard ./genome/$(GENOME).fa)","")
 	$(error No genome file ./genome/$(GENOME).fa found. Please provide.)
 endif
 
-Bisulfite_Genome:	./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa \
-			./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa
-
-./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa:
-ifeq ("$(wildcard ./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa)","")
-	$(BISMARK)/bismark_genome_preparation --path_to_bowtie $(BOWTIE2) --bowtie2 ./genome
-endif
-
-./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa:
-ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa)","")
+Bisulfite_Genome:
+ifeq ("$(run_gprep)","yes")
 	$(BISMARK)/bismark_genome_preparation --path_to_bowtie $(BOWTIE2) --bowtie2 ./genome
 endif
 
