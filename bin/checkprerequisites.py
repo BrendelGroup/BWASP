@@ -9,5 +9,3 @@ import numpy
 import re
 import scipy.stats
 import sys
-
-import foouu

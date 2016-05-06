@@ -57,8 +57,8 @@ with open(sys.argv[1], 'rb') as infile:
         input = (line.rstrip('\n')).split("\t");
         if int(input[3]) in unique_n:
             if int(input[3]) <> 0:
-                C_Freq = "{:.2f}".format((float(input[4])/float(input[3]))*100)
-                T_Freq = "{:.2f}".format((float(input[5])/float(input[3]))*100)
+                C_Freq = "{0:.2f}".format((float(input[4])/float(input[3]))*100)
+                T_Freq = "{0:.2f}".format((float(input[5])/float(input[3]))*100)
             else:
                 C_Freq = 0.0
                 T_Freq = 0.0
