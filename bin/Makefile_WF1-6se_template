@@ -61,8 +61,8 @@ TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
 #Please read the instructions of the respective programs to make choices that fit your
 #data analysis needs.
 #
-BOWTIE2_OPTIONS       = -p 4 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 14 --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
+BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
+BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 25G -@ 4
 TRIM_GALORE_OPTIONS   = 
@@ -82,12 +82,9 @@ ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversi
 endif
 
 
-all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport \
-	CXreports CpGmcalls CHGmcalls CHHmcalls $(SYNONYM).mstats \
-	sample_stats
-sample_stats:	rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
-.PHONY:	genome Bisulfite_Genome \
-	sample_stats rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
+all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport CXreports \
+	$(SYNONYM).mstats $(SAMPLE).stats $(GENOME).stats
+.PHONY:	genome Bisulfite_Genome
 
 
 ###1.1 bismark genome preparation.
