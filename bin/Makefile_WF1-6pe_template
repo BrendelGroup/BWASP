@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the paired-read version.  For single-read analysis, use Makefile_WF1-6se_template.
-#Version: May 6, 2016.
+#Version: May 12, 2016.
 
 #Typical usage:
 #
@@ -61,8 +61,8 @@ TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
 #Please read the instructions of the respective programs to make choices that fit your
 #data analysis needs.
 #
-BOWTIE2_OPTIONS       = -p 4 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 14 --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
+BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
+BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 25G -@ 4
 TRIM_GALORE_OPTIONS   = 
@@ -82,9 +82,8 @@ ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversi
 endif
 
 
-all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport \
-	CXreports CpGmcalls CHGmcalls CHHmcalls $(SYNONYM).mstats \
-	$(SAMPLE).stats $(GENOME).stats
+all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport CXreports \
+	$(SYNONYM).mstats $(SAMPLE).stats $(GENOME).stats
 .PHONY:	genome Bisulfite_Genome
 
 
@@ -212,31 +211,27 @@ CXreports:	$(SYNONYM).CpGreport $(SYNONYM).CHGreport $(SYNONYM).CHHreport $(SYNO
 	python $(BINDIR)/Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
 
 
-###5.3 Highly supported methylation sites calculation using the CXreport2hsm.py script.
+###6.1-2 Generate and print methylation statistics.
 #
-CpGmcalls:	$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls
+$(SYNONYM).mstats:	$(SYNONYM).Creport \
+			$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls \
+			$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls \
+			$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
+	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
+###Intermediate step: determine highly supported methylation sites using the CXreport2hsm.py script.
+#
 %.CpGscd.mcalls %.CpGhsm.mcalls %.CpGnsm.mcalls:	%.HSMthresholds %.CpGreport
 	$(eval CpGnval = $(shell egrep "Thus.*CpG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
-
-CHGmcalls:	$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls
 
 %.CHGscd.mcalls %.CHGhsm.mcalls %.CHGnsm.mcalls:	%.HSMthresholds %.CHGreport
 	$(eval CHGnval = $(shell egrep "Thus.*CHG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
 
-CHHmcalls:	$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
-
 %.CHHscd.mcalls %.CHHhsm.mcalls %.CHHnsm.mcalls:	%.HSMthresholds %.CHHreport
 	$(eval CHHnval = $(shell egrep "Thus.*CHH" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
-
-
-###6.1. Generate and print methylation statistics.
-#
-$(SYNONYM).mstats:	$(SYNONYM).Creport CpGmcalls CHGmcalls CHHmcalls
-	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
 
 ###6.2 Generate and print sample statistics.
@@ -246,12 +241,12 @@ $(SAMPLE).stats:	$(SAMPLE)_1.fastq $(SAMPLE)_2.fastq \
 			$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq \
 			FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt \
 			$(SYNONYM).bam
-	$(BINDIR)/sstats.sh $(SAMPLE) $(SYNONYM) $(GENOME) $(SAMTOOLS)
+	$(BINDIR)/sstats-pe.sh $(SAMPLE) $(SYNONYM) $(GENOME) $(SAMTOOLS)
 
 $(SYNONYM).bam:	$(SYNONYM).sam
 	$(SAMTOOLS)/samtools view -bS $(SYNONYM).sam | $(SAMTOOLS)/samtools sort $(SAMTOOLS_SORT_OPTIONS) -o $(SYNONYM).bam -
 
-#Note: sstats.sh is using "samtools depth" to obtain the total aligned base count and, by dividing that value by the genome size,
+#Note: sstats-pe.sh is using "samtools depth" to obtain the total aligned base count and, by dividing that value by the genome size,
 #      the genome coverage); the sorted bam file produced above is required for that step.
 
 
