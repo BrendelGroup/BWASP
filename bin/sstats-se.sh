@@ -28,7 +28,7 @@ echo "Number of raw reads: ${RAWREAD_NB}" > ${SAMPLE}.stats
 RAWREAD_LGTH=`awk 'NR==9' FastQC/${SAMPLE}_fastqc/fastqc_data.txt | awk -F" " '{print $3}'`
 echo "Raw read length (per FastQC report): ${RAWREAD_LGTH}" >> ${SAMPLE}.stats
 
-RAWREAD_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_fastq`
+RAWSAMPLE_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_fastq`
 echo "Raw read sample size: ${RAWSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
 
@@ -41,7 +41,7 @@ echo "Trimmed read length range (per FastQC report): ${TRMREAD_LGTH}" >> ${SAMPL
 TRMREAD_ML=`cat ${SAMPLE}_trimmed.fq | awk '{if(NR%4==2) print length($1)}' > /tmp/${SAMPLE}_readlength1.txt; sort -n /tmp/${SAMPLE}_readlength1.txt| awk ' { a[i++]=$1; } END { print a[int(i/2)]; }'`
 echo "Median length of trimmed reads: ${TRMREAD_ML}" >> ${SAMPLE}.stats
 
-TRMREAD_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_trimmed.fq`
+TRMSAMPLE_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_trimmed.fq`
 echo "Trimmed sample size: ${TRMSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
 TOTAL_ALGNDBASE_CNT=`${SAMTOOLS}/samtools depth ${SYNONYM}.bam | awk '{sum+=$3}END{print sum}'`
