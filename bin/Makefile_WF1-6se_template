@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: March 26, 2016.
+#Version: May 12, 2016.
 
 #Typical usage:
 #
@@ -61,8 +61,8 @@ TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
 #Please read the instructions of the respective programs to make choices that fit your
 #data analysis needs.
 #
-BOWTIE2_OPTIONS       = -p 4 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 14 --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
+BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
+BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 25G -@ 4
 TRIM_GALORE_OPTIONS   = 
@@ -82,12 +82,9 @@ ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversi
 endif
 
 
-all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport \
-	CXreports CpGmcalls CHGmcalls CHHmcalls $(SYNONYM).mstats \
-	sample_stats
-sample_stats:	rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
-.PHONY:	genome Bisulfite_Genome \
-	sample_stats rawread_nb rawread_lgth rawsample_size trmread_nb trmread_lgth trmsample_size genome_coverage
+all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport CXreports \
+	$(SYNONYM).mstats $(SAMPLE).stats $(GENOME).stats
+.PHONY:	genome Bisulfite_Genome
 
 
 ###1.1 bismark genome preparation.
@@ -206,94 +203,49 @@ CXreports:	$(SYNONYM).CpGreport $(SYNONYM).CHGreport $(SYNONYM).CHHreport $(SYNO
 	python $(BINDIR)/Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
 
 
-###5.3 Highly supported methylation sites calculation using the CXreport2hsm.py script.
+###6.1-2 Generate and print methylation statistics.
 #
-CpGmcalls:	$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls
+$(SYNONYM).mstats:	$(SYNONYM).Creport \
+			$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls \
+			$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls \
+			$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
+	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
+###Intermediate step: determine highly supported methylation sites using the CXreport2hsm.py script.
+#
 %.CpGscd.mcalls %.CpGhsm.mcalls %.CpGnsm.mcalls:	%.HSMthresholds %.CpGreport
 	$(eval CpGnval = $(shell egrep "Thus.*CpG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
 
-CHGmcalls:	$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls
-
 %.CHGscd.mcalls %.CHGhsm.mcalls %.CHGnsm.mcalls:	%.HSMthresholds %.CHGreport
 	$(eval CHGnval = $(shell egrep "Thus.*CHG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
-
-CHHmcalls:	$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
 
 %.CHHscd.mcalls %.CHHhsm.mcalls %.CHHnsm.mcalls:	%.HSMthresholds %.CHHreport
 	$(eval CHHnval = $(shell egrep "Thus.*CHH" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
 
 
-###6.1. Print methylation statistics.
+###6.2 Generate and print sample statistics.
 #
-$(SYNONYM).mstats:	$(SYNONYM).Creport CpGmcalls CHGmcalls CHHmcalls
-	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
-
-
-
-#Genome statistics:
-#
-$(GENOME).stats:	./genome/$(GENOME).fa
-	$(BINDIR)/asmbleval.pl < ./genome/$(GENOME).fa > $(GENOME).stats
-
-
-#Number of raw reads:
-# (to obtain the number of reads, we add the number of lines in both read files divided by 4)
-#
-rawread_nb:	$(SAMPLE).fastq
-	$(eval RAWREAD_NB1 = $(shell wc -l $(SAMPLE).fastq|cut -d' ' -f1))
-	$(eval RAWREAD_NB  = $(shell awk "BEGIN {print $(RAWREAD_NB1)/4}"))
-	@echo "Number of raw reads: $(RAWREAD_NB)" > $(SAMPLE).stats
-
-#Raw read length:
-#
-rawread_lgth:	FastQC/$(SAMPLE)_fastqc/fastqc_data.txt
-	$(eval RAWREAD_LGTH = $(shell awk 'NR==9' FastQC/$(SAMPLE)_fastqc/fastqc_data.txt | awk -F" " '{print $$3}'))
-	@echo "Raw read length (per FastQC report): $(RAWREAD_LGTH)" >> $(SAMPLE).stats
-
-#Raw sample size:
-#
-rawsample_size:	rawread_nb
-	$(eval RAWSAMPLE_SZE = $(shell awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($$0);}}END{print sum;}' $(SAMPLE).fastq))
-	@echo "Raw read sample size: $(RAWSAMPLE_SZE) bp" >> $(SAMPLE).stats
-
-
-#Number of trimmed reads:
-#
-trmread_nb:	$(SAMPLE)_trimmed.fq
-	$(eval TRMREAD_NB1 = $(shell wc -l $(SAMPLE)_trimmed.fq|cut -d' ' -f1))
-	$(eval TRMREAD_NB  = $(shell awk "BEGIN {print $(TRMREAD_NB1)/4}"))
-	@echo "Number of trimmed reads: $(TRMREAD_NB)" >> $(SAMPLE).stats
-
-#Trimmed read length:
-#
-trmread_lgth:	FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt
-	$(eval TRMREAD_LGTH = $(shell awk 'NR==9' FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt | awk -F" " '{print $$3}'))
-	@echo "Trimmed read length range (per FastQC report): $(TRMREAD_LGTH)" >> $(SAMPLE).stats
-	$(eval TRMREAD_ML = $(shell cat $(SAMPLE)_trimmed.fq | awk '{if(NR%4==2) print length($$1)}' > /tmp/$(SAMPLE)_readlength1.txt; sort -n /tmp/$(SAMPLE)_readlength1.txt| awk ' { a[i++]=$$1; } END { print a[int(i/2)]; }'))
-	@echo "Median length of trimmed reads: $(TRMREAD_ML)" >> $(SAMPLE).stats
-
-#Trimmed sample size:
-#
-trmsample_size:	trmread_nb
-	$(eval TRMSAMPLE_SZE = $(shell awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($$0);}}END{print sum;}' $(SAMPLE)_trimmed.fq))
-	@echo "Trimmed sample size: $(TRMSAMPLE_SZE) bp" >> $(SAMPLE).stats
-
-
-#Genome coverage:
-# (using samtools to first convert the SAM file into a sorted BAM file, then "samtools depth" to obtain the total aligned base
-#  count, and finally dividing that value by the genome size to obtain the coverage)
-genome_coverage:	$(SYNONYM).bam $(GENOME).stats
-	$(eval TOTAL_ALGNDBASE_CNT = $(shell $(SAMTOOLS)/samtools depth $(SYNONYM).bam | awk '{sum+=$$3}END{print sum}'))
-	$(eval genome_size = $(shell awk 'NR==1{print $$4}' $(GENOME).stats))
-	$(eval COVERAGE = $(shell awk "BEGIN {printf \"%.2f\", $(TOTAL_ALGNDBASE_CNT)/$(genome_size) }"))
-	@echo "Genome coverage: $(COVERAGE) (= $(TOTAL_ALGNDBASE_CNT) / $(genome_size))" >> $(SAMPLE).stats
+$(SAMPLE).stats:	$(SAMPLE).fastq \
+			FastQC/$(SAMPLE)_fastqc/fastqc_data.txt \
+			$(SAMPLE)_trimmed.fq \
+			FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt \
+			$(SYNONYM).bam
+	$(BINDIR)/sstats-se.sh $(SAMPLE) $(SYNONYM) $(GENOME) $(SAMTOOLS)
 
 $(SYNONYM).bam:	$(SYNONYM).sam
 	$(SAMTOOLS)/samtools view -bS $(SYNONYM).sam | $(SAMTOOLS)/samtools sort $(SAMTOOLS_SORT_OPTIONS) -o $(SYNONYM).bam -
+
+#Note: sstats-se.sh is using "samtools depth" to obtain the total aligned base count and, by dividing that value by the genome size,
+#      the genome coverage); the sorted bam file produced above is required for that step.
+
+
+###6.3 Generate and print genome statistics.
+#
+$(GENOME).stats:	./genome/$(GENOME).fa
+	$(BINDIR)/asmbleval.pl < ./genome/$(GENOME).fa > $(GENOME).stats
 
 
 
