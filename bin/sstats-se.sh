@@ -28,7 +28,7 @@ echo "Number of raw reads: ${RAWREAD_NB}" > ${SAMPLE}.stats
 RAWREAD_LGTH=`awk 'NR==9' FastQC/${SAMPLE}_fastqc/fastqc_data.txt | awk -F" " '{print $3}'`
 echo "Raw read length (per FastQC report): ${RAWREAD_LGTH}" >> ${SAMPLE}.stats
 
-RAWSAMPLE_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_fastq`
+RAWSAMPLE_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}.fastq`
 echo "Raw read sample size: ${RAWSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
 
