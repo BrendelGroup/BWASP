@@ -1,7 +1,7 @@
 #Makefile_merge_6replicates
 #
 #Makefile to merge BWASP *.Creport files for combined input into workflow step 5.
-#Version: January 3, 2016
+#Version: May 19, 2016
 
 #Usage: make -j 6 -f Makefile_merge_6replicates
 
@@ -12,13 +12,19 @@
 #This makefile is a template for merging 6 replicates.
 #For convenience, other templates are provided.
 #
-#The assumption is that the replicate *.Creport files were stored in a *.zip
-#archive as constructed by Makefile_WF1-6*, target "cleanup finishup".  If not,
-#simple modifications of this makefile will do.
-#
-#For example, for the Polisted dominula data sets analyzed as in the BWASP
-#HOWTO instructions, you would run a copy of the Makefile_merge_3replicates in
-#the Queen directory with variable settings as follows:
+#The assumption made in this template is that the replicate *.Creport files are
+#either present in the replicate* directories or that they were stored in a *.zip
+#archive as constructed by Makefile_WF1-6*, target "cleanup finishup".  In the former
+#case, specify the replicate *.Creport files in the CreportStore* variables below.
+#In the latter case, specify the *.zip archives in the CreportStore* variables and
+#the Creport files in the CreportFile* variables below.
+
+#If the replicate *.Creport files are stored elsewhere, simple modifications of this
+#makefile will do.
+
+#For example, for the Polisted dominula data sets analyzed as in the BWASP HOWTO
+#instructions, you would run a copy of the Makefile_merge_3templates in the Queen
+#directory with variable settings as follows:
 #
 #SYNONYM     = Pcan-queen
 #SAMPLE1     = SRR1519132
@@ -45,23 +51,34 @@ SYNONYM5    = Species-sample5
 SAMPLE6     = SRR.....6
 SYNONYM6    = Species-sample6
 
-CreportStore1       = ./replicate1/STORE-$(SAMPLE1).zip
-CreportFile1        = STORE-$(SAMPLE1)/$(SYNONYM1).Creport
-CreportStore2       = ./replicate2/STORE-$(SAMPLE2).zip
-CreportFile2        = STORE-$(SAMPLE2)/$(SYNONYM2).Creport
-CreportStore3       = ./replicate3/STORE-$(SAMPLE3).zip
-CreportFile3        = STORE-$(SAMPLE3)/$(SYNONYM3).Creport
-CreportStore4       = ./replicate4/STORE-$(SAMPLE4).zip
-CreportFile4        = STORE-$(SAMPLE4)/$(SYNONYM4).Creport
-CreportStore5       = ./replicate5/STORE-$(SAMPLE5).zip
-CreportFile5        = STORE-$(SAMPLE5)/$(SYNONYM5).Creport
-CreportStore6       = ./replicate6/STORE-$(SAMPLE6).zip
-CreportFile6        = STORE-$(SAMPLE6)/$(SYNONYM6).Creport
+CreportStore1       = ./replicate1/$(SYNONYM1).Creport
+#CreportStore1       = ./replicate1/STORE-$(SAMPLE1).zip
+#CreportFile1        = STORE-$(SAMPLE1)/$(SYNONYM1).Creport
+
+CreportStore2       = ./replicate2/$(SYNONYM2).Creport
+#CreportStore2       = ./replicate2/STORE-$(SAMPLE2).zip
+#CreportFile2        = STORE-$(SAMPLE2)/$(SYNONYM2).Creport
+
+CreportStore3       = ./replicate3/$(SYNONYM3).Creport
+#CreportStore3       = ./replicate3/STORE-$(SAMPLE3).zip
+#CreportFile3        = STORE-$(SAMPLE3)/$(SYNONYM3).Creport
+
+CreportStore4       = ./replicate4/$(SYNONYM4).Creport
+#CreportStore4       = ./replicate4/STORE-$(SAMPLE4).zip
+#CreportFile4        = STORE-$(SAMPLE4)/$(SYNONYM4).Creport
+
+CreportStore5       = ./replicate5/$(SYNONYM5).Creport
+#CreportStore5       = ./replicate5/STORE-$(SAMPLE5).zip
+#CreportFile5        = STORE-$(SAMPLE5)/$(SYNONYM5).Creport
+
+CreportStore6       = ./replicate6/$(SYNONYM6).Creport
+#CreportStore6       = ./replicate6/STORE-$(SAMPLE6).zip
+#CreportFile6        = STORE-$(SAMPLE6)/$(SYNONYM6).Creport
 
 ################################################################################
 ### ! Typically there would be no need for further editing below this line ! ###
 
-all:	$(SYNONYM).Creport CXreports CpGmcalls CHGmcalls CHHmcalls mstats
+all:	$(SYNONYM).Creport $(SYNONYM).mstats
 
 #############################################################
 
@@ -69,22 +86,52 @@ all:	$(SYNONYM).Creport CXreports CpGmcalls CHGmcalls CHHmcalls mstats
 #
 #
 $(SYNONYM1).Creport:	$(CreportStore1)
-	unzip -j $(CreportStore1) $(CreportFile1)
+	$(eval isgzip = $(shell file $(CreportStore1) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore1) ./; \
+	else \
+		unzip -j $(CreportStore1) $(CreportFile1); \
+	fi
 
 $(SYNONYM2).Creport:	$(CreportStore2)
-	unzip -j $(CreportStore2) $(CreportFile2)
+	$(eval isgzip = $(shell file $(CreportStore2) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore2) ./; \
+	else \
+		unzip -j $(CreportStore2) $(CreportFile2); \
+	fi
 
 $(SYNONYM3).Creport:	$(CreportStore3)
-	unzip -j $(CreportStore3) $(CreportFile3)
+	$(eval isgzip = $(shell file $(CreportStore3) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore3) ./; \
+	else \
+		unzip -j $(CreportStore3) $(CreportFile3); \
+	fi
 
 $(SYNONYM4).Creport:	$(CreportStore4)
-	unzip -j $(CreportStore4) $(CreportFile4)
+	$(eval isgzip = $(shell file $(CreportStore4) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore4) ./; \
+	else \
+		unzip -j $(CreportStore4) $(CreportFile4); \
+	fi
 
 $(SYNONYM5).Creport:	$(CreportStore5)
-	unzip -j $(CreportStore5) $(CreportFile5)
+	$(eval isgzip = $(shell file $(CreportStore5) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore5) ./; \
+	else \
+		unzip -j $(CreportStore5) $(CreportFile5); \
+	fi
 
 $(SYNONYM6).Creport:	$(CreportStore6)
-	unzip -j $(CreportStore6) $(CreportFile6)
+	$(eval isgzip = $(shell file $(CreportStore6) | egrep "Zip archive data" | wc -l))
+	if [ $(isgzip) -eq 0 ]; then \
+		cp $(CreportStore6) ./; \
+	else \
+		unzip -j $(CreportStore6) $(CreportFile6); \
+	fi
 
 $(SYNONYM)-12.Creport:	$(SYNONYM1).Creport $(SYNONYM2).Creport
 	$(BINDIR)/mergeCreports.pl $(SYNONYM1).Creport $(SYNONYM2).Creport --outfile $(SYNONYM)-12.Creport
@@ -111,29 +158,29 @@ CXreports:	$(SYNONYM).CpGreport $(SYNONYM).CHGreport $(SYNONYM).CHHreport $(SYNO
 	python $(BINDIR)/Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
 
 
-### 3. Highly supported methylation sites calculation using the CXreport2hsm.py script:
+### 3. Generate and print methylation statistics.
 #
 #
-CpGmcalls:	$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls
+$(SYNONYM).mstats:	$(SYNONYM).Creport \
+		 	$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls \
+			$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls \
+			$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
+	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
+###Intermediate step: determine highly supported methylation sites using the CXreport2hsm.py script.
+#
 %.CpGscd.mcalls %.CpGhsm.mcalls %.CpGnsm.mcalls:	%.HSMthresholds %.CpGreport
 	$(eval CpGnval = $(shell egrep "Thus.*CpG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
-
-CHGmcalls:	$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls
 
 %.CHGscd.mcalls %.CHGhsm.mcalls %.CHGnsm.mcalls:	%.HSMthresholds %.CHGreport
 	$(eval CHGnval = $(shell egrep "Thus.*CHG" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
 
-CHHmcalls:	$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
-
 %.CHHscd.mcalls %.CHHhsm.mcalls %.CHHnsm.mcalls:	%.HSMthresholds %.CHHreport
 	$(eval CHHnval = $(shell egrep "Thus.*CHH" $*.HSMthresholds | awk '{print $$NF}'))
 	python $(BINDIR)/CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
 
-mstats:	$(SYNONYM).Creport CpGmcalls CHGmcalls CHHmcalls
-	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
 
 ###Clean up the output directory:
