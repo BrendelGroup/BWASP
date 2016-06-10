@@ -4,7 +4,9 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the paired-read version.  For single-read analysis, use Makefile_WF1-6se_template.
-#Version: May 12, 2016.
+#Version: June 10, 2016.
+#
+#Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
 
 #Typical usage:
 #
@@ -50,7 +52,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.15.0
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.0
 BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
@@ -177,7 +179,7 @@ $(SAMPLE)-header.sam:	$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam
 ###3.1-2 Determine potential methylation-biased positions in the reads:
 #
 $(SYNONYM).M-bias.txt:	$(SYNONYM).sam
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -p $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -p $(SYNONYM).sam
 	mv $(SYNONYM)_splitting_report.txt $(SYNONYM)_mbias_only_splitting_report.txt
 
 $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
@@ -191,7 +193,7 @@ $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 	$(eval R1TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$4}'))
 	$(eval R2FP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$6}'))
 	$(eval R2TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$8}'))
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -p --ignore $(R1FP) --ignore_3prime $(R1TP) --ignore_r2 $(R2FP) --ignore_3prime_r2 $(R2TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -p --ignore $(R1FP) --maxrlgth $(R1TP) --ignore_r2 $(R2FP) --maxrlgth_r2 $(R2TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
 
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov

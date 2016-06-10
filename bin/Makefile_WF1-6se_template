@@ -4,7 +4,9 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: May 12, 2016.
+#Version: June 10, 2016.
+#
+#Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
 
 #Typical usage:
 #
@@ -171,7 +173,7 @@ $(SAMPLE)-header.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.bam
 ###3.1-2 Determine potential methylation-biased positions in the reads:
 #
 $(SYNONYM).M-bias.txt:	$(SYNONYM).sam
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
 	mv $(SYNONYM)_splitting_report.txt $(SYNONYM)_mbias_only_splitting_report.txt
 
 $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
@@ -183,7 +185,7 @@ $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
 $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 	$(eval R1FP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$2}'))
 	$(eval R1TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$4}'))
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --ignore_3prime $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --maxrlgth $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
 
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
