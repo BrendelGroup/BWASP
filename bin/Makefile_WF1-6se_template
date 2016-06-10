@@ -146,18 +146,18 @@ FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt:	$(SAMPLE)_trimmed.fq
 
 ###2.1-2 Map the reads to the genome (using bowtie2 via bismark):
 #
-$(SAMPLE)_trimmed.fq_bismark_bt2.bam:	$(SAMPLE)_trimmed.fq
+$(SAMPLE)_trimmed_bismark_bt2.bam:	$(SAMPLE)_trimmed.fq
 	$(BISMARK)/bismark  $(BISMARK_OPTIONS)  ./genome $(SAMPLE)_trimmed.fq
 
-$(SAMPLE)_trimmed.fq_bismark_bt2.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.bam
-	$(SAMTOOLS)/samtools view $(SAMPLE)_trimmed.fq_bismark_bt2.bam > $(SAMPLE)_trimmed.fq_bismark_bt2.sam
+$(SAMPLE)_trimmed_bismark_bt2.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
+	$(SAMTOOLS)/samtools view $(SAMPLE)_trimmed_bismark_bt2.bam > $(SAMPLE)_trimmed_bismark_bt2.sam
 
 
 ###2.3 Remove potential PCR artefacts using the bismark deduplication script:
 #
-$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.sam
-	$(BISMARK)/deduplicate_bismark -s $(SAMPLE)_trimmed.fq_bismark_bt2.sam
-	mv $(SAMPLE)_trimmed.fq_bismark_bt2.deduplicated.sam $(SYNONYM)-deduplicated.sam
+$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed_bismark_bt2.sam
+	$(BISMARK)/deduplicate_bismark -s $(SAMPLE)_trimmed_bismark_bt2.sam
+	mv $(SAMPLE)_trimmed_bismark_bt2.deduplicated.sam $(SYNONYM)-deduplicated.sam
 
 
 ###2.4 Filter reads to remove likely non-BS-treated contaminants:
@@ -166,8 +166,8 @@ $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
 	$(BINDIR)/xfilterMsam $(BINDIR) s $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
-$(SAMPLE)-header.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.bam
-	$(SAMTOOLS)/samtools view -H $(SAMPLE)_trimmed.fq_bismark_bt2.bam > $(SAMPLE)-header.sam
+$(SAMPLE)-header.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
+	$(SAMTOOLS)/samtools view -H $(SAMPLE)_trimmed_bismark_bt2.bam > $(SAMPLE)-header.sam
 
 
 ###3.1-2 Determine potential methylation-biased positions in the reads:
@@ -258,7 +258,7 @@ cleanup:
 	-\mv $(SAMPLE).sra _SCRATCH
 	-\mv $(SAMPLE).fastq _SCRATCH
 	-\mv $(SAMPLE)_trimmed.fq _SCRATCH
-	-\mv $(SAMPLE)_trimmed.fq_bismark_bt2.sam _SCRATCH
+	-\mv $(SAMPLE)_trimmed_bismark_bt2.sam _SCRATCH
 	-\mv $(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv Accepted-Reads-$(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
@@ -266,7 +266,7 @@ cleanup:
 	-\mv creport _SCRATCH
 	 
 	-\mkdir STORE-$(SAMPLE)
-	-\mv $(SAMPLE)_trimmed.fq_bismark_bt2.bam STORE-$(SAMPLE)
+	-\mv $(SAMPLE)_trimmed_bismark_bt2.bam STORE-$(SAMPLE)
 	-\mv $(SYNONYM).sam STORE-$(SAMPLE)/
 	-\mv CHH*txt CHG*txt STORE-$(SAMPLE)
 	-\mv $(SYNONYM).cov STORE-$(SAMPLE)

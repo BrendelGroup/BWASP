@@ -266,7 +266,7 @@ cleanup:
 	-\mv $(SAMPLE).sra _SCRATCH
 	-\mv $(SAMPLE)_*.fastq _SCRATCH
 	-\mv $(SAMPLE)_*.fq _SCRATCH
-	-\mv $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.sam _SCRATCH
+	-\mv $(SAMPLE)_1_val_1_bismark_bt2_pe.sam _SCRATCH
 	-\mv $(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv Accepted-Reads-$(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
@@ -274,7 +274,7 @@ cleanup:
 	-\mv creport _SCRATCH
 	 
 	-\mkdir STORE-$(SAMPLE)
-	-\mv $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam STORE-$(SAMPLE)
+	-\mv $(SAMPLE)_1_val_1_bismark_bt2_pe.bam STORE-$(SAMPLE)
 	-\mv $(SYNONYM).sam STORE-$(SAMPLE)/
 	-\mv CHH*txt CHG*txt STORE-$(SAMPLE)
 	-\mv $(SYNONYM).cov STORE-$(SAMPLE)
