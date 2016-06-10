@@ -52,7 +52,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.0
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.1
 BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
@@ -152,18 +152,18 @@ FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2_val_2.fq
 
 ###2.1-2 Map the reads to the genome (using bowtie2 via bismark):
 #
-$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam:	$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq
+$(SAMPLE)_1_val_1_bismark_bt2_pe.bam:	$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq
 	$(BISMARK)/bismark  $(BISMARK_OPTIONS)  ./genome -1 $(SAMPLE)_1_val_1.fq -2 $(SAMPLE)_2_val_2.fq
 
-$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.sam:	$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam
-	$(SAMTOOLS)/samtools view $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam > $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.sam
+$(SAMPLE)_1_val_1_bismark_bt2_pe.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.bam
+	$(SAMTOOLS)/samtools view $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
 
 
 ###2.3 Remove potential PCR artefacts using the bismark deduplication script:
 #
-$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.sam
-	$(BISMARK)/deduplicate_bismark -p $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.sam
-	mv $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.deduplicated.sam $(SYNONYM)-deduplicated.sam
+$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.sam
+	$(BISMARK)/deduplicate_bismark -p $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
+	mv $(SAMPLE)_1_val_1_bismark_bt2_pe.deduplicated.sam $(SYNONYM)-deduplicated.sam
 
 
 ###2.4 Filter reads to remove likely non-BS-treated contaminants:
@@ -172,8 +172,8 @@ $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
 	$(BINDIR)/xfilterMsam $(BINDIR) p $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
-$(SAMPLE)-header.sam:	$(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam
-	$(SAMTOOLS)/samtools view -H $(SAMPLE)_1_val_1.fq_bismark_bt2_pe.bam > $(SAMPLE)-header.sam
+$(SAMPLE)-header.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.bam
+	$(SAMTOOLS)/samtools view -H $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)-header.sam
 
 
 ###3.1-2 Determine potential methylation-biased positions in the reads:

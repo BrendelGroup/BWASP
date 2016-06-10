@@ -52,7 +52,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.15.0
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.1
 BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
