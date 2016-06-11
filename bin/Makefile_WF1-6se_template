@@ -55,10 +55,10 @@ BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
 BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.1
-BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
+BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.9
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
-SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.5.7-centos_linux64/bin
+SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.6.3-centos_linux64/bin
 TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
 
 #The following variables set options for programs called in the BWASP workflow.
