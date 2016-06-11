@@ -5,7 +5,7 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ##### README
-Sources and installation notes (current as of March 8, 2016)
+Sources and installation notes (current as of June 11, 2016)
 
 Our recommendation is to install the required programs system-wide.
 Typical would be to run the installation steps as superuser after
@@ -38,10 +38,10 @@ BISMARK
 from http://www.bioinformatics.babraham.ac.uk/projects/bismark/
 ```
 mkdir BISMARK; cd BISMARK
-wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.15.0.tar.gz
-tar -xzf bismark_v0.15.0.tar.gz
-cd bismark_v0.15.0/
-#cp bismark bismark2* bismark_genome_preparation bismark_methylation_extractor coverage2cytosine deduplicate_bismark /usr/local/bin/
+wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.16.1.tar.gz
+tar -xzf bismark_v0.16.1.tar.gz
+cd bismark_v0.16.1/
+#cp bam2nuc bismark bismark2* bismark_genome_preparation bismark_methylation_extractor coverage2cytosine deduplicate_bismark /usr/local/bin/
 cd ../..
 ```
 
@@ -50,10 +50,10 @@ BOWTIE2
 from http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 ```
 mkdir BOWTIE2; cd BOWTIE2
-wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.7/bowtie2-2.2.7-linux-x86_64.zip/download
-mv download bowtie2-2.2.7-linux-x86_64.zip
-unzip bowtie2-2.2.7-linux-x86_64.zip
-cd bowtie2-2.2.7/
+wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip/download
+mv download bowtie2-2.2.9-linux-x86_64.zip
+unzip bowtie2-2.2.9-linux-x86_64.zip
+cd bowtie2-2.2.9/
 #cp bowtie2* /usr/local/bin/
 cd ../..
 ```
@@ -63,8 +63,8 @@ FASTQC
 from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 ```
 mkdir FASTQC; cd FASTQC
-wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.4.zip
-unzip fastqc_v0.11.4.zip
+wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
+unzip fastqc_v0.11.5.zip
 cd FastQC
 chmod a+x fastqc
 cd ../..
@@ -93,8 +93,8 @@ SRATOOLKIT
 	from http://www.ncbi.nlm.nih.gov/books/NBK158900/
 ```
 mkdir SRATOOLKIT; cd SRATOOLKIT
-wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.5.7/sratoolkit.2.5.7-centos_linux64.tar.gz
-tar -xzf sratoolkit.2.5.7-centos_linux64.tar.gz
+wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.6.3/sratoolkit.2.6.3-centos_linux64.tar.gz
+tar -xzf sratoolkit.2.6.3-centos_linux64.tar.gz
 cd ..
 ```
 
