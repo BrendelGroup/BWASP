@@ -92,7 +92,7 @@ TRIM_GALORE
 #	wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip
 #	unzip trim_galore_v0.4.1.zip
 #	pip install --upgrade cutadapt
-##	 (version 1.9.1)
+##	 (version 1.10)
 #	cd ..
 
 
