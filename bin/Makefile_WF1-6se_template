@@ -4,9 +4,11 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: June 10, 2016.
+#Version: June 11, 2016.
 #
 #Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
+#       You will also need to place a copy of bismark2bedGraph into the BWASP/bin directory.
+
 
 #Typical usage:
 #
