@@ -4,7 +4,11 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: May 12, 2016.
+#Version: June 11, 2016.
+#
+#Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
+#       You will also need to place a copy of bismark2bedGraph into the BWASP/bin directory.
+
 
 #Typical usage:
 #
@@ -50,11 +54,11 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.15.0
-BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.7
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.1
+BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.9
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
-SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.5.7-centos_linux64/bin
+SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.6.3-centos_linux64/bin
 TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
 
 #The following variables set options for programs called in the BWASP workflow.
@@ -144,18 +148,18 @@ FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt:	$(SAMPLE)_trimmed.fq
 
 ###2.1-2 Map the reads to the genome (using bowtie2 via bismark):
 #
-$(SAMPLE)_trimmed.fq_bismark_bt2.bam:	$(SAMPLE)_trimmed.fq
+$(SAMPLE)_trimmed_bismark_bt2.bam:	$(SAMPLE)_trimmed.fq
 	$(BISMARK)/bismark  $(BISMARK_OPTIONS)  ./genome $(SAMPLE)_trimmed.fq
 
-$(SAMPLE)_trimmed.fq_bismark_bt2.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.bam
-	$(SAMTOOLS)/samtools view $(SAMPLE)_trimmed.fq_bismark_bt2.bam > $(SAMPLE)_trimmed.fq_bismark_bt2.sam
+$(SAMPLE)_trimmed_bismark_bt2.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
+	$(SAMTOOLS)/samtools view $(SAMPLE)_trimmed_bismark_bt2.bam > $(SAMPLE)_trimmed_bismark_bt2.sam
 
 
 ###2.3 Remove potential PCR artefacts using the bismark deduplication script:
 #
-$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.sam
-	$(BISMARK)/deduplicate_bismark -s $(SAMPLE)_trimmed.fq_bismark_bt2.sam
-	mv $(SAMPLE)_trimmed.fq_bismark_bt2.deduplicated.sam $(SYNONYM)-deduplicated.sam
+$(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed_bismark_bt2.sam
+	$(BISMARK)/deduplicate_bismark -s $(SAMPLE)_trimmed_bismark_bt2.sam
+	mv $(SAMPLE)_trimmed_bismark_bt2.deduplicated.sam $(SYNONYM)-deduplicated.sam
 
 
 ###2.4 Filter reads to remove likely non-BS-treated contaminants:
@@ -164,14 +168,14 @@ $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
 	$(BINDIR)/xfilterMsam $(BINDIR) s $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
-$(SAMPLE)-header.sam:	$(SAMPLE)_trimmed.fq_bismark_bt2.bam
-	$(SAMTOOLS)/samtools view -H $(SAMPLE)_trimmed.fq_bismark_bt2.bam > $(SAMPLE)-header.sam
+$(SAMPLE)-header.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
+	$(SAMTOOLS)/samtools view -H $(SAMPLE)_trimmed_bismark_bt2.bam > $(SAMPLE)-header.sam
 
 
 ###3.1-2 Determine potential methylation-biased positions in the reads:
 #
 $(SYNONYM).M-bias.txt:	$(SYNONYM).sam
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
 	mv $(SYNONYM)_splitting_report.txt $(SYNONYM)_mbias_only_splitting_report.txt
 
 $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
@@ -183,7 +187,7 @@ $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
 $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 	$(eval R1FP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$2}'))
 	$(eval R1TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$4}'))
-	$(BISMARK)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --ignore_3prime $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
+	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --maxrlgth $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
 
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
@@ -256,7 +260,7 @@ cleanup:
 	-\mv $(SAMPLE).sra _SCRATCH
 	-\mv $(SAMPLE).fastq _SCRATCH
 	-\mv $(SAMPLE)_trimmed.fq _SCRATCH
-	-\mv $(SAMPLE)_trimmed.fq_bismark_bt2.sam _SCRATCH
+	-\mv $(SAMPLE)_trimmed_bismark_bt2.sam _SCRATCH
 	-\mv $(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv Accepted-Reads-$(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
@@ -264,7 +268,7 @@ cleanup:
 	-\mv creport _SCRATCH
 	 
 	-\mkdir STORE-$(SAMPLE)
-	-\mv $(SAMPLE)_trimmed.fq_bismark_bt2.bam STORE-$(SAMPLE)
+	-\mv $(SAMPLE)_trimmed_bismark_bt2.bam STORE-$(SAMPLE)
 	-\mv $(SYNONYM).sam STORE-$(SAMPLE)/
 	-\mv CHH*txt CHG*txt STORE-$(SAMPLE)
 	-\mv $(SYNONYM).cov STORE-$(SAMPLE)

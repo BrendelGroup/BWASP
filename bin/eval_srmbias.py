@@ -3,8 +3,8 @@
 #
 # The script takes as input a *.M-bias.txt file (produced in the BWASP workflow
 # by bismark_methylation_extractor with the --mbias_only option, identifies
-# outlier positions, and recommends "ignore" parameters for the subsequent
-# bismark_methylation_extractor run.
+# outlier positions, and recommends "ignore" and "maxrlgth" parameters for the
+# subsequent bismark_methylation_extractor run.
 #
 # Parameters of choice below are: qfactor=1/4 (meaning that the terminal 1/4
 # read positions are discarded when established the mean and standard deviation
@@ -148,7 +148,7 @@ for i in range(len(methvals)):
     break;
 
 print "\n\nRecommended bismark_methylation_extractor flags:\n"
-print "--ignore", igf, "--ignore_3prime", igt, "\n"
+print "--ignore", igf, "--maxrlgth", len(methvals)-igt, "\n"
 
 
 print "\nRemoval of biased calls:\n"
