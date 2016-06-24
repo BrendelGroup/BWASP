@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the paired-read version.  For single-read analysis, use Makefile_WF1-6se_template.
-#Version: June 11, 2016.
+#Version: June 24, 2016.
 #
 #Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
 #       You will also need to place a copy of bismark2bedGraph into the BWASP/bin directory.
@@ -38,7 +38,8 @@
 #      in the directory where you invoke "make".  For example, assume you have your own read files
 #      mydata_1.fastq and mydata_2.fastq.  Then you could use a copy of this makefile by setting
 #      SAMPLE = mydata and invoking "touch mydata.sra; touch mydata_*.fastq" before running make
-#      (alternatively, you could delete section 1.1 below before running make).
+#      (alternatively, you could delete section 1.2 below before running make and move the "mkdir FastQC"
+#      check into the next section).
 #
 GENOME  = Pcan.gdna
 SAMPLE  = SRR1519132
