@@ -3,7 +3,7 @@
 #xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
 #              input (Bismark-produced) BS-seq SAM file.
 #
-#              Version:	December 29, 2015	Author: Volker Brendel (vbrendel@indiana.edu)
+#              Version:	July 3, 2016	Author: Volker Brendel (vbrendel@indiana.edu)
 
 if ( $#argv != 3 ) then
   echo "Usage: xfilterMsam <path> [p|s] <MsamFile>.sam"
@@ -92,7 +92,11 @@ egrep "^Number" $MsamFile-1.summary   >> FilterMsam-Report-$MsamFile
 egrep "^Prob" $MsamFile-1.summary     >> FilterMsam-Report-$MsamFile
 echo ""                               >> FilterMsam-Report-$MsamFile
 
-echo "After $j rounds of filtering:"  >> FilterMsam-Report-$MsamFile
+if ( $i == 1 ) then
+ echo "After $i round of filtering:"  >> FilterMsam-Report-$MsamFile
+else
+ echo "After $i rounds of filtering:" >> FilterMsam-Report-$MsamFile
+endif
 egrep "^Number" $MsamFile-$i.summary  >> FilterMsam-Report-$MsamFile
 egrep "^Prob" $MsamFile-$i.summary    >> FilterMsam-Report-$MsamFile
 
@@ -101,7 +105,10 @@ set inputfile = $MsamFile.sam
 set a = `cat $inputfile | egrep -v "^@[A-Za-z][A-Za-z]	[A-Za-z][A-Za-z0-9]:|^@CO	" | wc -l`
 
 mv $MsamFile-$i.pass      Accepted-Reads-$inputfile
-\rm $MsamFile-$j.pass
+if ( $i > 1 ) then
+  @ j = $i - 1
+  \rm $MsamFile-$j.pass
+endif
 set x = `cat Accepted-Reads-$inputfile | wc -l`
 set r = `echo "scale=3; 100*$x/$a" | bc`
 echo ""                               >> FilterMsam-Report-$MsamFile
