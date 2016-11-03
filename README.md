@@ -5,13 +5,10 @@ The BWASP repository encompasses code we developed in the [Brendel Group](http:/
 
 ## Getting Started
 
-The __BWASP__ package conforms to our [RAMOSE](https://github.com/BrendelGroup/)
-philosophy and promise: we made every attempt to make the software such that
-you can produce __reproducible__, __accurate__, and __meaningful__ results; our
-software is __open__ (source), designed to be __scalable__, and __easy__ to use
-(so that a typical genome laboratory should be able to run it).  And, of course,
-our software should be _ramose_ ("having many branches") - it's yours to use,
-modify, improve, enhance, ... .
+The __BWASP__ package conforms to our [RAMOSE](https://brendelgroup.github.io/)
+philosophy and promise: it should generate __reproducible__, __accurate__, and
+__meaningful__ results; it is __open__ (source) and designed to be __scalable__
+and __easy__ to use.
 
 To proceed, please follow the instructions in the [INSTALL](./INSTALL.md)
 document.  Once all preparatory steps are taken care of, see the
