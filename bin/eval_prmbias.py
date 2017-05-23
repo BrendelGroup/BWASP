@@ -33,6 +33,8 @@ verbose = 0
 # Initialize variables:
 #
 methvals=[]
+numposR1=0
+numposR2=0
 bias=[]
 m = {}
 s = {}
@@ -68,6 +70,10 @@ for line in input.readlines():
       sumU[label] = cumcntU
       if verbose: print "  mean = ", m[label], "std = ", s[label]
       if verbose: print "  cumcntM = ", cumcntM, "cumcntU = ", cumcntU
+      if (mtch.group(2) == "R1" and len(methvals) > numposR1):
+          numposR1 = len(methvals)
+      if (mtch.group(2) == "R2" and len(methvals) > numposR2):
+          numposR2 = len(methvals)
 
       methvals=[]
       cumcntM= 0
@@ -96,14 +102,19 @@ if verbose: print "  mean = ", m[label], "std = ", s[label]
 if verbose: print "  cumcntM = ", cumcntM, "cumcntU = ", cumcntU
 if verbose: print "\n\n"
 
+if (mtch.group(2) == "R1" and len(methvals) > numposR1):
+    numposR1 = len(methvals)
+if (mtch.group(2) == "R2" and len(methvals) > numposR2):
+    numposR2 = len(methvals)
 
 
 # Now establishing range:
 #
 excludeR1=[0]
 excludeR2=[0]
-for i in range(len(methvals)):
+for i in range(numposR1):
   excludeR1.append(0)
+for i in range(numposR2):
   excludeR2.append(0)
 print "Outlier positions:\n\n"
 
@@ -139,33 +150,33 @@ for line in input.readlines():
 # Establish "ignore" parameters:
 #
 iglf = 0
-for i in range(len(methvals)):
+for i in range(numposR1):
   if excludeR1[i+1] == 1:
     iglf += 1
   else:
     break;
 iglt = 0
-for i in range(len(methvals)):
-  if excludeR1[len(methvals)-i] == 1:
+for i in range(numposR1):
+  if excludeR1[numposR1-i] == 1:
     iglt += 1
   else:
     break;
 
 igrf = 0
-for i in range(len(methvals)):
+for i in range(numposR2):
   if excludeR2[i+1] == 1:
     igrf += 1
   else:
     break;
 igrt = 0
-for i in range(len(methvals)):
-  if excludeR2[len(methvals)-i] == 1:
+for i in range(numposR2):
+  if excludeR2[numposR2-i] == 1:
     igrt += 1
   else:
     break;
 
 print "\n\nRecommended bismark_methylation_extractor flags:\n"
-print "--ignore", iglf, "--maxrlgth", len(methvals)-iglt, "--ignore_r2", igrf, "--maxrlgth_r2", len(methvals)-igrt, "\n"
+print "--ignore", iglf, "--maxrlgth", numposR1-iglt, "--ignore_r2", igrf, "--maxrlgth_r2", numposR2-igrt, "\n"
 
 
 print "\nRemoval of biased calls:\n"
@@ -183,9 +194,9 @@ input.readline()
 for line in input.readlines():
     if cline.match(line):
       if mtch.group(2) == "R1":
-        print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), iglf+iglt, len(methvals), round(100.*float(iglf+iglt)/float(len(methvals)),2))
+        print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), iglf+iglt, numposR1, round(100.*float(iglf+iglt)/float(numposR1),2))
       if mtch.group(2) == "R2":
-        print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igrf+igrt, len(methvals), round(100.*float(igrf+igrt)/float(len(methvals)),2))
+        print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igrf+igrt, numposR2, round(100.*float(igrf+igrt)/float(numposR2),2))
       mtch = cline.match(line)
       label = mtch.group(1) + '_' + mtch.group(2)
       i = 0
@@ -195,14 +206,14 @@ for line in input.readlines():
     if data.match(line):
       i += 1
       values = line.split('\t')
-      if mtch.group(2) == "R1" and (i<=iglf or i>len(methvals)-iglt):
+      if mtch.group(2) == "R1" and (i<=iglf or i>numposR1-iglt):
         cumcntM+= int(values[1])
         cumcntU+= int(values[2])
-      if mtch.group(2) == "R2" and (i<=igrf or i>len(methvals)-igrt):
+      if mtch.group(2) == "R2" and (i<=igrf or i>numposR2-igrt):
         cumcntM+= int(values[1])
         cumcntU+= int(values[2])
 
 if mtch.group(2) == "R1":
-  print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), iglf+iglt, len(methvals), round(100.*float(iglf+iglt)/float(len(methvals)),2))
+  print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), iglf+iglt, numposR1, round(100.*float(iglf+iglt)/float(numposR1),2))
 if mtch.group(2) == "R2":
-  print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igrf+igrt, len(methvals), round(100.*float(igrf+igrt)/float(len(methvals)),2))
+  print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igrf+igrt, numposR2, round(100.*float(igrf+igrt)/float(numposR2),2))
