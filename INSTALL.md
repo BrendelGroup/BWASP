@@ -38,6 +38,12 @@ _pmrna_ into the [bin](./bin) directory.  Although quite a few external
 programs are involved, typical installation can be scripted (as described) and
 would not take more than a few minutes.
 
+BWASP uses a modified version of the BISMARK _bismark\_methylation\_extractor_
+script (to appropriately handle culling of 3'-end biased positions).  This
+modified script works with the current BISMARK _bismark2bedGraph_ script,
+but you will need to copy that script from your BISMARK installation directory
+to the BWASP [bin](./bin) directory.
+
 BWASP relies on a number of bash, Perl, and python scripts that are placed in
 the [bin](./bin) directory.  The Perl and python scripts use various packages
 that must be pre-installed on your system.  Run the _xcheckprequisites_ bash
