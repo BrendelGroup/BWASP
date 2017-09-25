@@ -38,8 +38,8 @@ _pmrna_ into the [bin](./bin) directory.  Although quite a few external
 programs are involved, typical installation can be scripted (as described) and
 would not take more than a few minutes.
 
-BWASP uses a modified version of the BISMARK _bismkark\_methylation\_extractor_
-script (to appropriately handle culling of 5'-end biased positions).  This
+BWASP uses a modified version of the BISMARK _bismark\_methylation\_extractor_
+script (to appropriately handle culling of 3'-end biased positions).  This
 modified script works with the current BISMARK _bismark2bedGraph_ script,
 but you will need to copy that script from your BISMARK installation directory
 to the BWASP [bin](./bin) directory.

@@ -82,13 +82,13 @@ That's all for the setup.  Typically we would run the workflow as follows
 (from directory _replicate1_):
 
 ```bash
-make -n -f Makefile_WF1-6pe_PcQ1
+make -n   -f Makefile_WF1-6pe_PcQ1
 make      -f Makefile_WF1-6pe_PcQ1 Bisulfite_Genome
 make -j 4 -f Makefile_WF1-6pe_PcQ1 >& err
 ```
 
 The first command with the _-n_ flag simply shows what _make_ will do (see
-_make_ documentation), the second _make command runs the preparatory genome
+_make_ documentation), the second _make_ command runs the preparatory genome
 processing step, and then assuming all looks ok, the third _make_
 command will get the job done (running up to 4 jobs simultaneously).  Once the
 the common _bismark_\__genome_\__preparation_ step is done, you
