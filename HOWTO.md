@@ -83,12 +83,15 @@ That's all for the setup.  Typically we would run the workflow as follows
 
 ```bash
 make -n -f Makefile_WF1-6pe_PcQ1
+make      -f Makefile_WF1-6pe_PcQ1 Bisulfite_Genome
 make -j 4 -f Makefile_WF1-6pe_PcQ1 >& err
 ```
 
-The first command with the _-n_ flag simply shows what _make_ will do (see _make_ documentation), then assuming all looks ok, the second _make_
+The first command with the _-n_ flag simply shows what _make_ will do (see
+_make_ documentation), the second _make command runs the preparatory genome
+processing step, and then assuming all looks ok, the third _make_
 command will get the job done (running up to 4 jobs simultaneously).  Once the
-workflow is passed the common _bismark_\__genome_\__preparation_ step, you
+the common _bismark_\__genome_\__preparation_ step is done, you
 could start _make_ in the other _replicate_ directories - however, we strongly
 suggest you finish one run first to make sure that everything works and you
 have enough resources on your computer to run multiple __BWASP__ workflows
