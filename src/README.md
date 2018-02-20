@@ -38,9 +38,9 @@ BISMARK
 from http://www.bioinformatics.babraham.ac.uk/projects/bismark/
 ```
 mkdir BISMARK; cd BISMARK
-wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.16.1.tar.gz
-tar -xzf bismark_v0.16.1.tar.gz
-cd bismark_v0.16.1/
+wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.19.0.tar.gz
+tar -xzf bismark_v0.19.0.tar.gz
+cd bismark_v0.19.0/
 #cp bam2nuc bismark bismark2* bismark_genome_preparation bismark_methylation_extractor coverage2cytosine deduplicate_bismark /usr/local/bin/
 cd ../..
 ```
@@ -50,10 +50,10 @@ BOWTIE2
 from http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 ```
 mkdir BOWTIE2; cd BOWTIE2
-wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip/download
-mv download bowtie2-2.2.9-linux-x86_64.zip
-unzip bowtie2-2.2.9-linux-x86_64.zip
-cd bowtie2-2.2.9/
+wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.3/bowtie2-2.3.3-linux-x86_64.zip/download
+mv download bowtie2-2.3.3-linux-x86_64.zip
+unzip bowtie2-2.3.3-linux-x86_64.zip
+cd bowtie2-2.3.3/
 #cp bowtie2* /usr/local/bin/
 cd ../..
 ```
@@ -93,8 +93,8 @@ SRATOOLKIT
 	from http://www.ncbi.nlm.nih.gov/books/NBK158900/
 ```
 mkdir SRATOOLKIT; cd SRATOOLKIT
-wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.6.3/sratoolkit.2.6.3-centos_linux64.tar.gz
-tar -xzf sratoolkit.2.6.3-centos_linux64.tar.gz
+wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-centos_linux64.tar.gz
+tar -xzf sratoolkit.2.8.2-centos_linux64.tar.gz
 cd ..
 ```
 
@@ -103,8 +103,8 @@ TRIM_GALORE
 	from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/
 ```
 mkdir TRIM_GALORE; cd TRIM_GALORE
-wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip
-unzip trim_galore_v0.4.1.zip
+wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.4.zip
+unzip trim_galore_v0.4.4.zip
 pip install --upgrade cutadapt
 #(version 1.10)
 cd ..
@@ -113,9 +113,9 @@ cd ..
 GENOMETOOLS
 	from http://genometools.org/
 mkdir GENOMETOOLS; cd GENOMETOOLS
-curl -O http://genometools.org/pub/genometools-1.5.8.tar.gz
-tar -xzf genometools-1.5.8.tar.gz
-cd genometools-1.5.8/
+curl -O http://genometools.org/pub/genometools-1.5.9.tar.gz
+tar -xzf genometools-1.5.9.tar.gz
+cd genometools-1.5.9/
 make
 make install
 cd ../..
@@ -128,7 +128,7 @@ AEGeAn
 git clone https://github.com/BrendelGroup/AEGeAn.git
 cd AEGeAn/
 #(make sure that the packages cairo and cairo-devel are
-#installed; e.g., on Fedora 23: "dnf install cairo cairo-devel")
+#installed; e.g., on Fedora 27: "dnf install cairo cairo-devel")
 make
 make install
 cd ..

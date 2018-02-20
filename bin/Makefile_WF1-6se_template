@@ -59,7 +59,7 @@ BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.3.3
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
 SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.8.2-1-ubuntu64/bin
-TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
+TRIM_GALORE = $(SRCDIR)/TRIM_GALORE
 
 #The following variables set options for programs called in the BWASP workflow.
 #Please read the instructions of the respective programs to make choices that fit your
