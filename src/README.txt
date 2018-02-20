@@ -81,8 +81,8 @@ SAMTOOLS
 SRATOOLKIT
 	from http://www.ncbi.nlm.nih.gov/books/NBK158900/
 #	mkdir SRATOOLKIT; cd SRATOOLKIT
-#	wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-centos_linux64.tar.gz
-#	tar -xzf sratoolkit.2.8.2-centos_linux64.tar.gz
+#	wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-ubuntu64.tar.gz
+#	tar -xzf sratoolkit.2.8.2-ubuntu64.tar.gz
 #	cd ..
 
 

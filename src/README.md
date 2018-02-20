@@ -5,7 +5,7 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ##### README
-Sources and installation notes (current as of June 11, 2016)
+Sources and installation notes (current as of Feburary 20, 2018)
 
 Our recommendation is to install the required programs system-wide.
 Typical would be to run the installation steps as superuser after
@@ -93,8 +93,8 @@ SRATOOLKIT
 	from http://www.ncbi.nlm.nih.gov/books/NBK158900/
 ```
 mkdir SRATOOLKIT; cd SRATOOLKIT
-wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-centos_linux64.tar.gz
-tar -xzf sratoolkit.2.8.2-centos_linux64.tar.gz
+wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-ubuntu64.tar.gz
+tar -xzf sratoolkit.2.8.2-ubuntu64.tar.gz
 cd ..
 ```
 
