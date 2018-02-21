@@ -32,15 +32,15 @@ from the RefSeq FTP site link provided at the relevant
 
 ```bash
 cd Pcan/genome
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
+curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
+curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
 ```
 
 Assuming that everything was downloaded nicely, we link the files to more
 suggestive file names:
 
 ```bash
-gunzip GCF*
+gunzip GCF_*.gz
 ln -s GCF_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
 ln -s GCF_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
 ```

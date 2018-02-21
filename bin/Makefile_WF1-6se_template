@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: June 24, 2016.
+#Version: February 21, 2018.
 #
 #Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
 #       You will also need to place a copy of bismark2bedGraph into the BWASP/bin directory.
@@ -54,12 +54,12 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
 
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.16.1
-BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.2.9
+BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.19.0
+BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.3.3
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
-SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.6.3-centos_linux64/bin
-TRIM_GALORE = $(SRCDIR)/TRIM_GALORE/trim_galore_zip
+SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.8.2-ubuntu64/bin
+TRIM_GALORE = $(SRCDIR)/TRIM_GALORE
 
 #The following variables set options for programs called in the BWASP workflow.
 #Please read the instructions of the respective programs to make choices that fit your
@@ -192,11 +192,11 @@ $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
 
-creport:	./genome/$(GENOME).fa $(SYNONYM).cov
+creport.CX_report.txt:	./genome/$(GENOME).fa $(SYNONYM).cov
 	$(BISMARK)/coverage2cytosine -o creport --genome_folder ./genome --CX  $(SYNONYM).cov
 
-$(SYNONYM).Creport:	creport
-	sort -V -S $(SORT_BUFFER_SIZE) creport > $(SYNONYM).Creport
+$(SYNONYM).Creport:	creport.CX_report.txt
+	sort -V -S $(SORT_BUFFER_SIZE) creport.CX_report.txt > $(SYNONYM).Creport
 
 
 ###5.1-2 Generate the CXreport files:
@@ -265,7 +265,7 @@ cleanup:
 	-\mv Accepted-Reads-$(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
 	-\mv $(SYNONYM).bismark.cov.gz _SCRATCH
-	-\mv creport _SCRATCH
+	-\mv creport.CX_report.txt _SCRATCH
 	 
 	-\mkdir STORE-$(SAMPLE)
 	-\mv $(SAMPLE)_trimmed_bismark_bt2.bam STORE-$(SAMPLE)
