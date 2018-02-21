@@ -4,7 +4,7 @@
 #Labeling of steps follows Figs. 1 & 2 in the manuscript.
 #
 #This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-#Version: February 20, 2018.
+#Version: February 21, 2018.
 #
 #Note:	This version requires the BWASP repository bismark_methylation_extractor (until BISMARK gets updated).
 #       You will also need to place a copy of bismark2bedGraph into the BWASP/bin directory.
@@ -193,7 +193,7 @@ $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
 
 creport.CX_report.txt:	./genome/$(GENOME).fa $(SYNONYM).cov
-	$(BISMARK)/coverage2cytosine -o creport.CX_report.txt --genome_folder ./genome --CX  $(SYNONYM).cov
+	$(BISMARK)/coverage2cytosine -o creport --genome_folder ./genome --CX  $(SYNONYM).cov
 
 $(SYNONYM).Creport:	creport.CX_report.txt
 	sort -V -S $(SORT_BUFFER_SIZE) creport.CX_report.txt > $(SYNONYM).Creport
