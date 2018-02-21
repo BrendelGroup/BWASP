@@ -58,7 +58,7 @@ BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.19.0
 BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.3.3
 FASTQC      = $(SRCDIR)/FASTQC/FastQC
 SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
-SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.8.2-1-ubuntu64/bin
+SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.8.2-ubuntu64/bin
 TRIM_GALORE = $(SRCDIR)/TRIM_GALORE
 
 #The following variables set options for programs called in the BWASP workflow.
