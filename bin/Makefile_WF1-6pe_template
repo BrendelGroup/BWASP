@@ -200,11 +200,11 @@ $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
 
-creport:	./genome/$(GENOME).fa $(SYNONYM).cov
-	$(BISMARK)/coverage2cytosine -o creport --genome_folder ./genome --CX  $(SYNONYM).cov
+creport.CX_report.txt:	./genome/$(GENOME).fa $(SYNONYM).cov
+	$(BISMARK)/coverage2cytosine -o creport.CX_report.txt --genome_folder ./genome --CX  $(SYNONYM).cov
 
-$(SYNONYM).Creport:	creport
-	sort -V -S $(SORT_BUFFER_SIZE) creport > $(SYNONYM).Creport
+$(SYNONYM).Creport:	creport.CX_report.txt
+	sort -V -S $(SORT_BUFFER_SIZE) creport.CX_report.txt > $(SYNONYM).Creport
 
 
 ###5.1-2 Generate the CXreport files:
@@ -273,7 +273,7 @@ cleanup:
 	-\mv Accepted-Reads-$(SYNONYM)-deduplicated.sam _SCRATCH
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
 	-\mv $(SYNONYM).bismark.cov.gz _SCRATCH
-	-\mv creport _SCRATCH
+	-\mv creport.CX_report.txt _SCRATCH
 	 
 	-\mkdir STORE-$(SAMPLE)
 	-\mv $(SAMPLE)_1_val_1_bismark_bt2_pe.bam STORE-$(SAMPLE)
