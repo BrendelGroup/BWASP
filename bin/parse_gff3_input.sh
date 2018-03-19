@@ -26,21 +26,21 @@ outputdir=$5
 #
 awk '$3=="gene"' $gff3file > $outputdir/$species.gene.gff3
 awk '/^>/ {if (seqlen){print seqlen};print;seqtotal+=seqlen;seqlen=0;seq+=1;next;} {seqlen=seqlen+length($0)} END{print seqlen;print seq" sequences, total length " seqtotal+seqlen}' $gfile > $outputdir/$gfile.sl
-python $BWASPBIN/gene2promoter.py $outputdir/$species.gene.gff3 $outputdir/$gfile.sl $outputdir/$species.promoter.gff3
+gene2promoter.py $outputdir/$species.gene.gff3 $outputdir/$gfile.sl $outputdir/$species.promoter.gff3
 
 
 # 2. Run AEGean pmrna to to pull out a single representative mRNA for each gene and its exons:
 #
-$BWASPBIN/pmrna -p -i <$gff3file> $outputdir/$species.pmrna.gff3
+pmrna -p -i <$gff3file> $outputdir/$species.pmrna.gff3
 awk '$3== "exon"' $outputdir/$species.pmrna.gff3 > $outputdir/$species.exon.gff3
 
 
 # 3. Run AEGean canon-gff3 to obtain the protein coding features
 #
-$BWASPBIN/canon-gff3 < $outputdir/$species.pmrna.gff3 > $outputdir/$species.pcg.gff3
+canon-gff3 < $outputdir/$species.pmrna.gff3 > $outputdir/$species.pcg.gff3
 awk '$3== "gene"'            $outputdir/$species.pcg.gff3 > $outputdir/$species.pcg-gene.gff3
 awk '$3== "exon"'            $outputdir/$species.pcg.gff3 > $outputdir/$species.pcg-exon.gff3
 awk '$3== "CDS"'             $outputdir/$species.pcg.gff3 > $outputdir/$species.pcg-CDS.gff3
 awk '$3== "five_prime_UTR"'  $outputdir/$species.pcg.gff3 > $outputdir/$species.pcg-5pUTR.gff3
 awk '$3== "three_prime_UTR"' $outputdir/$species.pcg.gff3 > $outputdir/$species.pcg-3pUTR.gff3
-python $BWASPBIN/gene2promoter.py $outputdir/$species.pcg-gene.gff3 $outputdir/$gfile.sl $outputdir/$species.pcg-promoter.gff3
+gene2promoter.py $outputdir/$species.pcg-gene.gff3 $outputdir/$gfile.sl $outputdir/$species.pcg-promoter.gff3
