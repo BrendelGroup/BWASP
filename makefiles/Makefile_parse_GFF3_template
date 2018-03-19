@@ -8,14 +8,13 @@
 #Usage: make -f Makefile_parse_GFF3
 
 #Please be careful while editing the Makefile as it is 'tab-sensitive'.
-#Typical customization should only involve apppropriate editing of the variables in the next section.
+#Typical customization should only involve appropriate editing of the variables in the next section.
 
 ##########################Variable Settings#####################################
 ###
-#The following variable sets the directory where BWASP requrired binaries reside.  In this
-#template, the BWASP package was cloned in a user's ~/gitwd directory.
+#The following variable sets the location of the Singularity container that provides all required binaries.
 #
-BINDIR   = ~/gitwd/BWASP/bin
+CONTAINER   = ../../../bwasp.simg
 
 #The following variables specify the data sets and labels to be used.
 #
@@ -25,7 +24,7 @@ BINDIR   = ~/gitwd/BWASP/bin
 #various GFF3 files needed for BWASP methylation site analyses.
 #
 GDNAFILE = ./Pcan.gdna.fa#                    input genome file (FASTA format)
-GFF3FILE = ./Pcan.gff3#                       input GFF3 file 
+GFF3FILE = ./Pcan.gff3#                       input GFF3 file
 SPECIES  = Pcan#                              species label
 GFF3DIR  = ./GFF3DIR#                         output directory
 ################################################################################
@@ -35,9 +34,9 @@ GFF3DIR  = ./GFF3DIR#                         output directory
 all:	parsed_gff3
 
 parsed_gff3:	$(GDNAFILE) $(GFF3FILE) $(GFF3DIR)
-	$(BINDIR)/parse_gff3_input.sh $(BINDIR) $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
+	singularity exec $(CONTAINER) parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
 
-$(GFF3DIR):	
+$(GFF3DIR):
 ifeq ("$(wildcard $(GFF3DIR))","")
 	mkdir $(GFF3DIR)
 endif

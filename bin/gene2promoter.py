@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 #BWASP python script gene2promoter.py
 #
 # This script is called by parse_gff3_input.sh to add "promoter"

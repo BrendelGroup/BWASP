@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # parse_gff3_input.sh - a shell script to parse GFF3 annotation for various gene features,
 #                       as needed in BWASP workflows
@@ -7,20 +7,16 @@
 #			Contact: Volker Brendel (vbrendel@indiana.edu)
 
 if [ $# -lt 5 ]; then
-  echo "Usage: parse_gff3_input.sh <path> <gdnafile> <gff3file> <species-label> <output-directory>"
+  echo "Usage: parse_gff3_input.sh <gdnafile> <gff3file> <species-label> <output-directory>"
   echo ""
-  echo "       <path> = path to BWASP-required scripts and executables"
-  echo ""
-  echo "       Example:  parse_gff3_input.sh /usr/local/src/BWASP/bin Pdom.gdna.fa Pdom.gff3 Pdom ./GFF3DIR"
+  echo "       Example:  parse_gff3_input.sh Pdom.gdna.fa Pdom.gff3 Pdom ./GFF3DIR"
   exit
 fi
 
-BWASPBIN=$1
-gfile=$2
-gff3file=$3
-species=$4
-outputdir=$5
-
+gfile=$1
+gff3file=$2
+species=$3
+outputdir=$4
 
 # 1. GFF3 master file => *.gene.gff3, *.promoter.gff3:
 #
