@@ -6,7 +6,7 @@
 #			Version: December 29, 2015
 #			Contact: Volker Brendel (vbrendel@indiana.edu)
 
-if [ $# -lt 5 ]; then
+if [ $# -lt 4 ]; then
   echo "Usage: parse_gff3_input.sh <gdnafile> <gff3file> <species-label> <output-directory>"
   echo ""
   echo "       Example:  parse_gff3_input.sh Pdom.gdna.fa Pdom.gff3 Pdom ./GFF3DIR"
