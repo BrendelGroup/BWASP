@@ -10,13 +10,13 @@ mkdir $species
 cd $species
 mkdir genome
 cd genome
-cp ../../../bin/Makefile_parse_GFF3_template ./
+cp ../../../makefiles/Makefile_parse_GFF3_template Makefile
 cd ..
 mkdir $study
 cd $study
 mkdir $sample
 cd $sample
-cp ../../../../bin/Makefile_merge"$nreps"_template ./
+cp ../../../../makefiles/Makefile_merge"$nreps"_template Makefile
 r=0
 while [ $r -lt $nreps ]; do
  ((r++))
@@ -24,9 +24,9 @@ while [ $r -lt $nreps ]; do
  cd replicate$r
  ln -s ../../../genome
  if [ $pors == "p" ]; then
-   cp ../../../../../bin/Makefile_WF1-6pe_template ./
+   cp ../../../../../makefiles/Makefile_WF1-6pe_template Makefile
  else
-   cp ../../../../../bin/Makefile_WF1-6se_template ./
+   cp ../../../../../makefiles/Makefile_WF1-6se_template Makefile
  fi
  cd ..
 done
