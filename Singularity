@@ -74,7 +74,7 @@ From: ubuntu:16.04
     #Perl dependencies
     echo y |cpan install  LWP::UserAgent
     cpan install HTML::LinkExtor
-    cpan install Math::Pari
+  #  cpan install Math::Pari
 
     #Python dependencies
     pip3 install numpy scipy
