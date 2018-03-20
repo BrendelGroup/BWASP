@@ -31,7 +31,17 @@ From: ubuntu:16.04
     tar -xzf bismark_v0.19.0.tar.gz
 
     #FASTQC
-    apt-get -y --force-yes install openjdk-9-jre-headless
+
+    apt-get install -y openjdk-8-jre-headless
+
+    #We could install oracle java but does not seem to be necessary.
+    #apt-get install -y software-properties-common
+    #add-apt-repository -y ppa:webupd8team/java
+    #apt-get -y update
+    #echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+    #apt-get install -y --force-yes oracle-java8-installer
+    #apt-get install -y oracle-java8-set-default
+
     wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
     unzip fastqc_v0.11.5.zip
     chmod +x FastQC/fastqc
