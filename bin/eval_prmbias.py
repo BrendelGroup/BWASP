@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 #BWASP python script eval_prmbias.py
 #
 # The script takes as input a *.M-bias.txt file (produced in the BWASP workflow
@@ -144,7 +145,7 @@ for line in input.readlines():
         print line.rstrip(), "**"
         if mtch.group(2) == "R1":
           excludeR1[i] = 1
-        else: 
+        else:
           excludeR2[i] = 1
 
 # Establish "ignore" parameters:

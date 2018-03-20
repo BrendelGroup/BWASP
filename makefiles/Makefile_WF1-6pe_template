@@ -51,25 +51,21 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 #template, the BWASP package was cloned in a user's ~/gitwd directory, and required other
 #software was installed under /usr/local/src/BWASP.
 #
+CONTAINER = ~/bwasp-sandbox
+SEXEC = singularity exec $(CONTAINER)
+
 BINDIR  = ~/gitwd/BWASP/bin
 SRCDIR  = /usr/local/src/BWASP
-
-BISMARK     = $(SRCDIR)/BISMARK/bismark_v0.19.0
-BOWTIE2     = $(SRCDIR)/BOWTIE2/bowtie2-2.3.3
-FASTQC      = $(SRCDIR)/FASTQC/FastQC
-SAMTOOLS    = $(SRCDIR)/SAMTOOLS/samtools
-SRATOOLKIT  = $(SRCDIR)/SRATOOLKIT/sratoolkit.2.8.2-ubuntu64/bin
-TRIM_GALORE = $(SRCDIR)/TRIM_GALORE
 
 #The following variables set options for programs called in the BWASP workflow.
 #Please read the instructions of the respective programs to make choices that fit your
 #data analysis needs.
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
+BISMARK_OPTIONS       = --multicore 10 --bowtie2 $(BOWTIE2_OPTIONS)
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 25G -@ 4
-TRIM_GALORE_OPTIONS   = 
+TRIM_GALORE_OPTIONS   =
 SORT_BUFFER_SIZE      = 20G
 BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
 #
@@ -96,24 +92,24 @@ all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Cre
 #
 genome:	./genome/$(GENOME).fa Bisulfite_Genome
 
-./genome/$(GENOME).fa:	
+./genome/$(GENOME).fa:
 ifeq ("$(wildcard ./genome/$(GENOME).fa)","")
 	$(error No genome file ./genome/$(GENOME).fa found. Please provide.)
 endif
 
 Bisulfite_Genome:
 ifeq ("$(run_gprep)","yes")
-	$(BISMARK)/bismark_genome_preparation --path_to_bowtie $(BOWTIE2) --bowtie2 ./genome
+	$(SEXEC) bismark_genome_preparation --bowtie2 ./genome
 endif
 
 
 ###1.2 Obtain the SRA reads from NCBI:
 #
-$(SAMPLE).sra:	
-	wget $(SOURCE)/$(SAMPLE).sra
+$(SAMPLE).sra:
+	$(SEXEC) wget $(SOURCE)/$(SAMPLE).sra
 
 %_1.fastq %_2.fastq:	%.sra
-	$(SRATOOLKIT)/fastq-dump --split-files $*.sra
+	$(SEXEC) fastq-dump --split-files $*.sra
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
@@ -124,10 +120,10 @@ endif
 fastqc1:	FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt
 
 FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt:	$(SAMPLE)_1.fastq
-	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1.fastq
+	$(SEXEC) fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1.fastq
 
 FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2.fastq
-	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2.fastq
+	$(SEXEC) fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2.fastq
 
 
 ###1.4 Trim the reads to remove low quality bases and adapater sequences:
@@ -135,9 +131,9 @@ FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2.fastq
 %_1_val_1.fq %_2_val_2.fq:	%_1.fastq %_2.fastq FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt
 	$(eval ENCODING = $(shell awk 'NR==6' FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt | awk -F" " '{printf("%s",$$5)}'))
 	if [ $(ENCODING) = "1.9" ]; then \
-		$(TRIM_GALORE)/trim_galore  $(TRIM_GALORE_OPTIONS) --phred33  --paired $*_1.fastq $*_2.fastq; \
+		$(SEXEC) trim_galore  $(TRIM_GALORE_OPTIONS) --phred33  --paired $*_1.fastq $*_2.fastq; \
 	else \
-		$(TRIM_GALORE)/trim_galore  $(TRIM_GALORE_OPTIONS) --phred64  --paired $*_1.fastq $*_2.fastq; \
+		$(SEXEC) trim_galore  $(TRIM_GALORE_OPTIONS) --phred64  --paired $*_1.fastq $*_2.fastq; \
 	fi
 
 
@@ -146,46 +142,46 @@ FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2.fastq
 fastqc2:	FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt
 
 FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt:	$(SAMPLE)_1_val_1.fq
-	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1_val_1.fq
+	$(SEXEC) fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_1_val_1.fq
 
 FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt:	$(SAMPLE)_2_val_2.fq
-	$(FASTQC)/fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2_val_2.fq
+	$(SEXEC) fastqc  $(FASTQC_OPTIONS)  --outdir=FastQC  $(SAMPLE)_2_val_2.fq
 
 
 ###2.1-2 Map the reads to the genome (using bowtie2 via bismark):
 #
 $(SAMPLE)_1_val_1_bismark_bt2_pe.bam:	$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq
-	$(BISMARK)/bismark  $(BISMARK_OPTIONS)  ./genome -1 $(SAMPLE)_1_val_1.fq -2 $(SAMPLE)_2_val_2.fq
+	$(SEXEC) bismark  $(BISMARK_OPTIONS)  ./genome -1 $(SAMPLE)_1_val_1.fq -2 $(SAMPLE)_2_val_2.fq
 
 $(SAMPLE)_1_val_1_bismark_bt2_pe.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.bam
-	$(SAMTOOLS)/samtools view $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
+	$(SEXEC) samtools view $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
 
 
 ###2.3 Remove potential PCR artefacts using the bismark deduplication script:
 #
 $(SYNONYM)-deduplicated.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.sam
-	$(BISMARK)/deduplicate_bismark -p $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
+	$(SEXEC) deduplicate_bismark -p $(SAMPLE)_1_val_1_bismark_bt2_pe.sam
 	mv $(SAMPLE)_1_val_1_bismark_bt2_pe.deduplicated.sam $(SYNONYM)-deduplicated.sam
 
 
 ###2.4 Filter reads to remove likely non-BS-treated contaminants:
 #
 $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
-	$(BINDIR)/xfilterMsam $(BINDIR) p $(SYNONYM)-deduplicated
-	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
+	$(SEXEC) xfilterMsam $(BINDIR) p $(SYNONYM)-deduplicated
+	$(SEXEC) cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
 $(SAMPLE)-header.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.bam
-	$(SAMTOOLS)/samtools view -H $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)-header.sam
+	$(SEXEC) samtools view -H $(SAMPLE)_1_val_1_bismark_bt2_pe.bam > $(SAMPLE)-header.sam
 
 
 ###3.1-2 Determine potential methylation-biased positions in the reads:
 #
 $(SYNONYM).M-bias.txt:	$(SYNONYM).sam
-	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -p $(SYNONYM).sam
+	$(SEXEC) bismark_methylation_extractor_bwasp $(BME_OPTIONS) --mbias_only -p $(SYNONYM).sam
 	mv $(SYNONYM)_splitting_report.txt $(SYNONYM)_mbias_only_splitting_report.txt
 
 $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
-	python $(BINDIR)/eval_prmbias.py $(SYNONYM).M-bias.txt > $(SYNONYM).M-bias.eval
+	$(SEXEC) eval_prmbias.py $(SYNONYM).M-bias.txt > $(SYNONYM).M-bias.eval
 
 
 ###3.3-4 Generate the Creport file:
@@ -195,16 +191,16 @@ $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 	$(eval R1TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$4}'))
 	$(eval R2FP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$6}'))
 	$(eval R2TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$8}'))
-	$(BINDIR)/bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -p --ignore $(R1FP) --maxrlgth $(R1TP) --ignore_r2 $(R2FP) --maxrlgth_r2 $(R2TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
+	$(SEXEC) bismark_methylation_extractor_bwasp $(BME_OPTIONS) --mbias_off -p --ignore $(R1FP) --maxrlgth $(R1TP) --ignore_r2 $(R2FP) --maxrlgth_r2 $(R2TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
 
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
-	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
+	$(SEXEC) zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
 
 creport.CX_report.txt:	./genome/$(GENOME).fa $(SYNONYM).cov
-	$(BISMARK)/coverage2cytosine -o creport --genome_folder ./genome --CX  $(SYNONYM).cov
+	$(SEXEC) coverage2cytosine -o creport --genome_folder ./genome --CX  $(SYNONYM).cov
 
 $(SYNONYM).Creport:	creport.CX_report.txt
-	sort -V -S $(SORT_BUFFER_SIZE) creport.CX_report.txt > $(SYNONYM).Creport
+	$(SEXEC) sort -V -S $(SORT_BUFFER_SIZE) creport.CX_report.txt > $(SYNONYM).Creport
 
 
 ###5.1-2 Generate the CXreport files:
@@ -212,7 +208,7 @@ $(SYNONYM).Creport:	creport.CX_report.txt
 CXreports:	$(SYNONYM).CpGreport $(SYNONYM).CHGreport $(SYNONYM).CHHreport $(SYNONYM).HSMthresholds
 
 %.CpGreport %.CHGreport %.CHHreport %.HSMthresholds:	%.Creport
-	python $(BINDIR)/Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
+	$(SEXEC) Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
 
 
 ###6.1-2 Generate and print methylation statistics.
@@ -221,21 +217,21 @@ $(SYNONYM).mstats:	$(SYNONYM).Creport \
 			$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls \
 			$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls \
 			$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
-	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
+	$(SEXEC) mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
 ###Intermediate step: determine highly supported methylation sites using the CXreport2hsm.py script.
 #
 %.CpGscd.mcalls %.CpGhsm.mcalls %.CpGnsm.mcalls:	%.HSMthresholds %.CpGreport
 	$(eval CpGnval = $(shell egrep "Thus.*CpG" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
+	$(SEXEC) CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
 
 %.CHGscd.mcalls %.CHGhsm.mcalls %.CHGnsm.mcalls:	%.HSMthresholds %.CHGreport
 	$(eval CHGnval = $(shell egrep "Thus.*CHG" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
+	$(SEXEC) CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
 
 %.CHHscd.mcalls %.CHHhsm.mcalls %.CHHnsm.mcalls:	%.HSMthresholds %.CHHreport
 	$(eval CHHnval = $(shell egrep "Thus.*CHH" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
+	$(SEXEC) CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
 
 
 ###6.2 Generate and print sample statistics.
@@ -245,10 +241,10 @@ $(SAMPLE).stats:	$(SAMPLE)_1.fastq $(SAMPLE)_2.fastq \
 			$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq \
 			FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt \
 			$(SYNONYM).bam
-	$(BINDIR)/sstats-pe.sh $(SAMPLE) $(SYNONYM) $(GENOME) $(SAMTOOLS)
+	$(BINDIR)/sstats-pe.sh $(SAMPLE) $(SYNONYM) $(GENOME)
 
 $(SYNONYM).bam:	$(SYNONYM).sam
-	$(SAMTOOLS)/samtools view -bS $(SYNONYM).sam | $(SAMTOOLS)/samtools sort $(SAMTOOLS_SORT_OPTIONS) -o $(SYNONYM).bam -
+	$(SEXEC) samtools view -bS $(SYNONYM).sam | $(SEXEC) samtools sort $(SAMTOOLS_SORT_OPTIONS) -o $(SYNONYM).bam -
 
 #Note: sstats-pe.sh is using "samtools depth" to obtain the total aligned base count and, by dividing that value by the genome size,
 #      the genome coverage); the sorted bam file produced above is required for that step.
@@ -257,7 +253,7 @@ $(SYNONYM).bam:	$(SYNONYM).sam
 ###6.3 Generate and print genome statistics.
 #
 $(GENOME).stats:	./genome/$(GENOME).fa
-	$(BINDIR)/asmbleval.pl < ./genome/$(GENOME).fa > $(GENOME).stats
+	$(SEXEC) asmbleval.pl < ./genome/$(GENOME).fa > $(GENOME).stats
 
 
 
@@ -274,14 +270,14 @@ cleanup:
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
 	-\mv $(SYNONYM).bismark.cov.gz _SCRATCH
 	-\mv creport.CX_report.txt _SCRATCH
-	 
+
 	-\mkdir STORE-$(SAMPLE)
 	-\mv $(SAMPLE)_1_val_1_bismark_bt2_pe.bam STORE-$(SAMPLE)
 	-\mv $(SYNONYM).sam STORE-$(SAMPLE)/
 	-\mv CHH*txt CHG*txt STORE-$(SAMPLE)
 	-\mv $(SYNONYM).cov STORE-$(SAMPLE)
 	-\mv $(SYNONYM)*report STORE-$(SAMPLE)
-	
+
 ###Finish up after cleanup:
 #
 finishup:

@@ -10,12 +10,10 @@
 SAMPLE=$1
 SYNONYM=$2
 GENOME=$3
-SAMTOOLS=$4
 
 echo "Sample:		${SAMPLE}"
 echo "Synonym:	${SYNONYM}"
 echo "Genome:		${GENOME}"
-echo "SAMTOOLS:	${SAMTOOLS}"
 echo ""
 
 
@@ -32,7 +30,7 @@ echo "Raw read length (per FastQC report): ${RAWREAD_LGTH1} (left reads), ${RAWR
 
 RAWREAD_SZE1=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_1.fastq`
 RAWREAD_SZE2=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_2.fastq`
-RAWSAMPLE_SZE=`awk "BEGIN {print ${RAWREAD_SZE1} + ${RAWREAD_SZE2}}"` 
+RAWSAMPLE_SZE=`awk "BEGIN {print ${RAWREAD_SZE1} + ${RAWREAD_SZE2}}"`
 echo "Raw read sample size: ${RAWSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
 
@@ -50,10 +48,10 @@ echo "Median length of trimmed reads: ${TRMREAD_ML1} (left reads), ${TRMREAD_ML2
 
 TRMREAD_SZE1=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_1_val_1.fq`
 TRMREAD_SZE2=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_2_val_2.fq`
-TRMSAMPLE_SZE=`awk "BEGIN {print ${TRMREAD_SZE1} + ${TRMREAD_SZE2}}"` 
+TRMSAMPLE_SZE=`awk "BEGIN {print ${TRMREAD_SZE1} + ${TRMREAD_SZE2}}"`
 echo "Trimmed sample size: ${TRMSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
-TOTAL_ALGNDBASE_CNT=`${SAMTOOLS}/samtools depth ${SYNONYM}.bam | awk '{sum+=$3}END{print sum}'`
+TOTAL_ALGNDBASE_CNT=`samtools depth ${SYNONYM}.bam | awk '{sum+=$3}END{print sum}'`
 genome_size=`awk 'NR==1{print $4}' ${GENOME}.stats`
 COVERAGE=`awk "BEGIN {printf \"%.2f\", ${TOTAL_ALGNDBASE_CNT}/${genome_size} }"`
 echo "Genome coverage: ${COVERAGE} (= ${TOTAL_ALGNDBASE_CNT} / ${genome_size})" >> ${SAMPLE}.stats

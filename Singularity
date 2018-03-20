@@ -3,7 +3,7 @@ From: ubuntu:16.04
 
 %post
     apt-get -y update
-    apt-get -y --force-yes install git wget unzip make python3-pip python-pip
+    apt-get -y --force-yes install git wget unzip make python3-pip python-pip tcsh zip
 
     cd opt
 
@@ -83,9 +83,3 @@ From: ubuntu:16.04
     export PATH=$PATH:/opt/BWASP/bin
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
-
-
-
-
-%runscript
-    fortune | cowsay | lolcat

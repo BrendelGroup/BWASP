@@ -23,7 +23,7 @@ singularity pull --name bwasp.simg shub://littleblackfish/BWASP
 ```
 
 This downloads the image built by the [Singularity Hub](https://www.singularity-hub.org) infrastructure and does not require sudo permissions.
-This is the recommended way of running the workflow and it should exactly reproduce the our published results.
+This is the recommended way of running the workflow and it should exactly reproduce our published results.
 
 
 Alternatively, one can build the same image from scratch using the [recipe](Singularity) by doing :
@@ -42,12 +42,11 @@ For best practices regarding that, please refer to the [Singularity documentatio
 
 ### Running the workflow
 
+Briefly describe how makefiles work here.
 
+Mention that we require ~500 gb per sample and recommend 8 or more cores.
 
-
-To proceed, please follow the instructions in the [INSTALL](./INSTALL.md)
-document.  Once all preparatory steps are taken care of, see the
-[HOWTO](./HOWTO.md) document
+Refer to [HOWTO](./HOWTO.md) document for an example run. That should be modified for the new containerized flow.  
 
 ## Reference
 

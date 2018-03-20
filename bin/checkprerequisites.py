@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 #BWASP python script some.py
 #
 import collections
