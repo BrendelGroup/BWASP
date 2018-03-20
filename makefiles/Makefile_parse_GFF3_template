@@ -10,13 +10,16 @@
 #Please be careful while editing the Makefile as it is 'tab-sensitive'.
 #Typical customization should only involve appropriate editing of the variables in the next section.
 
-##########################Variable Settings#####################################
-###
-#The following variable sets the location of the Singularity container that provides all required binaries.
-#
-CONTAINER   = ../../../bwasp.simg
+################################################################################
+####################### ! Variable Settings ! ##################################
+################################################################################
 
-#The following variables specify the data sets and labels to be used.
+# The location of the Singularity container that provides all required binaries
+
+CONTAINER   = ../../../bwasp.simg
+SEXEC = singularity exec $(CONTAINER)
+
+# The following variables specify the data sets and labels to be used.
 #
 #This template illustrates the settings for analysis of a Polistes canadensis data set.  Typcially
 #an edited copy of this makefile is deposited into a BWASP genome directory where the GDNAFILE
@@ -27,14 +30,15 @@ GDNAFILE = ./Pcan.gdna.fa#                    input genome file (FASTA format)
 GFF3FILE = ./Pcan.gff3#                       input GFF3 file
 SPECIES  = Pcan#                              species label
 GFF3DIR  = ./GFF3DIR#                         output directory
+
 ################################################################################
 ### ! Typically there would be no need for further editing below this line ! ###
-
+################################################################################
 
 all:	parsed_gff3
 
 parsed_gff3:	$(GDNAFILE) $(GFF3FILE) $(GFF3DIR)
-	singularity exec $(CONTAINER) parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
+	$(SEXEC) parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
 
 $(GFF3DIR):
 ifeq ("$(wildcard $(GFF3DIR))","")

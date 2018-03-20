@@ -44,7 +44,7 @@ echo "Median length of trimmed reads: ${TRMREAD_ML}" >> ${SAMPLE}.stats
 TRMSAMPLE_SZE=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{print sum;}' ${SAMPLE}_trimmed.fq`
 echo "Trimmed sample size: ${TRMSAMPLE_SZE} bp" >> ${SAMPLE}.stats
 
-TOTAL_ALGNDBASE_CNT=`${SAMTOOLS}/samtools depth ${SYNONYM}.bam | awk '{sum+=$3}END{print sum}'`
+TOTAL_ALGNDBASE_CNT=`samtools depth ${SYNONYM}.bam | awk '{sum+=$3}END{print sum}'`
 genome_size=`awk 'NR==1{print $4}' ${GENOME}.stats`
 COVERAGE=`awk "BEGIN {printf \"%.2f\", ${TOTAL_ALGNDBASE_CNT}/${genome_size} }"`
 echo "Genome coverage: ${COVERAGE} (= ${TOTAL_ALGNDBASE_CNT} / ${genome_size})" >> ${SAMPLE}.stats
