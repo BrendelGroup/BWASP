@@ -1,86 +1,94 @@
 bootstrap: docker
 From: ubuntu:16.04
 
+%help
+    This container provides portable & reproducible components for BWASP:
+    Bisulfite-seq data Workflow Automation Software and Protocols from Brendel Group.
+    Please see https://github.com/littleblackfish/BWASP for complete documentation.
+
 %post
     apt-get -y update
-    apt-get -y --force-yes install git wget unzip make python3-pip python-pip tcsh zip
+    apt-get -y install build-essential
+    apt-get -y install git wget zip unzip tcsh
 
-    cd opt
-
-    #HTSLIB
-    apt-get -y --force-yes install zlib1g-dev libbz2-dev liblzma-dev ncurses-dev
+    echo 'Installing HTSLIB from http://www.htslib.org/'
+    #### Prerequisites
+    apt-get -y install zlib1g-dev libbz2-dev liblzma-dev
+    #### Install
+    cd /opt
     git clone git://github.com/samtools/htslib.git htslib
   	cd htslib
-  	make
-    make install
-  	cd ..
+  	make && make install
 
-    #SAMTOOLS
+    echo 'Installing SAMTOOLS from http://www.htslib.org/'
+    #### Prerequisites
+    apt-get -y install ncurses-dev
+    #### Install
+    cd /opt
   	git clone git://github.com/samtools/samtools.git samtools
   	cd samtools
-    make
-    make install
-    cd ..
+    make && make install
 
-    #BOWTIE2
+    echo 'Installing BOWTIE2 from http://bowtie-bio.sourceforge.net/bowtie2'
+    ######
+    cd /opt
     wget --content-disposition http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.3/bowtie2-2.3.3-linux-x86_64.zip/download
     unzip bowtie2-2.3.3-linux-x86_64.zip
 
-    #BISMARK
+    echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
+    ######
+    cd /opt
     wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.19.0.tar.gz
     tar -xzf bismark_v0.19.0.tar.gz
 
-    #FASTQC
-
-    apt-get install -y openjdk-8-jre-headless
-
-    #We could install oracle java but does not seem to be necessary.
-    #apt-get install -y software-properties-common
-    #add-apt-repository -y ppa:webupd8team/java
-    #apt-get -y update
-    #echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
-    #apt-get install -y --force-yes oracle-java8-installer
-    #apt-get install -y oracle-java8-set-default
-
+    echo 'Installing FASTQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/'
+    #### Prerequisites
+    apt-get -y install openjdk-8-jre-headless
+    #### Install
+    cd /opt
     wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
     unzip fastqc_v0.11.5.zip
     chmod +x FastQC/fastqc
 
-    #SRATOOLKIT
+
+    echo 'Installing SRATOOLKIT from http://www.ncbi.nlm.nih.gov/books/NBK158900/'
+    ######
+    cd /opt
     wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-ubuntu64.tar.gz
     tar -xzf sratoolkit.2.8.2-ubuntu64.tar.gz
 
-    #TRIM_GALORE
+    echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/'
+    #### Prerequisites
+    apt-get -y install python-pip
+    pip install --upgrade cutadapt
+    #### Install
+    cd /opt
     wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip
     unzip trim_galore_v0.4.1.zip
-    pip3 install --upgrade cutadapt
 
-    #GENOMETOOLS
-    apt-get -y --force-yes install libcairo2-dev libpango1.0-dev
+    echo 'Installing GENOMETOOLS from from http://genometools.org/'
+    #### Prerequisites
+    apt-get -y install libcairo2-dev libpango1.0-dev
+    #### Install
+    cd /opt
     wget http://genometools.org/pub/genometools-1.5.9.tar.gz
     tar -xzf genometools-1.5.9.tar.gz
     cd genometools-1.5.9/
-    make
-    make install
-    cd ..
+    make && make install
 
-    #AEGeAn
+    echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/'
+    ######
+    cd /opt
     git clone https://github.com/BrendelGroup/AEGeAn.git
     cd AEGeAn/
-    make
-    make install
-    cd ..
+    make && make install
 
-    #Perl dependencies
-    echo y |cpan install  LWP::UserAgent
-    cpan install HTML::LinkExtor
-  #  cpan install Math::Pari
-
-    #Python dependencies
-    pip3 install numpy scipy
-    pip install numpy scipy
-
-    #BWASP
+    echo 'Installing BWASP from https://github.com/littleblackfish/BWASP.git'
+    #### Prerequisites
+    apt-get -y install python-numpy python-scipy
+    cpan install Math::Pari
+    #### Install
+    cd /opt
     git clone https://github.com/littleblackfish/BWASP.git
 
 %environment
@@ -93,3 +101,7 @@ From: ubuntu:16.04
     export PATH=$PATH:/opt/BWASP/bin
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
+
+%labels
+    Maintainer littleblackfish
+    Version v1.0
