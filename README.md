@@ -1,4 +1,6 @@
-# BWASP
+# BWASP [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
+
+
 Bisulfite-seq data Workflow Automation Software and Protocols
 
 The BWASP repository encompasses code we developed in the [Brendel Group](http://brendelgroup.org/) for scalable and reproducible analyses of bisulfite sequencing data. It conforms to our [RAMOSE](https://brendelgroup.github.io/)
@@ -13,7 +15,7 @@ To achieve a portable and reproducible workflow, we encapsulated all the depende
 The actual workflows are implemented in simple makefiles that refer to this self-contained environment.
 As such, the only requirement is __singularity__ itself, and __make__.
 
-### Obtaining the container
+### Obtaining the container   
 
 The container can be downloaded from the [Singularity Hub](https://www.singularity-hub.org/collections/763) by doing :
 

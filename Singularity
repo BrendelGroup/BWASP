@@ -38,8 +38,8 @@ From: ubuntu:16.04
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
     ######
     cd /opt
-    wget http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.19.0.tar.gz
-    tar -xzf bismark_v0.19.0.tar.gz
+    git clone https://github.com/littleblackfish/Bismark
+    # Note that we are using the slightly modified Brendel Group version of Bismark
 
     echo 'Installing FASTQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/'
     #### Prerequisites
@@ -94,7 +94,7 @@ From: ubuntu:16.04
 %environment
     export LC_ALL=C
     export PATH=$PATH:/opt/bowtie2-2.3.3
-    export PATH=$PATH:/opt/Bismark_v0.19.0
+    export PATH=$PATH:/opt/Bismark
     export PATH=$PATH:/opt/FastQC
     export PATH=$PATH:/opt/sratoolkit.2.8.2-ubuntu64/bin
     export PATH=$PATH:/opt/trim_galore_zip
