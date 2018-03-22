@@ -49,7 +49,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 
 # The location of the Singularity container that provides all required binaries
 
-CONTAINER = ~/bwasp-sandbox
+CONTAINER = ../../../../../bwasp.simg 
 SEXEC = singularity exec $(CONTAINER)
 
 # Options for programs called in the BWASP workflow
