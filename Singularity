@@ -17,16 +17,16 @@ From: ubuntu:16.04
     #### Install
     cd /opt
     git clone git://github.com/samtools/htslib.git htslib
-  	cd htslib
-  	make && make install
+    cd htslib
+    make && make install
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/'
     #### Prerequisites
     apt-get -y install ncurses-dev
     #### Install
     cd /opt
-  	git clone git://github.com/samtools/samtools.git samtools
-  	cd samtools
+    git clone git://github.com/samtools/samtools.git samtools
+    cd samtools
     make && make install
 
     echo 'Installing BOWTIE2 from http://bowtie-bio.sourceforge.net/bowtie2'
@@ -86,6 +86,7 @@ From: ubuntu:16.04
     echo 'Installing BWASP from https://github.com/littleblackfish/BWASP.git'
     #### Prerequisites
     apt-get -y install python-numpy python-scipy
+    cpan install LWP::UserAgent
     cpan install Math::Pari
     #### Install
     cd /opt
