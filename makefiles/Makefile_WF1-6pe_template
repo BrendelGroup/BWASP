@@ -101,7 +101,7 @@ endif
 ### 1.2 Obtain the SRA reads from NCBI:
 #
 $(SAMPLE).sra:
-	$(SEXEC) wget $(SOURCE)/$(SAMPLE).sra
+	$(SEXEC) wget --no-verbose $(SOURCE)/$(SAMPLE).sra
 
 %_1.fastq %_2.fastq:	%.sra
 	$(SEXEC) fastq-dump --split-files $*.sra

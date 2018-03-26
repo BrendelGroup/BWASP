@@ -110,7 +110,7 @@ endif
 ###1.2 Obtain the SRA reads from NCBI:
 #
 $(SAMPLE).sra:
-	wget $(SOURCE)/$(SAMPLE).sra
+	wget --no-verbose $(SOURCE)/$(SAMPLE).sra
 
 %.fastq:	%.sra
 	$(SRATOOLKIT)/fastq-dump  $*.sra
