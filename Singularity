@@ -9,7 +9,7 @@ From: ubuntu:16.04
 %post
     apt-get -y update
     apt-get -y install build-essential
-    apt-get -y install git wget zip unzip tcsh
+    apt-get -y install git wget zip unzip tcsh bc
 
     echo 'Installing HTSLIB from http://www.htslib.org/'
     #### Prerequisites
