@@ -49,7 +49,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 
 # The location of the Singularity container that provides all required binaries
 
-CONTAINER = ../../../../../bwasp.simg 
+CONTAINER = ../../../../../bwasp.simg
 SEXEC = singularity exec $(CONTAINER)
 
 # Options for programs called in the BWASP workflow
@@ -235,7 +235,7 @@ $(SAMPLE).stats:	$(SAMPLE)_1.fastq $(SAMPLE)_2.fastq \
 			FastQC/$(SAMPLE)_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_fastqc/fastqc_data.txt \
 			$(SAMPLE)_1_val_1.fq $(SAMPLE)_2_val_2.fq \
 			FastQC/$(SAMPLE)_1_val_1_fastqc/fastqc_data.txt FastQC/$(SAMPLE)_2_val_2_fastqc/fastqc_data.txt \
-			$(SYNONYM).bam
+			$(SYNONYM).bam $(GENOME).stats
 	$(SEXEC) sstats-pe.sh $(SAMPLE) $(SYNONYM) $(GENOME)
 
 $(SYNONYM).bam:	$(SYNONYM).sam

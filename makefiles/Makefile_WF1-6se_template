@@ -69,7 +69,7 @@ BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
 BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path $(SAMTOOLS)/samtools
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 25G -@ 4
-TRIM_GALORE_OPTIONS   = 
+TRIM_GALORE_OPTIONS   =
 SORT_BUFFER_SIZE      = 20G
 BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
 #
@@ -96,7 +96,7 @@ all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Cre
 #
 genome:	./genome/$(GENOME).fa Bisulfite_Genome
 
-./genome/$(GENOME).fa:	
+./genome/$(GENOME).fa:
 ifeq ("$(wildcard ./genome/$(GENOME).fa)","")
 	$(error No genome file ./genome/$(GENOME).fa found. Please provide.)
 endif
@@ -109,7 +109,7 @@ endif
 
 ###1.2 Obtain the SRA reads from NCBI:
 #
-$(SAMPLE).sra:	
+$(SAMPLE).sra:
 	wget $(SOURCE)/$(SAMPLE).sra
 
 %.fastq:	%.sra
@@ -236,7 +236,7 @@ $(SAMPLE).stats:	$(SAMPLE).fastq \
 			FastQC/$(SAMPLE)_fastqc/fastqc_data.txt \
 			$(SAMPLE)_trimmed.fq \
 			FastQC/$(SAMPLE)_trimmed_fastqc/fastqc_data.txt \
-			$(SYNONYM).bam
+			$(SYNONYM).bam $(GENOME).stats
 	$(BINDIR)/sstats-se.sh $(SAMPLE) $(SYNONYM) $(GENOME) $(SAMTOOLS)
 
 $(SYNONYM).bam:	$(SYNONYM).sam
@@ -266,14 +266,14 @@ cleanup:
 	-\mv $(SYNONYM).bedGraph.gz _SCRATCH
 	-\mv $(SYNONYM).bismark.cov.gz _SCRATCH
 	-\mv creport.CX_report.txt _SCRATCH
-	 
+
 	-\mkdir STORE-$(SAMPLE)
 	-\mv $(SAMPLE)_trimmed_bismark_bt2.bam STORE-$(SAMPLE)
 	-\mv $(SYNONYM).sam STORE-$(SAMPLE)/
 	-\mv CHH*txt CHG*txt STORE-$(SAMPLE)
 	-\mv $(SYNONYM).cov STORE-$(SAMPLE)
 	-\mv $(SYNONYM)*report STORE-$(SAMPLE)
-	
+
 ###Finish up after cleanup:
 #
 finishup:
