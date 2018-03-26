@@ -10,7 +10,8 @@ and __easy__ to use.
 BWASP is built on various open source software that was developed within our group and elsewhere.
 To achieve a portable and reproducible workflow, we encapsulated all the dependencies in a [Singularity](http://singularity.lbl.gov) container.
 The actual workflows are implemented in simple makefiles that refer to this self-contained environment.
-As such, the only requirement is __singularity__ itself.
+As such, __the only requirement for BWASP is Singularity__ itself.
+For guidance on installing (or requesting an installation of) Singularity please refer to the relevant documentation.
 
 ### Obtaining the container   [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
 
@@ -21,9 +22,8 @@ The relevant container can be downloaded from the [Singularity Hub](https://www.
 singularity pull --name bwasp.simg shub://littleblackfish/BWASP
 ```
 
-This downloads a pre-built container does not require sudo permission.
+This downloads a pre-built container that __does not require sudo permission__ to run.
 This is the recommended way of running the workflow and should exactly reproduce our published results.
-
 Alternatively, one can build the same image from scratch using the [recipe](Singularity) by doing :
 
 ```
