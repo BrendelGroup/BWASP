@@ -35,13 +35,10 @@ GFF3DIR  = ./GFF3DIR#                         output directory
 ### ! Typically there would be no need for further editing below this line ! ###
 ################################################################################
 
-all:	parsed_gff3 Bisulfite_Genome
+all:	parsed_gff3
 
 parsed_gff3:	$(GDNAFILE) $(GFF3FILE) $(GFF3DIR)
 	$(SEXEC) parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
-
-Bisulfite_Genome:
-	$(SEXEC) bismark_genome_preparation --bowtie2 ./genome
 
 $(GFF3DIR):
 ifeq ("$(wildcard $(GFF3DIR))","")

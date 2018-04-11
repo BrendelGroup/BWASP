@@ -68,21 +68,35 @@ BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
 ### ! Typically there would be no need for further editing below this line ! ###
 ################################################################################
 
+run_gprep = no
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/CT_conversion/genome_mfa.CT_conversion.fa)","")
+	run_gprep = yes
+endif
+ifeq ("$(wildcard ./genome/Bisulfite_Genome/GA_conversion/genome_mfa.GA_conversion.fa)","")
+	run_gprep = yes
+endif
+
 
 all:	genome fastqc1 fastqc2 $(SYNONYM).sam $(SYNONYM).M-bias.eval $(SYNONYM).Creport CXreports \
 	$(SYNONYM).mstats $(SAMPLE).stats $(GENOME).stats
-.PHONY:	genome
+.PHONY:	genome Bisulfite_Genome
 
 
 ### 1.1 bismark genome preparation.
 ###    (requires the genome of interest, $(GENOME).fa, to have been placed into the folder ./genome)
 #
-genome:	./genome/$(GENOME).fa
+genome:	./genome/$(GENOME).fa Bisulfite_Genome
 
 ./genome/$(GENOME).fa:
 ifeq ("$(wildcard ./genome/$(GENOME).fa)","")
 	$(error No genome file ./genome/$(GENOME).fa found. Please provide.)
 endif
+
+Bisulfite_Genome:
+ifeq ("$(run_gprep)","yes")
+	$(SEXEC) bismark_genome_preparation --bowtie2 ./genome
+endif
+
 
 ### 1.2 Obtain the SRA reads from NCBI:
 #
