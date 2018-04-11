@@ -1,43 +1,57 @@
-# BWASP HOWTO - an example for how to use the software
+# TUTORIAL
 
-## Preparation
+In this tutorial we will re-analyze the BS-seq data from the [Patalano _et al._, 2015,](http://www.ncbi.nlm.nih.gov/pubmed/26483466) study of the paper wasp _Polistes canadensis_.
+This should serve to familiarize the new user with how BWASP is intended to be utilized.
 
-At this stage, you should have completed the BWASP installation steps
-documented in the [INSTALL](./INSTALL.md) document.  We'll explain BWASP
-use with an example from our [publication](http://brendelgroup.org/).
+## Installation
 
-## Example
-Our goal is to analyze BS-seq data sets from the [Patalano _et al._, 2015,](http://www.ncbi.nlm.nih.gov/pubmed/26483466) study of the paper wasp
-_Polistes canadensis_.  Three BS-seq data sets from queen adult brains
-were deposited in the NCBI Short Read Archive:
+Assuming we have Git and  Singularity installed on the system, we can pull the BWASP code from GitHub and the container from the
+[Singularity Hub](https://www.singularity-hub.org/collections/763) by doing :
 
-* [SRR1519132 21Q](http://www.ncbi.nlm.nih.gov/sra/SRX656317)
-* [SRR1519133 43Q](http://www.ncbi.nlm.nih.gov/sra/SRX656318)
-* [SRR1519134 75Q](http://www.ncbi.nlm.nih.gov/sra/SRX656319)
+```bash
+git clone https://github.com/littleblackfish/BWASP.git
+cd BWASP
+singularity pull --name bwasp.simg shub://littleblackfish/BWASP
+```
 
-To set up a directory structure for our BWASP analysis, we go to the _data_
-directory and populate subdirectories with the _xmkdirstr_ script (this
-is for convenience; you can set things up however you please, as long as
-a few conventions are obeyed).
+This puts the container file in the project root where it is expected by the makefiles and effectively completes the installation.
+
+## Directory structure
+
+BWASP will work with a certain directory structure starting from the data/ directory.
+
+  * BWASP/data/
+    * Species/
+      * genome/
+      * study/
+        * caste/
+          * replicate/
+
+The [xmkdirstr](data/xmkdirstr) script helps create this structure and populates it with the relevant links and makefiles.
 
 ```bash
 cd data
 ./xmkdirstr Pcan Patalano2015 Queen 3 p
 ```
+Prepares the necessary structure for this tutorial run.
+The subdirectory structure is designed to organize various data sets.  **Pcan** might hold several studies on _Polistes canadensis_, the **Patalano2015** study being one
+example.
+Under _Patalano2015_, the subdirectory **Queen** collects **3** _replicates_ of **p** aired-end reads from queens.
+In each _replicate_ subdirectory, there is the required link to the _genome_ directory and a copy of _Makefile_\__WF1-6pe_\__template_.
 
-First we need to put the _Polistes canadensis_ genome assembly and
-annotation files into the _Pcan/genome_ directory.  We download the files
-from the RefSeq FTP site link provided at the relevant
+## Getting the genome
+
+First we need to put the _Polistes canadensis_ genome assembly and annotation files into the _Pcan/genome_ directory.
+We download the files from the RefSeq FTP site link provided at the relevant
 [NCBI assembly](http://www.ncbi.nlm.nih.gov/assembly/GCF_001313835.1/) page:
 
 ```bash
 cd Pcan/genome
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
-curl -O ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
+wget  ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
 ```
 
-Assuming that everything was downloaded nicely, we link the files to more
-suggestive file names:
+Assuming that everything was downloaded nicely, we decompress and link the files to more suggestive file names:
 
 ```bash
 gunzip GCF_*.gz
@@ -45,46 +59,36 @@ ln -s GCF_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
 ln -s GCF_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
 ```
 
-A last step for preparatory processing is to run the _Makefile_\__parse_\__GFF3_\__template_ workflow step:
+## Getting the reads
+
+Three sets of BS-seq reads from queen adult brains were deposited in the NCBI Short Read Archive:
+
+* [SRR1519132 21Q](http://www.ncbi.nlm.nih.gov/sra/SRX656317)
+* [SRR1519133 43Q](http://www.ncbi.nlm.nih.gov/sra/SRX656318)
+* [SRR1519134 75Q](http://www.ncbi.nlm.nih.gov/sra/SRX656319)
+
+Note that the template makefile was copied into each replicate directory.
+These makefiles contain instructions to download the reads from SRA, so they need to be edited  either to specify the SRA accession numbers or to point to manually acquired read files.
+
+For our example, the template _makefile_ is already customized for analysis of the first queen replicate.  
+The instructions below simply modify the sample name and SRA accession numbers for the _makefiles_ for the other two replicates:
 
 ```bash
-mv Makefile_parse_GFF3_template Makefile_parse_GFF3_Pcan
-make -f Makefile_parse_GFF3_Pcan
+sed -i -e "s/SRR1519132/SRR1519133/; s/Pcan-21Q/Pcan-43Q/;" replicate2/Makefile
+sed -i -e "s/SRR1519132/SRR1519134/; s/Pcan-21Q/Pcan-75Q/;" replicate3/Makefile
 ```
 
-Note that the template _makefile_ was copied from the _bin_ directory.  For this example, no editing is necessary, but in general you will want to
-customize the _makefile_ as per instructions in the file.  __BWASP__ is for
-you to own and customize according to your data analysis needs - don't let the
-ease of installation and sample use obscure this basic premise and opportunity.
+Now we are ready to start the heavy data processing.
 
-Now we are ready to start the heavy data processing.  The subdirectory
-structure is designed to organize various data sets.  _Pcan_ might hold
-several studies on _Polistes canadensis_, the _Patalano2015_ study being one
-example.  Under _Patalano2015_, the subdirectory _Queen_ collects 3
-_replicates_ of queen data (another subdirectory might be labeled _Worker_,
-for obvious reasons).  In each _replicate_ subdirectory, there is the
-required link to the _genome_ directory and a copy of
-_Makefile_\__WF1-6pe_\__template_.  As always, you need to customize the
-_makefiles_ to suit the particular analysis task.  For our example, the
-template _makefile_ is already customized for analysis of the first queen
-replicate.  The instructions below customize the _makefiles_ for the other
-two replicates:
+## Workflow
+
+Since the rest of the workflow is fire and forget, a thorough proofreading of the makefiles is highly recommended at this point.
+The section titled **Variable Settings** is the only part that is necessarily modified, and should be double checked before proceeding.  
+Once that is done, we would run the workflow as follows (from directory _replicateX_):
 
 ```bash
-mv replicate1/Makefile_WF1-6pe_template replicate1/Makefile_WF1-6pe_PcQ1
-mv replicate2/Makefile_WF1-6pe_template replicate2/Makefile_WF1-6pe_PcQ2
-mv replicate3/Makefile_WF1-6pe_template replicate3/Makefile_WF1-6pe_PcQ3
-sed -i -e "s/SRR1519132/SRR1519133/; s/Pcan-21Q/Pcan-43Q/;" replicate2/Makefile_WF1-6pe_PcQ2
-sed -i -e "s/SRR1519132/SRR1519134/; s/Pcan-21Q/Pcan-75Q/;" replicate3/Makefile_WF1-6pe_PcQ3
-```
-
-That's all for the setup.  Typically we would run the workflow as follows
-(from directory _replicate1_):
-
-```bash
-make -n   -f Makefile_WF1-6pe_PcQ1
-make      -f Makefile_WF1-6pe_PcQ1 Bisulfite_Genome
-make -j 4 -f Makefile_WF1-6pe_PcQ1 >& err
+make Bisulfite_Genome
+make -j 4  &> bwasp.log
 ```
 
 The first command with the _-n_ flag simply shows what _make_ will do (see
@@ -98,6 +102,7 @@ have enough resources on your computer to run multiple __BWASP__ workflows
 simultaneously.  Check the _err_ file and your system monitor frequently.
 
 ## Output
+
 After completion of the BWASP workflow, the working directory should contain a
 fair number of output files.  Please refer to the documentation of the various
 constituent programs for details as well as our
@@ -107,8 +112,8 @@ interest later but are not needed in subsequent __BWASP__ analysis steps
 we recommend running the following commands at this stage:
 
 ```bash
-make -f Makefile_WF1-6pe_PcQ1 cleanup
-make -f Makefile_WF1-6pe_PcQ1 finishup
+make cleanup
+make finishup
 ```
 
 This will crate the archive _STORE-SRR1519132.zip_ and substantially reduce
