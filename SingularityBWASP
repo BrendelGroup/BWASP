@@ -4,12 +4,21 @@ From: ubuntu:16.04
 %help
     This container provides portable & reproducible components for BWASP:
     Bisulfite-seq data Workflow Automation Software and Protocols from Brendel Group.
-    Please see https://github.com/littleblackfish/BWASP for complete documentation.
+    Please see https://github.com/BrendelGroup/BWASP for complete documentation.
 
 %post
     apt-get -y update
     apt-get -y install build-essential
-    apt-get -y install git wget zip unzip tcsh bc
+    apt-get -y install bc git tcsh tzdata unzip zip wget
+    apt-get -y install openjdk-8-jdk
+    apt-get -y install software-properties-common python-software-properties
+    apt-get -y install libcurl4-openssl-dev
+    apt-get -y install libcurl4-gnutls-dev
+    apt-get -y install libmariadb-client-lgpl-dev
+    apt-get -y install libpq-dev
+    apt-get -y install libssl-dev
+    apt-get -y install libxml2-dev
+
 
     echo 'Installing HTSLIB from http://www.htslib.org/'
     #### Prerequisites
@@ -42,8 +51,6 @@ From: ubuntu:16.04
     # Note that we are using the slightly modified Brendel Group version of Bismark
 
     echo 'Installing FASTQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/'
-    #### Prerequisites
-    apt-get -y install openjdk-8-jre-headless
     #### Install
     cd /opt
     wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
@@ -83,14 +90,44 @@ From: ubuntu:16.04
     cd AEGeAn/
     make && make install
 
-    echo 'Installing BWASP from https://github.com/littleblackfish/BWASP.git'
+    echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git'
     #### Prerequisites
     apt-get -y install python-numpy python-scipy
     cpan install LWP::UserAgent
     cpan install Math::Pari
     #### Install
     cd /opt
-    git clone https://github.com/littleblackfish/BWASP.git
+    git clone -b devel https://github.com/BrendelGroup/BWASP.git
+
+
+    echo 'Installing R'
+    #### Install
+    apt -y install r-base-core r-base-dev
+    add-apt-repository -y ppa:marutter/rrutter
+    apt -y update
+    apt -y full-upgrade
+    R CMD javareconf
+
+    echo 'Installing R packages'
+    ######
+    echo 'install.packages("dplyr", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'      > R2install
+    echo 'install.packages("gplots", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'    >> R2install
+    echo 'install.packages("gridExtra", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)' >> R2install
+    echo 'install.packages("pastecs", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'   >> R2install
+    echo 'install.packages("rJava", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'     >> R2install
+    echo 'install.packages("sqldf", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'     >> R2install
+    echo 'install.packages("venneuler", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)' >> R2install
+    echo 'source("https://bioconductor.org/biocLite.R")'                                         >> R2install
+    echo 'biocLite(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"),ask=FALSE)'      >> R2install
+
+    Rscript R2install
+
+    echo 'Installing BWASPR from https://github.com/BrendelGroup/BWASPR/'
+    ######
+    cd /opt
+    git clone https://github.com/BrendelGroup/BWASPR.git
+    R CMD INSTALL BWASPR
+
 
 %environment
     export LC_ALL=C
@@ -104,5 +141,5 @@ From: ubuntu:16.04
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
 %labels
-    Maintainer littleblackfish
+    Maintainer vpbrendel
     Version v1.0
