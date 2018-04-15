@@ -46,7 +46,7 @@ to the BWASP [bin](./bin) directory.
 
 BWASP relies on a number of bash, Perl, and python scripts that are placed in
 the [bin](./bin) directory.  The Perl and python scripts use various packages
-that must be pre-installed on your system.  Run the _xcheckprequisites_ bash
+that must be pre-installed on your system.  Run the _xcheckprerequisites_ bash
 script in the [bin](./bin) directory to see what is available.  If packages
 are missing, you need to install them prior to running the BWASP workflow
 (there are many ways to install Perl and python packages; if in doubt, ask your
