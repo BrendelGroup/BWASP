@@ -24,12 +24,12 @@ singularity pull --name bwasp.simg shub://littleblackfish/BWASP
 
 This downloads a pre-built container that __does not require sudo permission__ to run.
 This is the recommended way of running the workflow and should exactly reproduce our published results.
-Alternatively, one can build the same image from scratch using the [recipe](SingularityBWASP) by doing :
+Alternatively, one can build the same image from scratch using the [recipe](Singularity) by doing :
 
 ```
 git clone https://github.com/BrendelGroup/BWASP.git
 cd BWASP
-sudo singularity build bwasp.simg SingularityBWASP
+sudo singularity build bwasp.simg Singularity
 ```
 
 This builds the same container from scratch but requires sudo permission.

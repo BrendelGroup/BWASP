@@ -7,22 +7,24 @@ From: ubuntu:16.04
     Please see https://github.com/BrendelGroup/BWASP for complete documentation.
 
 %post
-    apt-get -y update
-    apt-get -y install build-essential
-    apt-get -y install bc git tcsh tzdata unzip zip wget
-    apt-get -y install openjdk-8-jdk
-    apt-get -y install software-properties-common python-software-properties
-    apt-get -y install libcurl4-openssl-dev
-    apt-get -y install libcurl4-gnutls-dev
-    apt-get -y install libmariadb-client-lgpl-dev
-    apt-get -y install libpq-dev
-    apt-get -y install libssl-dev
-    apt-get -y install libxml2-dev
+    apt -y update
+    apt -y install build-essential
+    apt -y install bc git tcsh tzdata unzip zip wget
+    apt -y install cpanminus
+    apt -y install openjdk-8-jdk
+    apt -y install software-properties-common python-software-properties
+    apt -y install libcurl4-openssl-dev
+    apt -y install libcurl4-gnutls-dev
+    apt -y install libgd-dev
+    apt -y install libmariadb-client-lgpl-dev
+    apt -y install libpq-dev
+    apt -y install libssl-dev
+    apt -y install libxml2-dev
 
 
     echo 'Installing HTSLIB from http://www.htslib.org/'
     #### Prerequisites
-    apt-get -y install zlib1g-dev libbz2-dev liblzma-dev
+    apt -y install zlib1g-dev libbz2-dev liblzma-dev
     #### Install
     cd /opt
     git clone git://github.com/samtools/htslib.git htslib
@@ -31,7 +33,7 @@ From: ubuntu:16.04
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/'
     #### Prerequisites
-    apt-get -y install ncurses-dev
+    apt -y install ncurses-dev
     #### Install
     cd /opt
     git clone git://github.com/samtools/samtools.git samtools
@@ -66,7 +68,7 @@ From: ubuntu:16.04
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/'
     #### Prerequisites
-    apt-get -y install python-pip
+    apt -y install python-pip
     pip install --upgrade cutadapt
     #### Install
     cd /opt
@@ -75,7 +77,7 @@ From: ubuntu:16.04
 
     echo 'Installing GENOMETOOLS from from http://genometools.org/'
     #### Prerequisites
-    apt-get -y install libcairo2-dev libpango1.0-dev
+    apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
     wget http://genometools.org/pub/genometools-1.5.9.tar.gz
@@ -92,9 +94,10 @@ From: ubuntu:16.04
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git'
     #### Prerequisites
-    apt-get -y install python-numpy python-scipy
-    cpan install LWP::UserAgent
-    cpan install Math::Pari
+    apt -y install python-numpy python-scipy
+    cpanm --configure-timeout 3600  GD::Graph::lines
+    cpanm --configure-timeout 3600  LWP::UserAgent
+    cpanm --configure-timeout 3600  Math::Pari
     #### Install
     cd /opt
     git clone -b devel https://github.com/BrendelGroup/BWASP.git
