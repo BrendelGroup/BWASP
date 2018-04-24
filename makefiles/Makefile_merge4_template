@@ -1,7 +1,7 @@
 #Makefile_merge_4replicates
 #
 #Makefile to merge BWASP *.Creport files for combined input into workflow step 5.
-#Version: May 19, 2016
+#Version: April 23, 2018
 
 #Usage: make -j 4 -f Makefile_merge_4replicates
 
@@ -35,8 +35,6 @@
 #SYNONYM3    = Pcan-75Q
 
 ###
-BINDIR      = ~/gitwd/BWASP/bin
-
 SYNONYM     = Species-sample
 SAMPLE1     = SRR.....1
 SYNONYM1    = Species-sample1
@@ -106,13 +104,13 @@ $(SYNONYM4).Creport:	$(CreportStore4)
 	fi
 
 $(SYNONYM)-12.Creport:	$(SYNONYM1).Creport $(SYNONYM2).Creport
-	$(BINDIR)/mergeCreports.pl $(SYNONYM1).Creport $(SYNONYM2).Creport --outfile $(SYNONYM)-12.Creport
+	mergeCreports.pl $(SYNONYM1).Creport $(SYNONYM2).Creport --outfile $(SYNONYM)-12.Creport
 
 $(SYNONYM)-34.Creport:	$(SYNONYM3).Creport $(SYNONYM4).Creport
-	$(BINDIR)/mergeCreports.pl $(SYNONYM3).Creport $(SYNONYM4).Creport --outfile $(SYNONYM)-34.Creport
+	mergeCreports.pl $(SYNONYM3).Creport $(SYNONYM4).Creport --outfile $(SYNONYM)-34.Creport
 
 $(SYNONYM).Creport:	$(SYNONYM)-12.Creport $(SYNONYM)-34.Creport
-	$(BINDIR)/mergeCreports.pl $(SYNONYM)-12.Creport $(SYNONYM)-34.Creport --outfile $(SYNONYM).Creport
+	mergeCreports.pl $(SYNONYM)-12.Creport $(SYNONYM)-34.Creport --outfile $(SYNONYM).Creport
 
 
 ### 2. Creating the seperate contexts from the Creport using the Creport2CXreport.py script:
@@ -121,7 +119,7 @@ $(SYNONYM).Creport:	$(SYNONYM)-12.Creport $(SYNONYM)-34.Creport
 CXreports:	$(SYNONYM).CpGreport $(SYNONYM).CHGreport $(SYNONYM).CHHreport $(SYNONYM).HSMthresholds
 
 %.CpGreport %.CHGreport %.CHHreport %.HSMthresholds:	%.Creport
-	python $(BINDIR)/Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
+	Creport2CXreport.py $*.Creport $*.CpGreport $*.CHGreport $*.CHHreport > $*.HSMthresholds
 
 
 ### 3. Generate and print methylation statistics.
@@ -131,21 +129,21 @@ $(SYNONYM).mstats:	$(SYNONYM).Creport \
 		 	$(SYNONYM).CpGscd.mcalls $(SYNONYM).CpGhsm.mcalls $(SYNONYM).CpGnsm.mcalls \
 			$(SYNONYM).CHGscd.mcalls $(SYNONYM).CHGhsm.mcalls $(SYNONYM).CHGnsm.mcalls \
 			$(SYNONYM).CHHscd.mcalls $(SYNONYM).CHHhsm.mcalls $(SYNONYM).CHHnsm.mcalls
-	$(BINDIR)/mstats.sh $(SYNONYM) > $(SYNONYM).mstats
+	mstats.sh $(SYNONYM) > $(SYNONYM).mstats
 
 ###Intermediate step: determine highly supported methylation sites using the CXreport2hsm.py script.
 #
 %.CpGscd.mcalls %.CpGhsm.mcalls %.CpGnsm.mcalls:	%.HSMthresholds %.CpGreport
 	$(eval CpGnval = $(shell egrep "Thus.*CpG" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
+	CXreport2hsm.py $*.CpGreport $(CpGnval) $*.CpGscd.mcalls $*.CpGhsm.mcalls $*.CpGnsm.mcalls
 
 %.CHGscd.mcalls %.CHGhsm.mcalls %.CHGnsm.mcalls:	%.HSMthresholds %.CHGreport
 	$(eval CHGnval = $(shell egrep "Thus.*CHG" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
+	CXreport2hsm.py $*.CHGreport $(CHGnval) $*.CHGscd.mcalls $*.CHGhsm.mcalls $*.CHGnsm.mcalls
 
 %.CHHscd.mcalls %.CHHhsm.mcalls %.CHHnsm.mcalls:	%.HSMthresholds %.CHHreport
 	$(eval CHHnval = $(shell egrep "Thus.*CHH" $*.HSMthresholds | awk '{print $$NF}'))
-	python $(BINDIR)/CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
+	CXreport2hsm.py $*.CHHreport $(CHHnval) $*.CHHscd.mcalls $*.CHHhsm.mcalls $*.CHHnsm.mcalls
 
 
 

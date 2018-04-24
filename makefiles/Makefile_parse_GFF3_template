@@ -14,11 +14,6 @@
 ####################### ! Variable Settings ! ##################################
 ################################################################################
 
-# The location of the Singularity container that provides all required binaries
-
-CONTAINER   = ../../../bwasp.simg
-SEXEC = singularity exec $(CONTAINER)
-
 # The following variables specify the data sets and labels to be used.
 #
 #This template illustrates the settings for analysis of a Polistes canadensis data set.  Typcially
@@ -38,7 +33,7 @@ GFF3DIR  = ./GFF3DIR#                         output directory
 all:	parsed_gff3
 
 parsed_gff3:	$(GDNAFILE) $(GFF3FILE) $(GFF3DIR)
-	$(SEXEC) parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
+	parse_gff3_input.sh $(GDNAFILE) $(GFF3FILE) $(SPECIES) $(GFF3DIR)
 
 $(GFF3DIR):
 ifeq ("$(wildcard $(GFF3DIR))","")

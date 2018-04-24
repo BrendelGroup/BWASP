@@ -37,7 +37,7 @@ Prepares the necessary structure for this tutorial run.
 The subdirectory structure is designed to organize various data sets.  **Pcan** might hold several studies on _Polistes canadensis_, the **Patalano2015** study being one
 example.
 Under _Patalano2015_, the subdirectory **Queen** collects **3** _replicates_ of **p** aired-end reads from queens.
-In each _replicate_ subdirectory, there is the required link to the _genome_ directory and a copy of _Makefile_\__WF1-6pe_\__template_.
+In each _replicate_ subdirectory, there is the required link to the _genome_ directory and a copy of _Makefile_\__pe_\__template_.
 
 ## Getting the genome
 
