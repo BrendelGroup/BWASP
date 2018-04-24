@@ -10,7 +10,7 @@ and __easy__ to use.
 BWASP is built on various open source software that was developed within our group and elsewhere.
 To achieve a portable and reproducible workflow, we encapsulated all the dependencies in a [Singularity](http://singularity.lbl.gov) container.
 The workflow is implemented with GNU make.
-If the provide makefile is invoked via the proper singularity command using our BWASP container, no further installation of programs in necessary.
+If the provided makefile is invoked via the proper singularity command using our BWASP container, no further installation of programs in necessary.
 For guidance on installing (or requesting an installation of) Singularity please refer to the relevant documentation.
 
 ### Obtaining the container   [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
