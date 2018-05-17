@@ -24,9 +24,9 @@ while [ $r -lt $nreps ]; do
  cd replicate$r
  ln -s ../../../genome
  if [ $pors == "p" ]; then
-   cp ../../../../../makefiles/Makefile_WF1-6pe_template Makefile
+   cp ../../../../../makefiles/Makefile_pe_template Makefile
  else
-   cp ../../../../../makefiles/Makefile_WF1-6se_template Makefile
+   cp ../../../../../makefiles/Makefile_se_template Makefile
  fi
  cd ..
 done
