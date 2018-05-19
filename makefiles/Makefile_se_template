@@ -58,7 +58,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path samtools
+BISMARK_OPTIONS       = --multicore 10  --bowtie2 $(BOWTIE2_OPTIONS) 
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 7G -@ 4
 TRIM_GALORE_OPTIONS   =
