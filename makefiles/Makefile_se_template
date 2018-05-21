@@ -58,7 +58,7 @@ SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 10  --path_to_bowtie $(BOWTIE2) --bowtie2 $(BOWTIE2_OPTIONS) --samtools_path samtools
+BISMARK_OPTIONS       = --multicore 10  --bowtie2 $(BOWTIE2_OPTIONS) 
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 7G -@ 4
 TRIM_GALORE_OPTIONS   =
@@ -171,7 +171,7 @@ $(SAMPLE)-header.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
 ### 3.1 Determine potential methylation-biased positions in the reads.
 #
 $(SYNONYM).M-bias.txt:	$(SYNONYM).sam
-	bismark_methylation_extractor $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
+	bismark_methylation_extractor_bwasp $(BME_OPTIONS) --mbias_only -s $(SYNONYM).sam
 	mv $(SYNONYM)_splitting_report.txt $(SYNONYM)_mbias_only_splitting_report.txt
 
 $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
@@ -183,7 +183,7 @@ $(SYNONYM).M-bias.eval:	$(SYNONYM).M-bias.txt
 $(SYNONYM).bismark.cov.gz:	$(SYNONYM).M-bias.eval $(SYNONYM).sam
 	$(eval R1FP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$2}'))
 	$(eval R1TP = $(shell egrep "^--ignore" $(SYNONYM).M-bias.eval | awk -F" " '{print $$4}'))
-	bismark_methylation_extractor $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --maxrlgth $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
+	bismark_methylation_extractor_bwasp $(BME_OPTIONS) --mbias_off -s --ignore $(R1FP) --maxrlgth $(R1TP)  --bedGraph --CX --scaffolds $(SYNONYM).sam
 
 $(SYNONYM).cov:	$(SYNONYM).bismark.cov.gz
 	zcat $(SYNONYM).bismark.cov.gz | sort -V -S $(SORT_BUFFER_SIZE) > $(SYNONYM).cov
