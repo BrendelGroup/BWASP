@@ -94,7 +94,7 @@ From: ubuntu:16.04
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git'
     #### Prerequisites
-    apt -y install python-numpy python-scipy
+    apt -y install python3 python-numpy python-scipy
     cpanm --configure-timeout 3600  GD::Graph::lines
     cpanm --configure-timeout 3600  LWP::UserAgent
     cpanm --configure-timeout 3600  Math::Pari
