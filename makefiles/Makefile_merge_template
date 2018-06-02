@@ -3,51 +3,20 @@
 #Makefile to merge BWASP *.Creport files for combined input into workflow step 5.
 #Version: April 23, 2018
 
-#Usage: make -j 2 -f Makefile_merge_2replicates
+#Usage: make -j 2
 
 ################################################################################
-#Edit this section in such a way that the *.Creport files of the replicates are
-#found.
 #
-#This makefile is a template for merging 2 replicates.
-#For convenience, other templates are provided.
+#This makefile is a template for merging replicates.
 #
 #The assumption made in this template is that the replicate *.Creport files are
 #either present in the replicate* directories or that they were stored in a *.zip
-#archive as constructed by Makefile_WF1-6*, target "cleanup finishup".  In the former
-#case, specify the replicate *.Creport files in the CreportStore* variables below.
-#In the latter case, specify the *.zip archives in the CreportStore* variables and
-#the Creport files in the CreportFile* variables below.
-
-#If the replicate *.Creport files are stored elsewhere, simple modifications of this
-#makefile will do.
-
-#For example, for the Polisted dominula data sets analyzed as in the BWASP HOWTO
-#instructions, you would run a copy of the Makefile_merge_3templates in the Queen
-#directory with variable settings as follows:
-#
-#SYNONYM     = Pcan-queen
-#SAMPLE1     = SRR1519132
-#SYNONYM1    = Pcan-21Q
-#SAMPLE2     = SRR1519133
-#SYNONYM2    = Pcan-43Q
-#SAMPLE3     = SRR1519134
-#SYNONYM3    = Pcan-75Q
+#archive as constructed by targets "cleanup finishup".  The mergeCreports.py script
+#will look for a Creport file either as plaintext or within a zip archive in each
+#replicate subfolder.
 
 ###
-SYNONYM     = Species-sample
-SAMPLE1     = SRR.....1
-SYNONYM1    = Species-sample1
-SAMPLE2     = SRR.....2
-SYNONYM2    = Species-sample2
-
-CreportStore1       = ./replicate1/$(SYNONYM1).Creport
-#CreportStore1       = ./replicate1/STORE-$(SAMPLE1).zip
-#CreportFile1        = STORE-$(SAMPLE1)/$(SYNONYM1).Creport
-
-CreportStore2       = ./replicate2/$(SYNONYM2).Creport
-#CreportStore2       = ./replicate2/STORE-$(SAMPLE2).zip
-#CreportFile2        = STORE-$(SAMPLE2)/$(SYNONYM2).Creport
+SYNONYM     = Pcan-Queen
 
 ################################################################################
 ### ! Typically there would be no need for further editing below this line ! ###
@@ -59,25 +28,8 @@ all:	$(SYNONYM).Creport $(SYNONYM).mstats
 ### 1. Merging the Creports of the distinct replicates:
 #
 #
-$(SYNONYM1).Creport:	$(CreportStore1)
-	$(eval isgzip = $(shell file $(CreportStore1) | egrep "Zip archive data" | wc -l))
-	if [ $(isgzip) -eq 0 ]; then \
-		cp $(CreportStore1) ./; \
-	else \
-		unzip -j $(CreportStore1) $(CreportFile1); \
-	fi
-
-$(SYNONYM2).Creport:	$(CreportStore2)
-	$(eval isgzip = $(shell file $(CreportStore2) | egrep "Zip archive data" | wc -l))
-	if [ $(isgzip) -eq 0 ]; then \
-		cp $(CreportStore2) ./; \
-	else \
-		unzip -j $(CreportStore2) $(CreportFile2); \
-	fi
-
-
-$(SYNONYM).Creport:	$(SYNONYM1).Creport $(SYNONYM2).Creport
-	mergeCreports.pl $(SYNONYM1).Creport $(SYNONYM2).Creport --outfile $(SYNONYM).Creport
+$(SYNONYM).Creport:
+	mergeCreports.py --outfile $(SYNONYM)
 
 
 ### 2. Creating the seperate contexts from the Creport using the Creport2CXreport.py script:
@@ -118,11 +70,10 @@ $(SYNONYM).mstats:	$(SYNONYM).Creport \
 #
 cleanup:
 	-\mkdir _SCRATCH
-	-\mv $(SYNONYM1).Creport $(SYNONYM2).Creport _SCRATCH/
-	
+
 	-\mkdir STORE-$(SYNONYM)
 	-\mv $(SYNONYM)*report STORE-$(SYNONYM)
-	
+
 ###Finish up after cleanup:
 #
 finishup:

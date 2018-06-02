@@ -16,7 +16,7 @@ mkdir $study
 cd $study
 mkdir $sample
 cd $sample
-cp ../../../../makefiles/Makefile_merge"$nreps"_template Makefile
+cp ../../../../makefiles/Makefile_merge_template Makefile
 r=0
 while [ $r -lt $nreps ]; do
  ((r++))

@@ -94,7 +94,7 @@ From: ubuntu:16.04
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git'
     #### Prerequisites
-    apt -y install python-numpy python-scipy
+    apt -y install python3 python-numpy python-scipy
     cpanm --configure-timeout 3600  GD::Graph::lines
     cpanm --configure-timeout 3600  LWP::UserAgent
     cpanm --configure-timeout 3600  Math::Pari
@@ -104,23 +104,31 @@ From: ubuntu:16.04
 
 
     echo 'Installing R'
-    #### Install
-    apt -y install r-base-core r-base-dev
-    add-apt-repository -y ppa:marutter/rrutter
+    #### 
+    export DEBIAN_FRONTEND=noninteractive
+    add-apt-repository -y ppa:marutter/rrutter3.5
+    add-apt-repository -y ppa:marutter/c2d4u3.5
     apt -y update
-    apt -y full-upgrade
+    apt -y install r-base-core r-base-dev
     R CMD javareconf
 
-    echo 'Installing R packages'
+    echo 'Installing CRAN packages'
     ######
-    echo 'install.packages("dplyr", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'      > R2install
-    echo 'install.packages("gplots", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'    >> R2install
-    echo 'install.packages("gridExtra", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)' >> R2install
-    echo 'install.packages("pastecs", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'   >> R2install
-    echo 'install.packages("rJava", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'     >> R2install
-    echo 'install.packages("sqldf", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'     >> R2install
-    echo 'install.packages("venneuler", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)' >> R2install
-    echo 'source("https://bioconductor.org/biocLite.R")'                                         >> R2install
+    apt -y install r-cran-dplyr
+    apt -y install r-cran-gplots
+    apt -y install r-cran-gridextra
+    apt -y install r-cran-pastecs
+    apt -y install r-cran-rjava
+    apt -y install r-cran-sqldf
+    apt -y install r-cran-venneuler
+    apt -y install r-cran-rcurl
+    apt -y install r-cran-xml2
+    apt -y install libxml2-dev
+
+   
+    echo 'Installing Bioconductor packages'
+    ######
+    echo 'source("https://bioconductor.org/biocLite.R")'                                         > R2install
     echo 'biocLite(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"),ask=FALSE)'      >> R2install
 
     Rscript R2install
