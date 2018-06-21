@@ -52,13 +52,10 @@ GENOME  = Amel.gdna
 SAMPLE  = SRR1270128
 SYNONYM = Amel-afbCTRL
 
-SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR127/$(SAMPLE)"
-
-
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 10  --bowtie2 $(BOWTIE2_OPTIONS) 
+BISMARK_OPTIONS       = --multicore 10  --bowtie2 $(BOWTIE2_OPTIONS)
 FASTQC_OPTIONS        = --threads 2  --extract
 SAMTOOLS_SORT_OPTIONS = -m 7G -@ 4
 TRIM_GALORE_OPTIONS   =
@@ -105,11 +102,8 @@ endif
 
 ### 1.2 Obtain the SRA reads from NCBI.
 #
-$(SAMPLE).sra:
-	wget --no-verbose $(SOURCE)/$(SAMPLE).sra
-
-%.fastq:	%.sra
-	fastq-dump  $*.sra
+%.fastq:
+	fastq-dump  $(SAMPLE)
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif

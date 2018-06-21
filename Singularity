@@ -49,7 +49,7 @@ From: ubuntu:16.04
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
     ######
     cd /opt
-    git clone https://github.com/littleblackfish/Bismark
+    git clone https://github.com/BrendelGroup/Bismark
     # Note that we are using the slightly modified Brendel Group version of Bismark
 
     echo 'Installing FASTQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/'

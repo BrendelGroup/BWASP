@@ -53,9 +53,6 @@ GENOME  = Pcan.gdna
 SAMPLE  = SRR1519132
 SYNONYM = Pcan-21Q
 
-SOURCE  = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR151/$(SAMPLE)"
-
-
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
@@ -106,11 +103,8 @@ endif
 
 ### 1.2 Obtain the SRA reads from NCBI.
 #
-$(SAMPLE).sra:
-	wget --no-verbose $(SOURCE)/$(SAMPLE).sra
-
-%_1.fastq %_2.fastq:	%.sra
-	fastq-dump --split-files $*.sra
+%_1.fastq %_2.fastq:
+	fastq-dump --split-files $(SAMPLE)
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
