@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 #BWASP python script eval_prmbias.py
 #
 # The script takes as input a *.M-bias.txt file (produced in the BWASP workflow
@@ -126,7 +127,7 @@ if cline.match(line):
   i = 0
   mtch = cline.match(line)
   label = mtch.group(1) + '_' + mtch.group(2)
-  print label, m[label], s[label], "Acceptable range:", m[label]-sfactor*s[label], "-", m[label]+sfactor*s[label]
+  print('{0} mean: {1:.4f} std: {2:.6f} Acceptable range: {3:.4f} - {4:.4f}'.format(label,m[label],s[label],m[label]-sfactor*s[label],m[label]+sfactor*s[label]))
 
 input.readline()
 input.readline()
@@ -134,7 +135,7 @@ for line in input.readlines():
     if cline.match(line):
       mtch = cline.match(line)
       label = mtch.group(1) + '_' + mtch.group(2)
-      print label, m[label], s[label], "Acceptable range:", m[label]-sfactor*s[label], "-", m[label]+sfactor*s[label]
+      print('{0} mean: {1:.4f} std: {2:.6f} Acceptable range: {3:.4f} - {4:.4f}'.format(label,m[label],s[label],m[label]-sfactor*s[label],m[label]+sfactor*s[label]))
       i = 0
       continue
     if data.match(line):
@@ -144,7 +145,7 @@ for line in input.readlines():
         print line.rstrip(), "**"
         if mtch.group(2) == "R1":
           excludeR1[i] = 1
-        else: 
+        else:
           excludeR2[i] = 1
 
 # Establish "ignore" parameters:
