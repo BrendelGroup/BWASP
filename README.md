@@ -7,11 +7,13 @@ and __easy__ to use.
 
 ## Requirements and architecture [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
 
-BWASP is built on various open source software that was developed within our group and elsewhere.
+BWASP is built on various open source software that were developed within our group and elsewhere.
 To achieve a portable and reproducible workflow, we encapsulated all the dependencies in a [Singularity](http://singularity.lbl.gov) container.
-The workflow is implemented with GNU make.
-If the provided makefile is invoked via the proper singularity command using our BWASP container, no further installation of programs in necessary.
-For guidance on installing (or requesting an installation of) Singularity please refer to the relevant documentation.
+The workflows are implemented with GNU make.
+
+It is recommended to invoke `make` from within the provided Singularity container, in which case no further installation is necessary.
+Although it is possible to install and use BWASP natively, and the [recipe](Singularity) should serve as a guide to perform such an installation, this is neither recommended nor should offer any benefits over the contained version. 
+
 
 ### Running the workflow
 
