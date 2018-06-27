@@ -28,10 +28,9 @@ CONTAINER=${CONTAINERS[0]}
 echo "Using container ${CONTAINER}"
 
 # -e is --cleanenv
-# -c is --contains
 # -B is --bind
 
-BWASP_EXEC="singularity exec -e -c -B ${BWASP_DATA} $CONTAINER"
+BWASP_EXEC="singularity exec -e -B ${BWASP_DATA} $CONTAINER"
 
 echo "Singularity command to use is: "
 echo $BWASP_EXEC
