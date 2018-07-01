@@ -1,5 +1,5 @@
 bootstrap: docker
-From: ubuntu:16.04
+From: ubuntu:18.04
 
 %help
     This container provides portable & reproducible components for BWASP:
@@ -12,14 +12,20 @@ From: ubuntu:16.04
     apt -y install bc git tcsh tzdata unzip zip wget
     apt -y install cpanminus
     apt -y install openjdk-8-jdk
-    apt -y install software-properties-common python-software-properties
+    apt -y install software-properties-common
     apt -y install libcurl4-openssl-dev
     apt -y install libcurl4-gnutls-dev
     apt -y install libgd-dev
     apt -y install libmariadb-client-lgpl-dev
     apt -y install libpq-dev
     apt -y install libssl-dev
+    apt -y install libtbb-dev
     apt -y install libxml2-dev
+    apt -y install python-minimal
+    apt -y install python-pip
+    apt -y install python3-minimal
+    apt -y install python3-pip
+
 
 
     echo 'Installing HTSLIB from http://www.htslib.org/'
@@ -43,8 +49,12 @@ From: ubuntu:16.04
     echo 'Installing BOWTIE2 from http://bowtie-bio.sourceforge.net/bowtie2'
     ######
     cd /opt
-    wget --content-disposition http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.3/bowtie2-2.3.3-linux-x86_64.zip/download
-    unzip bowtie2-2.3.3-linux-x86_64.zip
+    wget --content-disposition http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.4.1/bowtie2-2.3.4.1-source.zip/download
+    unzip bowtie2-2.3.4.1-source.zip
+    cd bowtie2-2.3.4.1
+    make clean
+    make
+
 
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
     ######
@@ -68,7 +78,6 @@ From: ubuntu:16.04
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/'
     #### Prerequisites
-    apt -y install python-pip
     pip install --upgrade cutadapt
     #### Install
     cd /opt
@@ -80,9 +89,9 @@ From: ubuntu:16.04
     apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
-    wget http://genometools.org/pub/genometools-1.5.9.tar.gz
-    tar -xzf genometools-1.5.9.tar.gz
-    cd genometools-1.5.9/
+    wget http://genometools.org/pub/genometools-1.5.10.tar.gz
+    tar -xzf genometools-1.5.10.tar.gz
+    cd genometools-1.5.10/
     make && make install
 
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/'
@@ -94,7 +103,7 @@ From: ubuntu:16.04
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git'
     #### Prerequisites
-    apt -y install python3 python-numpy python-scipy
+    apt -y install python-numpy python-scipy
     cpanm --configure-timeout 3600  GD::Graph::lines
     cpanm --configure-timeout 3600  LWP::UserAgent
     cpanm --configure-timeout 3600  Math::Pari
@@ -123,12 +132,11 @@ From: ubuntu:16.04
     apt -y install r-cran-venneuler
     apt -y install r-cran-rcurl
     apt -y install r-cran-xml2
-    apt -y install libxml2-dev
 
    
     echo 'Installing Bioconductor packages'
     ######
-    echo 'source("https://bioconductor.org/biocLite.R")'                                         > R2install
+    echo 'source("https://bioconductor.org/biocLite.R")'                                         >  R2install
     echo 'biocLite(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"),ask=FALSE)'      >> R2install
 
     Rscript R2install
@@ -142,7 +150,7 @@ From: ubuntu:16.04
 
 %environment
     export LC_ALL=C
-    export PATH=$PATH:/opt/bowtie2-2.3.3
+    export PATH=$PATH:/opt/bowtie2-2.3.4.1
     export PATH=$PATH:/opt/Bismark
     export PATH=$PATH:/opt/FastQC
     export PATH=$PATH:/opt/sratoolkit.2.8.2-ubuntu64/bin

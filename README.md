@@ -1,63 +1,55 @@
 # BWASP : Bisulfite-seq data Workflow Automation Software and Protocols
 
-The BWASP repository encompasses code we developed in the [Brendel Group](http://brendelgroup.org/) for scalable and reproducible analyses of bisulfite sequencing data. It conforms to our [RAMOSE](https://brendelgroup.github.io/)
-philosophy: it generates __reproducible__, __accurate__, and
-__meaningful__ results; it is __open__ (source) and designed to be __scalable__
-and __easy__ to use.
+The BWASP repository encompasses code and scripts developed in the
+[Brendel Group](http://brendelgroup.org/) for analyses of bisulfite sequencing
+data.
+The entire workflow relies on various other open source software as well as
+[R](https://www.r-project.org/) scripts from the companion
+[BWASPR](https://github.com/BrendelGroup/BWASPR) repository.
+The code conforms to our [RAMOSE](https://brendelgroup.github.io/)
+philosophy: it generates __reproducible__, __accurate__, and __meaningful__
+results; it is __open__ (source) and designed to be __scalable__ and
+__easy__ to use.
 
-## Requirements and architecture
 
-BWASP is built on various open source software that was developed within our group and elsewhere.
-To achieve a portable and reproducible workflow, we encapsulated all the dependencies in a [Singularity](http://singularity.lbl.gov) container.
-The workflow is implemented with GNU make.
-If the provided makefile is invoked via the proper singularity command using our BWASP container, no further installation of programs in necessary.
-For guidance on installing (or requesting an installation of) Singularity please refer to the relevant documentation.
+## Quick Start [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
 
-### Obtaining the container   [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
-
-The relevant container can be downloaded from the [Singularity Hub](https://www.singularity-hub.org/collections/763) by doing :
-
+Input to the BWASP workflow consists of accession numbers or fastq files of
+bisulfite-sequencing reads as well as the appropriate genome assembly (and, if
+available, genome annotation).
+Output (after read quality control and mapping) are _*.mcalls_ files that list
+the sufficiently covered genomic Cs and their methylation percentage in the
+given sample.
+The scripts in the _bin_ directory take care of minor tasks in the overall
+workflow, but configuration and execution is via GNU make using edited copies
+of the makefiles provided in the _makefiles_ directory.
+All the BWASP dependencies are encapsulated in a
+[Singularity](http://singularity.lbl.gov) container available from
+[Singularity Hub](https://singularity-hub.org/).
+Thus, once you know what you are doing, execution could be as simple as
 
 ```
-singularity pull --name bwasp.simg shub://littleblackfish/BWASP
+singularity pull --name bwasp.simg shub://BrendelGroup/BWASP
+singularity exec bwasp.simg make
 ```
 
-This downloads a pre-built container that __does not require sudo permission__ to run.
-This is the recommended way of running the workflow and should exactly reproduce our published results.
-Alternatively, one can build the same image from scratch using the [recipe](Singularity) by doing :
-
-```
-git clone https://github.com/BrendelGroup/BWASP.git
-cd BWASP
-sudo singularity build bwasp.simg Singularity
-```
-
-This builds the same container from scratch but requires sudo permission.
-
-Although both methods will produce read-only images,
-it is also possible to create a writable version of the image for further modification and redistribution.
-For best practices regarding that, please refer to the [Singularity documentation](http://singularity.lbl.gov/docs-flow).
-
-### Running the workflow
-
-Mention that we require ~500 gb per sample and recommend 8 or more cores.
-
-Briefly describe recommended data/ hierarchy and mention [xmkdirstr](data/xmkdirstr).
-
-Briefly describe how makefiles work
-
-  * WF1-pe
-  * WF1-se
-  * mergeX
+(assuming you have prepared a suitable makefile in your working directory).
 
 
-Finally, refer to [HOWTO](./HOWTO.md) document for an example run.
-That should also be modified for the new containerized flow.  
+## Realistic Start
+
+Please find detailed installation instructions and options in the
+[INSTALL](./INSTALL.md) document.
+Once all preparatory steps are taken care of, see the [HOWTO](./HOWTO.md)
+document for a complete example of how to implement and run a workflow.
+
 
 ## Reference
 
-Amy L. Toth, Murat Ozturk, Saranya Sankaranarayanan, and Volker P. Brendel (2018) _Estimating
-the size and dynamics of the CpG methylome of social insects._ To be submitted.
+Amy L. Toth, Murat Ozturk, Saranya Sankaranarayanan, and Volker P. Brendel
+(2018) _Estimating the size and dynamics of the CpG methylome of social
+insects._ To be submitted.
+
 
 ## Contact
 
