@@ -65,17 +65,17 @@ while ( $i <= 10 )
   endif
   echo "Now running:"
   if ( $psflag == "p" ) then
-    echo "$BWASPBIN/filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+    echo "filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
     echo ""
-    $BWASPBIN/filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
     set x11 = `egrep "^f11cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x01 = `egrep "^f01cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x10 = `egrep "^f10cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     @ x = $x11 + $x01 + $x10
-  else 
-    echo "$BWASPBIN/filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+  else
+    echo "filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
     echo ""
-    $BWASPBIN/filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
     set x = `tail -n 1 $MsamFile-$i.summary | cut -d"	" -f2`
   endif
   if ( $x == 0 ) then

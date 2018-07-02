@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 #BWASP python script CXreport2hsm.py
 #
 # This script takes the *.C??report and *.HSMthresholds files as
