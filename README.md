@@ -12,7 +12,7 @@ results; it is __open__ (source) and designed to be __scalable__ and
 __easy__ to use.
 
 
-## Quick Start [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/763)
+## Quick Start [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1203)
 
 Input to the BWASP workflow consists of accession numbers or fastq files of
 bisulfite-sequencing reads as well as the appropriate genome assembly (and, if
