@@ -1,31 +1,30 @@
-# HOWTO BWASP
+# BWASP HOWTO - an example for how to use the software
 
-## Requirements
+## Preparation
 
-  * BWASP can run on any platform that can run Singularity (Linux, MacOS, Windows), although it is only tested on Linux.
- These instructions are therefore for Linux but they should apply to MacOS without much modification.
-  * BWASP can run on a single processor, although it is intended to run on several cores.
-  * Furthermore, BWASP requires a considerable amount of memory (>16 GB) and scratch space (>500 GB).
+At this stage, you should have completed the BWASP installation steps
+documented in the [INSTALL](./INSTALL.md) document; we'll assume that you have
+downloaded the `bwasp.simg` singularity container.
+We explain BWASP use with an example from our
+[publication](http://brendelgroup.org/).
 
-## Installation
 
-Assuming we have Git and  Singularity installed on the system, we can get the BWASP code from GitHub and the container from the
-[Singularity Hub](https://www.singularity-hub.org/collections/763) by doing :
+## Samples
+Our goal is to analyze BS-seq data sets from the
+[Patalano _et al._, 2015,](http://www.ncbi.nlm.nih.gov/pubmed/26483466) study
+of the paper wasp _Polistes canadensis_.
+Three BS-seq data sets from queen adult brains were deposited in the NCBIs
+ Sequence Read Archive:
 
-```bash
-git clone https://github.com/brendelgroup/BWASP.git
-cd BWASP
-singularity pull shub://littleblackfish/BWASP
-source bin/bwasp_env.sh
-```
+* [SRR1519132 21Q](http://www.ncbi.nlm.nih.gov/sra/SRX656317)
+* [SRR1519133 43Q](http://www.ncbi.nlm.nih.gov/sra/SRX656318)
+* [SRR1519134 75Q](http://www.ncbi.nlm.nih.gov/sra/SRX656319)
 
-Sourcing `bwasp_env.sh` sets up some environment variables such as `BWASP_ROOT`, `BWASP_DATA`,
-but most importantly `BWASP_EXEC` which is the master Singularity command we use to run the workflow.
-Although it may not be necessary, it is recommended to source this script before every run to make sure these variables are in place.
 
-## Directory structure
+## Preparing the directory structure
 
-BWASP expects a certain directory structure starting from the `BWASP_ROOT/data` directory (`BWASP_DATA`).
+BWASP expects a certain directory structure starting from the
+`BWASP_ROOT/data` directory (`BWASP_DATA`).
 
   * BWASP_DATA/
     * species/
@@ -36,32 +35,32 @@ BWASP expects a certain directory structure starting from the `BWASP_ROOT/data` 
 
 This hierarchy is designed to organize various data sets.
 Although not mandatory, it is recommended to follow it for easier operation.
-The [xmkdirstr](data/xmkdirstr) script helps create this structure and populates it with the relevant links and Makefiles for each sample.
-Please note that Makefiles for each sample need to be modified prior to running the workflow.
-
-## Example run
-
-To demonstrate how to work with BWASP, we will re-analyze the BS-seq data from the [Patalano _et al._, 2015,](https://doi.org/10.1073/pnas.1515937112) study of the paper wasp _Polistes canadensis_.
-This should serve to familiarize the new user with how BWASP is intended to be utilized.
-
-
-We start by preparing the directory structure :
+The [xmkdirstr](./data/xmkdirstr) script helps create this structure and
+populates it with the relevant links and makefiles for each sample.
+Please note that makefiles for each sample need to be modified prior to running the workflow.
 
 ```bash
 cd data
 ./xmkdirstr Pcan Patalano2015 Queen 3 p
 ```
 
-**Pcan** is an alias for _Polistes canadensis_ and might hold several studies on this species, the **Patalano2015** study being one example.
-Under _Patalano2015_, the subdirectory **Queen** will contain **3** _replicates_ of **p** aired-end reads from queens.
-Each _replicate_ subdirectory, will be populated with a link to the _genome_ directory and a copy of _Makefile_\__pe_\__template_.
+Here, **Pcan** is an alias for _Polistes canadensis_, and the created **Pcan**
+directory might eventually hold several studies on this species, the
+**Patalano2015** study being one example.
+Under _Patalano2015_, the subdirectory **Queen** will contain **3**
+_replicates_ of **p** aired-end reads from queens.
+Each _replicate_ subdirectory, will be populated with a link to the _genome_
+directory and a copy of _Makefile_\__pe_\__template_.
 
 ### Getting the genome
 
-BWASP workflow requires a reference genome, so we need to obtain and place it in the appropriate directory.
-The _Polistes canadensis_ genome can be found at the appropriate [NCBI Genome page](https://www.ncbi.nlm.nih.gov/genome/16494).
-
-We can simply get the direct download links for the genome assembly (FASTA) and annotation (GFF) files to download them directly into the `Pcan/genome` directory.
+The BWASP workflow requires a reference genome, so we need to obtain and place
+it in the appropriate directory.
+The _Polistes canadensis_ genome can be found at the appropriate
+[NCBI Genome page](https://www.ncbi.nlm.nih.gov/genome/16494).
+We can simply get the direct download links for the genome assembly (FASTA) and
+annotation (GFF) files to download them directly into the `Pcan/genome`
+directory as follows:
 
 ```bash
 cd Pcan/genome
@@ -69,32 +68,32 @@ wget  ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
 ```
 
-Assuming everything was downloaded nicely, we decompress and link the files to more convenient file names:
+Assuming everything was downloaded nicely, we decompress and link the files to
+more convenient file names:
 
 ```bash
 gunzip GCF_*.gz
 ln GCF_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
 ln GCF_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
 ```
+
 Note that the annotation was not necessary for the basic BWASP run but we downloaded it anyways for use in downstream analysis.
 Also note that we preferred linking the files to moving (renaming) them to keep the original filenames for future reference.
 
+
 ### Getting the reads
 
-Note that the appropriate template *Makefile* was copied into each replicate directory.
-This *Makefile* contains the necessary commands (fastq-dump) to download reads from the [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra) so all we need to do is to fill in the accession numbers.
+Note that the appropriate template *Makefile* was copied into each replicate
+directory.
+This *Makefile* contains the necessary commands (fastq-dump) to download reads
+from [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra), so all we need to do is to
+fill in the appropriate accession numbers.
 
-Three sets of BS-seq reads from queen adult brains were deposited in the NCBI Short Read Archive:
-
-* [SRR1519132 21Q](http://www.ncbi.nlm.nih.gov/sra/SRX656317)
-* [SRR1519133 43Q](http://www.ncbi.nlm.nih.gov/sra/SRX656318)
-* [SRR1519134 75Q](http://www.ncbi.nlm.nih.gov/sra/SRX656319)
-
-
-For our example, the template _Makefile_ already has the accession number for the first queen replicate.
-We should manually edit numbers for the other two replicates.
-
-The commands below simply replace the SRA accession numbers and sample labels for the other two replicates:
+For our example, the template _Makefile_ already has the accession number for
+the first queen replicate.
+We could manually edit numbers for the other two replicates or, better, use the
+following commands to subsitute the SRA accession number and sample labels for
+the other two replicates:
 
 ```bash
 sed -i -e "s/SRR1519132/SRR1519133/; s/Pcan-21Q/Pcan-43Q/;" replicate2/Makefile
@@ -103,13 +102,17 @@ sed -i -e "s/SRR1519132/SRR1519134/; s/Pcan-21Q/Pcan-75Q/;" replicate3/Makefile
 
 Now we are ready to start the heavy data processing.
 
+
 ### Running the workflow
 
 Since the rest of the workflow is fire and forget, proofreading of the *Makefile*s is highly recommended at this point.
 The section titled **Variable Settings** is the only part that is necessarily modified, and should be double checked before proceeding.
 
-Once that is done, it is recommended to source the `bwasp_env.sh` (as per installation instructions) and confirming that the `BWASP_EXEC` variable is set by checking the output of `echo $BWASP_EXEC`.
-This is merely a convenience variable that holds a command that has all the relevant Singularity parameters set for the user.
+Once that is done, it is recommended to source the `bwasp_env.sh` (as per
+installation instructions) and confirm that the `BWASP_EXEC` variable is set by
+checking the output of `echo $BWASP_EXEC`.
+This is merely a convenience variable that holds a command that has all the
+relevant singularity parameters set for the user.
 An exemplary BWASP_EXEC looks like :
 
 ```
@@ -124,13 +127,14 @@ $BWASP_EXEC make Bisulfite_Genome
 $BWASP_EXEC make &> bwasp.log
 ```
 
-The preceding `$BWASP_EXEC` makes sure that `make` runs from inside the Singularity container,
-where we made sure all the moving parts are in working condition (i.e. all required binaries are in correct version and path).
-Although it is possible to set up and use BWASP natively, this is not recommended nor supported.
+The preceding `$BWASP_EXEC` makes sure that `make` runs from inside the
+singularity container, where we made sure all the moving parts are in working
+condition (i.e. all required binaries are in correct version and path).
 
-
-The first *make* command with the -n flag simply shows what _make_ will do and is valuable for reference.
-The second _make_ command runs the preparatory genome processing step which needs to be done once and is shared for all samples of a given species.
+The first *make* command with the -n flag simply shows what _make_ will do and
+is valuable for reference.
+The second _make_ command runs the preparatory genome processing step which
+needs to be done once and is shared for all samples of a given species.
 The third _make_ command will run the main workflow.
 
 Once the the common _bismark_\__genome_\__preparation_ step is done, you
@@ -143,8 +147,9 @@ simultaneously.  Check the _err_ file and your system monitor frequently.
 ### Output
 
 After completion of the BWASP workflow, the working directory should contain a
-fair number of output files.  Please refer to the documentation of the various
-constituent programs for details as well as our
+fair number of output files.
+Please refer to the documentation of the various constituent programs for
+details as well as our
 [manuscript](http://brendelgroup.org/research/publications.php).
 To remove unneeded intermediate files and archive files that may be of
 interest later but are not needed in subsequent __BWASP__ analysis steps
@@ -212,15 +217,17 @@ different replicate data sets, typically the replicate data are pooled when
 comparing between samples/conditions (_e.g._, Queen versus Worker samples).
 
 
-BWASP provides an additional makefile to merge replicates and provide cumulative statistics over all replicates.
-The _xmkdirstr_ script in our example already set this up for us in the _Queen_ directory.
-We only need to fill in the label (Pcan-queen) and run (from directory  _Queen_):
+BWASP provides an additional makefile to merge replicates and provide cumulative
+statistics over all replicates.
+The _xmkdirstr_ script in our example already set this up for us in the _Queen_
+directory.
+We only need to fill in the label (Pcan-queen) and run (from directory _Queen_):
 
 ```bash
 $BWASP_EXEC make
 ```
 
-Optionally followed by _cleanup_ and _finishup_ targets here as well:
+optionally followed by _cleanup_ and _finishup_ targets here as well:
 
 ```bash
 $BWASP_EXEC make cleanup
