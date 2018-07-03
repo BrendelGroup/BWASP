@@ -1,56 +1,47 @@
 # BWASP Installation and Setup
 
-## Obtaining BWASP
+## Requirements
 
-Presumably you are reading this file on our github site and thus you are
-likely to know that the following commands on your local machine should get
-you going:
+  * BWASP should run on any platform that supports [Singularity](http://singularity.lbl.gov/) (Linux, MacOS, Windows), although we have only tested on Linux.
+
+  * BWASP can execute on a single processor machine, but realistically you would want to have 10-20 cores available.
+
+  * BWASP requires a considerable amount of memory (>16 GB) and free disk space (~500 GB for temporary output files for a typical experimental data set).
+
+
+## Installation as a singularity container
+
+Assuming _git_ and  _singularity_ are installed on your system, you can get the
+BWASP code from GitHub and the container from the
+[Singularity Hub](https://www.singularity-hub.org/collections/763) as follows:
 
 ```bash
-git clone https://github.com/BrendelGroup/BWASP
-cd BWASP/
+git clone https://github.com/brendelgroup/BWASP.git
+cd BWASP
+singularity pull shub://BrendelGroup/BWASP
+source bin/bwasp_env.sh
 ```
 
-That said, an implicit assumption is that your local machine runs some version
-of Linux.  Moreover, typical BS-seq experiments involve large data sets.  BWASP
-will make the analysis of these data sets __easy, accurate, meaningful,
-reproducible, and scalable__ (our __EAMRS__ philosophy and promise).  Just one
-data set from a modern NGS machine might require up to 500 Gb of disk space,
-counting all the temporary files generated in the process.  It will be up to
-you to specify the number of processors to be used in various parallel steps
-during the workflow.  We like to have 10-20 processors dedicated to the task
-(although most of the time, fewer processors will be used).  Even then, be
-prepared to wait a day (or two) until all is done.  Sounds bad?  Not really,
-because the whole analysis is quite a complex process, but both the original
-setup of BWASP and the setup of particular analyses takes only a few minutes
-each.  Once launched, go on thinking about your science, or start drafting the
-paper!
+Sourcing `bwasp_env.sh` sets up the environment variables `BWASP_ROOT`,
+`BWASP_DATA`, and `BWASP_EXEC`.
+You may want to do this before every run to make sure these variables are in
+place.
+For a gentle introduction to singularity, see our group
+[handbook article](https://github.com/BrendelGroup/bghandbook/blob/master/doc/06.2-Howto-Singularity-run.md).
 
-## Preliminary Steps
 
-BWASP is a workflow that invokes easily available third-party software as well
-as scripts developed in our group.  As a first step, go to the [src](./src)
-directory and install required programs as per instructions in the
-[README](./src/README.md) file in that directory.  You will need to keep
-track of the paths to the installed binaries, and you will need to copy the
-[AEGeAn](https://github.com/BrendelGroup/AEGeAn) binaries _canon-gff3_ and
-_pmrna_ into the [bin](./bin) directory.  Although quite a few external
-programs are involved, typical installation can be scripted (as described) and
-would not take more than a few minutes.
+## Optional: System-wide Installation
 
-BWASP uses a modified version of the BISMARK _bismark\_methylation\_extractor_
-script (to appropriately handle culling of 3'-end biased positions).  This
-modified script works with the current BISMARK _bismark2bedGraph_ script,
-but you will need to copy that script from your BISMARK installation directory
-to the BWASP [bin](./bin) directory.
+BWASP use via the singularity container is highly recommended, with no known
+drawbacks.
+However, if desired, you can of course install all the required software and
+packages individually on your computer system.
+The singularity [recipe file](./Singularity) in this repository chould serve as
+a guide to perform such an installation.
+The `bwasp.simg` container was built on the 
+[current long-term supported Ubuntu 18.04 distribution](https://www.ubuntu.com/download/desktop)
+and thus the instructions apply to that particular Linux version.
 
-BWASP relies on a number of bash, Perl, and python scripts that are placed in
-the [bin](./bin) directory.  The Perl and python scripts use various packages
-that must be pre-installed on your system.  Run the _xcheckprerequisites_ bash
-script in the [bin](./bin) directory to see what is available.  If packages
-are missing, you need to install them prior to running the BWASP workflow
-(there are many ways to install Perl and python packages; if in doubt, ask your
-systems administrator).
 
 ## Finally
 
