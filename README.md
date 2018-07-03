@@ -21,8 +21,9 @@ Output (after read quality control and mapping) are _*.mcalls_ files that list
 the sufficiently covered genomic Cs and their methylation percentage in the
 given sample.
 The scripts in the _bin_ directory take care of minor tasks in the overall
-workflow, but configuration and execution is via GNU make using edited copies
-of the makefiles provided in the _makefiles_ directory.
+workflow, but configuration and execution is via
+[GNU make](https://www.gnu.org/software/make/) using edited copies of the
+makefiles provided in the _makefiles_ directory.
 All the BWASP dependencies are encapsulated in a
 [Singularity](http://singularity.lbl.gov) container available from
 [Singularity Hub](https://singularity-hub.org/).
