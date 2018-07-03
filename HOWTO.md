@@ -48,8 +48,8 @@ Here, **Pcan** is an alias for _Polistes canadensis_, and the created **Pcan**
 directory might eventually hold several studies on this species, the
 **Patalano2015** study being one example.
 Under _Patalano2015_, the subdirectory **Queen** will contain **3**
-_replicates_ of **p** aired-end reads from queens.
-Each _replicate_ subdirectory, will be populated with a link to the _genome_
+_replicates_ of **p**aired-end reads from queens.
+Each _replicate_ subdirectory will be populated with a link to the _genome_
 directory and a copy of _Makefile_\__pe_\__template_.
 
 ### Getting the genome
@@ -64,7 +64,7 @@ directory as follows:
 
 ```bash
 cd Pcan/genome
-wget  ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.fna.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/313/835/GCF_001313835.1_ASM131383v1/GCF_001313835.1_ASM131383v1_genomic.gff.gz
 ```
 
@@ -105,21 +105,23 @@ Now we are ready to start the heavy data processing.
 
 ### Running the workflow
 
-Since the rest of the workflow is fire and forget, proofreading of the *Makefile*s is highly recommended at this point.
-The section titled **Variable Settings** is the only part that is necessarily modified, and should be double checked before proceeding.
+Because the rest of the workflow is fire and forget, proofreading of the *Makefile*s is highly recommended at this point.
+The section titled **Variable Settings** is the only part that is necessarily modified and should be double-checked before proceeding.
 
 Once that is done, it is recommended to source the `bwasp_env.sh` (as per
 installation instructions) and confirm that the `BWASP_EXEC` variable is set by
 checking the output of `echo $BWASP_EXEC`.
 This is merely a convenience variable that holds a command that has all the
 relevant singularity parameters set for the user.
-An exemplary BWASP_EXEC looks like :
+For example, if user `muroztur` has access to plenty of disk space on
+`/N/dc2/scratch/muroztur/`, this user's $BWASP_EXCE might look like the
+following:
 
 ```
-singularity exec -e -c -B /N/dc2/scratch/muroztur/BWASP/data /N/dc2/scratch/muroztur/BWASP/bwasp.simg
+singularity exec -e -B /N/dc2/scratch/muroztur/BWASP/data /N/dc2/scratch/muroztur/BWASP/bwasp.simg
 ```
 
-Finally, we can run the workflow as follows (from directory _replicateX_):
+Finally, we can run the `make`-enabled workflow (from directory _replicateX_):
 
 ```bash
 $BWASP_EXEC make -n
@@ -129,7 +131,7 @@ $BWASP_EXEC make &> bwasp.log
 
 The preceding `$BWASP_EXEC` makes sure that `make` runs from inside the
 singularity container, where we made sure all the moving parts are in working
-condition (i.e. all required binaries are in correct version and path).
+condition (i.e. all required binaries are of correct version and in the path).
 
 The first *make* command with the -n flag simply shows what _make_ will do and
 is valuable for reference.
@@ -221,7 +223,8 @@ BWASP provides an additional makefile to merge replicates and provide cumulative
 statistics over all replicates.
 The _xmkdirstr_ script in our example already set this up for us in the _Queen_
 directory.
-We only need to fill in the label (Pcan-queen) and run (from directory _Queen_):
+We only need to specify the desired output label (SYNONYM = Pcan-queen in the
+_Makefile_) and run (from directory _Queen_):
 
 ```bash
 $BWASP_EXEC make

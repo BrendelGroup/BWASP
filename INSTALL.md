@@ -13,12 +13,12 @@
 
 Assuming _git_ and  _singularity_ are installed on your system, you can get the
 BWASP code from GitHub and the container from the
-[Singularity Hub](https://www.singularity-hub.org/collections/763) as follows:
+[Singularity Hub](https://www.singularity-hub.org/collections/1203) as follows:
 
 ```bash
 git clone https://github.com/brendelgroup/BWASP.git
 cd BWASP
-singularity pull shub://BrendelGroup/BWASP
+singularity pull --name bwasp.simg shub://BrendelGroup/BWASP
 source bin/bwasp_env.sh
 ```
 
