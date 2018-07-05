@@ -2,7 +2,7 @@
 
 ## Requirements
 
-  * BWASP should run on any platform that supports [Singularity](http://singularity.lbl.gov/) (Linux, MacOS, Windows), although we have only tested on Linux.
+  * BWASP should run on any platform that supports [Singularity](https://www.sylabs.io/docs/) (Linux, MacOS, Windows), although we have only tested on Linux.
 
   * BWASP can execute on a single processor machine, but realistically you would want to have 10-20 cores available.
 
