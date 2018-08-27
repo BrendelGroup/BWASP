@@ -126,9 +126,10 @@ From: ubuntu:18.04
     apt -y install r-cran-rcurl
     apt -y install r-cran-xml2
    
-    echo 'Installing Bioconductor packages'
+    echo 'Installing other CRAN and Bioconductor packages'
     ######
-    echo 'source("https://bioconductor.org/biocLite.R")'                                         >  R2install
+    echo 'install.packages("R.devices", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'  > R2install
+    echo 'source("https://bioconductor.org/biocLite.R")'                                         >> R2install
     echo 'biocLite(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"),ask=FALSE)'      >> R2install
 
     Rscript R2install
@@ -136,7 +137,7 @@ From: ubuntu:18.04
     echo 'Installing BWASPR from https://github.com/BrendelGroup/BWASPR/ '
     ######
     cd /opt
-    git clone https://github.com/BrendelGroup/BWASPR.git
+    git clone https://github.com/vpbrendel/BWASPR.git
     R CMD INSTALL BWASPR
 
 
