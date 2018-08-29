@@ -87,8 +87,12 @@ endif
 
 ### 1.2 Obtain the SRA reads from NCBI.
 #
-%_1.fastq %_2.fastq:
-	fastq-dump --split-files $(SAMPLE)
+
+%.sra:
+	download_sra.sh $(SAMPLE)
+
+%_1.fastq %_2.fastq: $(SAMPLE).sra
+	fastq-dump --split-files $(SAMPLE).sra
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
