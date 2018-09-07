@@ -137,7 +137,7 @@ From: ubuntu:18.04
     echo 'Installing BWASPR from https://github.com/BrendelGroup/BWASPR/ '
     ######
     cd /opt
-    git clone https://github.com/vpbrendel/BWASPR.git
+    git clone https://github.com/BrendelGroup/BWASPR.git
     R CMD INSTALL BWASPR
 
 
