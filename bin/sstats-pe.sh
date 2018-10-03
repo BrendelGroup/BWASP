@@ -24,15 +24,18 @@ RAWREAD_NB2=`wc -l ${SAMPLE}_2.fastq|cut -d' ' -f1`
 RAWREAD_NB=`awk "BEGIN {printf \"%.0f\", ${RAWREAD_NB1}/4+${RAWREAD_NB2}/4}"`
 echo "Number of raw reads: ${RAWREAD_NB} (sum of left and right reads)" > ${SAMPLE}.stats
 
-RAWREAD_LGTH1=`awk 'NR==9' FastQC/${SAMPLE}_1_fastqc/fastqc_data.txt | awk -F" " '{printf "%.0f", $3}'`
-RAWREAD_LGTH2=`awk 'NR==9' FastQC/${SAMPLE}_2_fastqc/fastqc_data.txt | awk -F" " '{printf "%.0f", $3}'`
-echo "Raw read length (per FastQC report): ${RAWREAD_LGTH1} (left reads), ${RAWREAD_LGTH2} (right reads)" >> ${SAMPLE}.stats
+RAWREAD_LGTH1=`awk 'NR==9' FastQC/${SAMPLE}_1_fastqc/fastqc_data.txt | awk -F" " '{print $3}'`
+RAWREAD_LGTH2=`awk 'NR==9' FastQC/${SAMPLE}_2_fastqc/fastqc_data.txt | awk -F" " '{print $3}'`
+echo "Raw read length range (per FastQC report): ${RAWREAD_LGTH1} (left reads), ${RAWREAD_LGTH2} (right reads)" >> ${SAMPLE}.stats
+
+RAWREAD_ML1=`cat ${SAMPLE}_1.fastq | awk '{if(NR%4==2) printf "%.0f\n", length($1)}' > /tmp/${SAMPLE}_readlength1.txt; sort -n /tmp/${SAMPLE}_readlength1.txt | awk ' { a[i++]=$1; } END { printf "%.0f", a[int(i/2)]; }'`
+RAWREAD_ML2=`cat ${SAMPLE}_2.fastq | awk '{if(NR%4==2) printf "%.0f\n", length($1)}' > /tmp/${SAMPLE}_readlength2.txt; sort -n /tmp/${SAMPLE}_readlength2.txt | awk ' { a[i++]=$1; } END { printf "%.0f", a[int(i/2)]; }'`
+echo "Median length of raw reads: ${RAWREAD_ML1} (left reads), ${RAWREAD_ML2} (right reads)" >> ${SAMPLE}.stats
 
 RAWREAD_SZE1=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{printf "%.0f", sum;}' ${SAMPLE}_1.fastq`
 RAWREAD_SZE2=`awk 'BEGIN{sum=0;}{if(NR%4==2){sum+=length($0);}}END{printf "%.0f", sum;}' ${SAMPLE}_2.fastq`
 RAWSAMPLE_SZE=`awk "BEGIN {printf \"%.0f\", ${RAWREAD_SZE1} + ${RAWREAD_SZE2}}"`
 echo "Raw read sample size: ${RAWSAMPLE_SZE} bp" >> ${SAMPLE}.stats
-
 
 TRMREAD_NB1=`wc -l ${SAMPLE}_1_val_1.fq|cut -d' ' -f1`
 TRMREAD_NB2=`wc -l ${SAMPLE}_2_val_2.fq|cut -d' ' -f1`
