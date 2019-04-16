@@ -80,6 +80,8 @@ for line in input.readlines():
       continue
     if data.match(line):
       values = line.split('\t')
+      if not values[3]:
+        values[3] = int(0)
       methvals.append(float(values[3]))
       cumcntM+= int(values[1])
       cumcntU+= int(values[2])
@@ -130,6 +132,8 @@ for line in input.readlines():
     if data.match(line):
       i += 1
       values = line.split('\t')
+      if not values[3]:
+        values[3] = int(0)
       if float(values[3]) < m[label] - sfactor * s[label] or float(values[3]) > m[label] + sfactor * s[label]:
         print line.rstrip(), "**"
         exclude[i] = 1
