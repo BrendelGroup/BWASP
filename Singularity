@@ -7,15 +7,19 @@ From: ubuntu:18.04
     Please see https://github.com/BrendelGroup/BWASP for complete documentation.
 
 %post
+    export DEBIAN_FRONTEND=noninteractive
     apt -y update
     apt -y install build-essential
-    apt -y install bc git tcsh tzdata unzip zip wget
+    apt -y install tzdata
+    apt -y install bc git tcsh unzip zip wget
     apt -y install cpanminus
     apt -y install openjdk-8-jdk
     apt -y install software-properties-common
+    apt -y install libcairo2-dev libpango1.0-dev
     apt -y install libcurl4-openssl-dev
     apt -y install libcurl4-gnutls-dev
     apt -y install libgd-dev
+    apt -y install libgd-graph-perl
     apt -y install libmariadb-client-lgpl-dev
     apt -y install libpq-dev
     apt -y install libssl-dev
@@ -26,6 +30,13 @@ From: ubuntu:18.04
     apt -y install python3-minimal
     apt -y install python3-pip
 
+
+    echo 'Installing Aspera'
+    ######
+    wget https://download.asperasoft.com/download/sw/cli/3.9.1/ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    chmod +x ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    sed  -ie 's/~\/\.aspera/\/opt\/aspera/' ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    ./ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
 
 
     echo 'Installing HTSLIB from http://www.htslib.org/ '
@@ -79,7 +90,7 @@ From: ubuntu:18.04
 
     echo 'Installing GENOMETOOLS from from http://genometools.org/ '
     #### Prerequisites
-    apt -y install libcairo2-dev libpango1.0-dev
+    #apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
     wget http://genometools.org/pub/genometools-1.5.10.tar.gz
@@ -97,7 +108,7 @@ From: ubuntu:18.04
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
     #### Prerequisites
     apt -y install python-numpy python-scipy
-    cpanm --configure-timeout 3600  GD::Graph::lines
+    cpanm --configure-timeout 3600  --force  ExtUtils::Helpers
     cpanm --configure-timeout 3600  LWP::UserAgent
     cpanm --configure-timeout 3600  Math::Pari
     #### Install
@@ -107,7 +118,6 @@ From: ubuntu:18.04
 
     echo 'Installing R'
     #### 
-    export DEBIAN_FRONTEND=noninteractive
     add-apt-repository -y ppa:marutter/rrutter3.5
     add-apt-repository -y ppa:marutter/c2d4u3.5
     apt -y update
@@ -116,6 +126,7 @@ From: ubuntu:18.04
 
     echo 'Installing CRAN packages'
     ######
+    apt -y install r-cran-biocmanager
     apt -y install r-cran-dplyr
     apt -y install r-cran-gplots
     apt -y install r-cran-gridextra
@@ -128,9 +139,8 @@ From: ubuntu:18.04
    
     echo 'Installing other CRAN and Bioconductor packages'
     ######
-    echo 'install.packages("R.devices", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'  > R2install
-    echo 'source("https://bioconductor.org/biocLite.R")'                                         >> R2install
-    echo 'biocLite(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"),ask=FALSE)'      >> R2install
+    echo 'install.packages("R.devices", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'             > R2install
+    echo 'BiocManager::install(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"), ask=FALSE)'    >> R2install
 
     Rscript R2install
 
@@ -148,6 +158,9 @@ From: ubuntu:18.04
     export PATH=$PATH:/opt/sratoolkit.2.8.2-ubuntu64/bin
     export PATH=$PATH:/opt/trim_galore_zip
     export PATH=$PATH:/opt/BWASP/bin
+    export PATH=$PATH:/opt/aspera/cli/bin
+
+    export ASPERA_CERT=/opt/aspera/cli/etc/asperaweb_id_dsa.openssh
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
