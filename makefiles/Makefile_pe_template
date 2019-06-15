@@ -88,9 +88,11 @@ endif
 ### 1.2 Obtain the SRA reads from NCBI.
 #
 
-%_1.fastq %_2.fastq:
-	download_fastq.sh $(SAMPLE)
+%.sra:
+	prefetch -f all $(SAMPLE) -O .
 
+%_1.fastq %_2.fastq: $(SAMPLE).sra
+	fasterq-dump $(SAMPLE).sra -S -o $(SAMPLE)
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
@@ -243,6 +245,7 @@ $(GENOME).stats:	./genome/$(GENOME).fa
 cleanup:
 	-\mkdir _SCRATCH
 	-\mv $(SAMPLE)_*.fastq _SCRATCH
+	-\mv $(SAMPLE)_*.sra _SCRATCH
 	-\mv $(SAMPLE)_*.fq _SCRATCH
 	-\mv $(SAMPLE)_1_val_1_bismark_bt2_pe.sam _SCRATCH
 	-\mv $(SYNONYM)-deduplicated.sam _SCRATCH

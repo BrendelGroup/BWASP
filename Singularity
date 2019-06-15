@@ -77,8 +77,8 @@ From: ubuntu:18.04
     echo 'Installing SRATOOLKIT from http://www.ncbi.nlm.nih.gov/books/NBK158900/ '
     ######
     cd /opt
-    wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-ubuntu64.tar.gz
-    tar -xzf sratoolkit.2.8.2-ubuntu64.tar.gz
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-ubuntu64.tar.gz
+    tar -xzf sratoolkit.2.9.6-1-ubuntu64.tar.gz
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ '
     #### Prerequisites
@@ -155,7 +155,7 @@ From: ubuntu:18.04
     export LC_ALL=C
     export PATH=$PATH:/opt/Bismark
     export PATH=$PATH:/opt/FastQC
-    export PATH=$PATH:/opt/sratoolkit.2.8.2-ubuntu64/bin
+    export PATH=$PATH:/opt/sratoolkit.2.9.6-1-ubuntu64/bin
     export PATH=$PATH:/opt/trim_galore_zip
     export PATH=$PATH:/opt/BWASP/bin
     export PATH=$PATH:/opt/aspera/cli/bin
