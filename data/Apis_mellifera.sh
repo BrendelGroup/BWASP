@@ -124,6 +124,18 @@ sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989671/;"
 
 sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989670/;" Amel/${EXPERIMENT}/africanized/replicate1/Makefile
 
+EXPERIMENT=Drewell # https://dx.doi.org/10.1242/dev.110163
+
+./xmkdirstr Amel ${EXPERIMENT} drone 1 p
+./xmkdirstr Amel ${EXPERIMENT} haploid_egg 1 p
+./xmkdirstr Amel ${EXPERIMENT} sperm 1 p
+
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316836/;" Amel/${EXPERIMENT}/drone/replicate1/Makefile
+
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316837/;" Amel/${EXPERIMENT}/haploid_egg/replicate1/Makefile
+
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316838/;" Amel/${EXPERIMENT}/sperm/replicate1/Makefile
+
 EXPERIMENT=Remnant # https://dx.doi.org/10.1186/s12864-016-2506-8
 
 ./xmkdirstr Amel ${EXPERIMENT}  fembryo 1 p
