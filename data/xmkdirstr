@@ -40,7 +40,9 @@ for ((i=1; i<= $nreps; i++)); do
  echo ${replicate_path}
  mkdir -p ${replicate_path}
  # link the genome to the replicate
- ln -s ${species}/genome ${replicate_path}/genome
+ pushd ${replicate_path}
+ ln -s  ../../../genome
+ popd
 
  if [ $pors == "p" ]; then
    cp ../makefiles/Makefile_pe_template ${replicate_path}/Makefile
