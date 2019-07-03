@@ -116,41 +116,6 @@ From: ubuntu:18.04
     git clone https://github.com/BrendelGroup/BWASP.git
 
 
-    echo 'Installing R'
-    #### 
-    add-apt-repository -y ppa:marutter/rrutter3.5
-    add-apt-repository -y ppa:marutter/c2d4u3.5
-    apt -y update
-    apt -y install r-base-core r-base-dev
-    R CMD javareconf
-
-    echo 'Installing CRAN packages'
-    ######
-    apt -y install r-cran-biocmanager
-    apt -y install r-cran-dplyr
-    apt -y install r-cran-gplots
-    apt -y install r-cran-gridextra
-    apt -y install r-cran-pastecs
-    apt -y install r-cran-rjava
-    apt -y install r-cran-sqldf
-    apt -y install r-cran-venneuler
-    apt -y install r-cran-rcurl
-    apt -y install r-cran-xml2
-   
-    echo 'Installing other CRAN and Bioconductor packages'
-    ######
-    echo 'install.packages("R.devices", repos="http://ftp.ussg.iu.edu/CRAN", dependencies=TRUE)'             > R2install
-    echo 'BiocManager::install(c("BiocGenerics", "GenomicRanges", "genomation","methylKit"), ask=FALSE)'    >> R2install
-
-    Rscript R2install
-
-    echo 'Installing BWASPR from https://github.com/BrendelGroup/BWASPR/ '
-    ######
-    cd /opt
-    git clone https://github.com/BrendelGroup/BWASPR.git
-    R CMD INSTALL BWASPR
-
-
 %environment
     export LC_ALL=C
     export PATH=$PATH:/opt/Bismark
