@@ -9,35 +9,10 @@ From: ubuntu:18.04
 %post
     export DEBIAN_FRONTEND=noninteractive
     apt -y update
-    apt -y install build-essential
-    apt -y install tzdata
-    apt -y install bc git tcsh unzip zip wget
-    apt -y install cpanminus
-    apt -y install openjdk-8-jdk
-    apt -y install software-properties-common
-    apt -y install libcairo2-dev libpango1.0-dev
-    apt -y install libcurl4-openssl-dev
-    apt -y install libcurl4-gnutls-dev
-    apt -y install libgd-dev
-    apt -y install libgd-graph-perl
-    apt -y install libmariadb-client-lgpl-dev
-    apt -y install libpq-dev
-    apt -y install libssl-dev
-    apt -y install libtbb-dev
-    apt -y install libxml2-dev
-    apt -y install python-minimal
-    apt -y install python-pip
-    apt -y install python3-minimal
-    apt -y install python3-pip
-
-
-    echo 'Installing Aspera'
-    ######
-    wget https://download.asperasoft.com/download/sw/cli/3.9.1/ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    chmod +x ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    sed  -ie 's/~\/\.aspera/\/opt\/aspera/' ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    ./ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-
+    apt -y install bc git tcsh unzip zip wget tzdata \
+                   build-essential \
+                   openjdk-11-jre-headless \
+                   python3-pip cpanminus
 
     echo 'Installing HTSLIB from http://www.htslib.org/ '
     #### Prerequisites
@@ -57,9 +32,11 @@ From: ubuntu:18.04
     cd samtools
     make && make install
 
-    echo 'Installing BOWTIE2 from http://bowtie-bio.sourceforge.net/bowtie2 '
+    echo 'Installing Bowtie2 from https://github.com/BenLangmead/bowtie2 '
     ######
-    apt -y install bowtie2
+    cd /opt
+    wget --content-disposition https://github.com/BenLangmead/bowtie2/releases/download/v2.3.5.1/bowtie2-2.3.5.1-linux-x86_64.zip
+    unzip bowtie2-2.3.5.1-linux-x86_64.zip
 
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/ '
     ######
@@ -67,14 +44,21 @@ From: ubuntu:18.04
     git clone https://github.com/BrendelGroup/Bismark
     # Note that we are using the slightly modified Brendel Group version of Bismark
 
-    echo 'Installing FASTQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ '
+    echo 'Installing FastQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ '
     #### Install
     cd /opt
-    wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
-    unzip fastqc_v0.11.5.zip
+    wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip
+    unzip fastqc_v0.11.8.zip
     chmod +x FastQC/fastqc
 
-    echo 'Installing SRATOOLKIT from http://www.ncbi.nlm.nih.gov/books/NBK158900/ '
+    echo 'Installing Aspera'
+    ######
+    wget https://download.asperasoft.com/download/sw/cli/3.9.1/ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    chmod +x ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    sed  -ie 's/~\/\.aspera/\/opt\/aspera/' ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+    ./ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
+
+    echo 'Installing SRA Toolkit from https://github.com/ncbi/sra-tools'
     ######
     cd /opt
     wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-ubuntu64.tar.gz
@@ -82,15 +66,13 @@ From: ubuntu:18.04
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ '
     #### Prerequisites
-    pip install --upgrade cutadapt
+    pip3 install cutadapt
     #### Install
     cd /opt
-    wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip
-    unzip trim_galore_v0.4.1.zip
+    wget --content-disposition https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.zip
+    unzip TrimGalore-0.6.3.zip
 
     echo 'Installing GENOMETOOLS from from http://genometools.org/ '
-    #### Prerequisites
-    #apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
     wget http://genometools.org/pub/genometools-1.5.10.tar.gz
@@ -99,6 +81,8 @@ From: ubuntu:18.04
     make && make install
 
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/ '
+    #### Prerequisites
+    #apt -y install libcairo2-dev libpango1.0-dev
     ######
     cd /opt
     git clone https://github.com/BrendelGroup/AEGeAn.git
@@ -118,14 +102,13 @@ From: ubuntu:18.04
 
 %environment
     export LC_ALL=C
+    export PATH=$PATH:/opt/bowtie2-2.3.5.1-linux-x86_64
     export PATH=$PATH:/opt/Bismark
     export PATH=$PATH:/opt/FastQC
     export PATH=$PATH:/opt/sratoolkit.2.9.6-1-ubuntu64/bin
-    export PATH=$PATH:/opt/trim_galore_zip
+    export PATH=$PATH:/opt/TrimGalore-0.6.3
     export PATH=$PATH:/opt/BWASP/bin
     export PATH=$PATH:/opt/aspera/cli/bin
-
-    export ASPERA_CERT=/opt/aspera/cli/etc/asperaweb_id_dsa.openssh
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
