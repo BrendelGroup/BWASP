@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #BWASP python script eval_srmbias.py
@@ -53,7 +53,7 @@ line = input.readline()
 if cline.match(line):
   mtch = cline.match(line)
   label = mtch.group(1)
-  if verbose: print label
+  if verbose: print (label)
 
 input.readline()
 input.readline()
@@ -61,22 +61,22 @@ for line in input.readlines():
     if cline.match(line):
       start = int(qfactor * len(methvals))
       end   = int((1.0-qfactor) * len(methvals))
-      if verbose: print len(methvals), start, end
+      if verbose: print (len(methvals), start, end)
       mean=numpy.mean(methvals[start:end])
       standard_deviation=numpy.std(methvals[start:end])
       m[label] = mean
       s[label] = standard_deviation
       sumM[label] = cumcntM
       sumU[label] = cumcntU
-      if verbose: print "  mean = ", m[label], "std = ", s[label]
-      if verbose: print "  cumcntM = ", cumcntM, "cumcntU = ", cumcntU
+      if verbose: print ("  mean = ", m[label], "std = ", s[label])
+      if verbose: print ("  cumcntM = ", cumcntM, "cumcntU = ", cumcntU)
 
       methvals=[]
       cumcntM= 0
       cumcntU= 0
       mtch = cline.match(line)
       label = mtch.group(1)
-      if verbose: print label
+      if verbose: print (label)
       continue
     if data.match(line):
       values = line.split('\t')
@@ -89,16 +89,16 @@ for line in input.readlines():
 #Last context:
 start = int(qfactor * len(methvals))
 end   = int((1.0-qfactor) * len(methvals))
-if verbose: print len(methvals), start, end
+if verbose: print (len(methvals), start, end)
 mean=numpy.mean(methvals[start:end])
 standard_deviation=numpy.std(methvals[start:end])
 m[label] = mean
 s[label] = standard_deviation
 sumM[label] = cumcntM
 sumU[label] = cumcntU
-if verbose: print "  mean = ", m[label], "std = ", s[label]
-if verbose: print "  cumcntM = ", cumcntM, "cumcntU = ", cumcntU
-if verbose: print "\n\n"
+if verbose: print ("  mean = ", m[label], "std = ", s[label])
+if verbose: print ("  cumcntM = ", cumcntM, "cumcntU = ", cumcntU)
+if verbose: print ("\n\n")
 
 
 
@@ -108,7 +108,7 @@ exclude=[0]
 exclude=[0]
 for i in range(len(methvals)):
   exclude.append(0)
-print "Outlier positions:\n\n"
+print ("Outlier positions:\n\n")
 
 cumcntMv= []
 cumcntUv= []
@@ -135,7 +135,7 @@ for line in input.readlines():
       if not values[3]:
         values[3] = int(0)
       if float(values[3]) < m[label] - sfactor * s[label] or float(values[3]) > m[label] + sfactor * s[label]:
-        print line.rstrip(), "**"
+        print (line.rstrip(), "**")
         exclude[i] = 1
 
 # Establish "ignore" parameters:
@@ -153,11 +153,11 @@ for i in range(len(methvals)):
   else:
     break;
 
-print "\n\nRecommended bismark_methylation_extractor flags:\n"
-print "--ignore", igf, "--maxrlgth", len(methvals)-igt, "\n"
+print ("\n\nRecommended bismark_methylation_extractor flags:\n")
+print ("--ignore", igf, "--maxrlgth", len(methvals)-igt, "\n")
 
 
-print "\nRemoval of biased calls:\n"
+print ("\nRemoval of biased calls:\n")
 cumcntM= 0
 cumcntU= 0
 input = open(sys.argv[1], 'r')
@@ -171,7 +171,7 @@ input.readline()
 input.readline()
 for line in input.readlines():
     if cline.match(line):
-      print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igf+igt, len(methvals), round(100.*float(igf+igt)/float(len(methvals)),2))
+      print ("{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igf+igt, len(methvals), round(100.*float(igf+igt)/float(len(methvals)),2)))
       mtch = cline.match(line)
       label = mtch.group(1)
       i = 0
@@ -185,4 +185,4 @@ for line in input.readlines():
         cumcntM+= int(values[1])
         cumcntU+= int(values[2])
 
-print "{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igf+igt, len(methvals), round(100.*float(igf+igt)/float(len(methvals)),2))
+print ("{0:s} cntM= {1:7d} of {2:8d} ({3:6.2f}%)\tcntU= {4:8d} of {5:9d} ({6:6.2f}%)\tfor {7:2d} ignored positions of {8:3d} ({9:6.2f}%)".format(label, cumcntM, sumM[label], round(100.*float(cumcntM)/float(sumM[label]),2), cumcntU, sumU[label], round(100.*float(cumcntU)/float(sumU[label]),2), igf+igt, len(methvals), round(100.*float(igf+igt)/float(len(methvals)),2)))
