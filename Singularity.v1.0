@@ -3,7 +3,7 @@ From: ubuntu:18.04
 
 %help
     This container provides portable & reproducible components for BWASP:
-    Bisulfite-seq data Workflow Automation Software and Protocols from Brendel Group.
+    Bisulfite-seq data Workflow Automation Software and Protocols from the Brendel Group.
     Please see https://github.com/BrendelGroup/BWASP for complete documentation.
 
 %post
@@ -12,7 +12,9 @@ From: ubuntu:18.04
     apt -y install bc git tcsh unzip zip wget tzdata \
                    build-essential \
                    openjdk-11-jre-headless \
-                   python3-pip cpanminus
+                   python-minimal  \
+                   python3-pip \
+                   cpanminus
 
     echo 'Installing HTSLIB from http://www.htslib.org/ '
     #### Prerequisites
@@ -39,7 +41,9 @@ From: ubuntu:18.04
     unzip bowtie2-2.3.5.1-linux-x86_64.zip
 
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/ '
-    ######
+    #### Prerequisites
+    apt -y install libgd-dev libgd-graph-perl
+    #####
     cd /opt
     git clone https://github.com/BrendelGroup/Bismark
     # Note that we are using the slightly modified Brendel Group version of Bismark
@@ -58,7 +62,7 @@ From: ubuntu:18.04
     sed  -ie 's/~\/\.aspera/\/opt\/aspera/' ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
     ./ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
 
-    echo 'Installing SRA Toolkit from https://github.com/ncbi/sra-tools'
+    echo 'Installing SRA Toolkit from https://github.com/ncbi/sra-tools '
     ######
     cd /opt
     wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-ubuntu64.tar.gz
@@ -73,6 +77,8 @@ From: ubuntu:18.04
     unzip TrimGalore-0.6.3.zip
 
     echo 'Installing GENOMETOOLS from from http://genometools.org/ '
+    #### Prerequisites
+    apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
     wget http://genometools.org/pub/genometools-1.5.10.tar.gz
@@ -81,8 +87,6 @@ From: ubuntu:18.04
     make && make install
 
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/ '
-    #### Prerequisites
-    #apt -y install libcairo2-dev libpango1.0-dev
     ######
     cd /opt
     git clone https://github.com/BrendelGroup/AEGeAn.git
@@ -91,10 +95,10 @@ From: ubuntu:18.04
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
     #### Prerequisites
-    apt -y install python-numpy python-scipy
+    apt -y install python3-numpy python3-scipy
+    apt -y install libgd-dev libgd-graph-perl
     cpanm --configure-timeout 3600  --force  ExtUtils::Helpers
     cpanm --configure-timeout 3600  LWP::UserAgent
-    cpanm --configure-timeout 3600  Math::Pari
     #### Install
     cd /opt
     git clone https://github.com/BrendelGroup/BWASP.git
