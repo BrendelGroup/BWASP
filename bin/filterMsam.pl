@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: March 24, 2016	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: July 20, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -31,9 +31,8 @@ Paired reads are rejected if either one of the reads fails the criterion (output
 
 
 # Libraries and pragmas
-#use strict;
+use strict;
 use Getopt::Long;
-use Math::Pari qw(binomial gpui);
 use Math::BigFloat ':constant';
 
 # Set command line usage
@@ -149,7 +148,7 @@ my ( $Totalzcount, $TotalZcount, $Totalxcount, $TotalXcount, $Totalhcount, $Tota
 
 my $scnt = 0;
 while ( $samstring = <MSFILE> ) {
-	if ($samstring =~ /^@[A-Za-z][A-Za-z](\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring =~ /^@CO\t.*/) {
+	if ($samstring =~ /^\@(HD|SQ|RG|PG)(\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring =~ /^\@CO\t.*/) {
 #         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
 	  next;
 	}
@@ -157,7 +156,7 @@ while ( $samstring = <MSFILE> ) {
 	if ($scnt%1000000 == 0) {
 	  printf STDERR "scnt= %12d\n", $scnt;
 	}
-        @a = split( "\t", $samstring );
+        my @a = split( "\t", $samstring );
 	$mthstring = substr($a[13],5);
 	$zcount = ($mthstring =~ tr/z//);
 	$Zcount = ($mthstring =~ tr/Z//);
@@ -224,12 +223,12 @@ my $logP;
 my $reject_read1;
 
 while ( $samstring = <MSFILE> ) {
-	if ($samstring =~ /^@[A-Za-z][A-Za-z](\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring =~ /^@CO\t.*/) {
+	if ($samstring =~ /^\@(HD|SQ|RG|PG)(\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring =~ /^\@CO\t.*/) {
 #         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
 	  next;
 	}
 	$scnt++;
-        @a = split( "\t", $samstring );
+        my @a = split( "\t", $samstring );
 	$mthstring = substr($a[13],5);
 
 	$logP = read_calls_probability($mthstring);
@@ -372,4 +371,26 @@ sub log_binomial_tail {
     if ($TP > 1.0 - $MINTP) {$TP = 1.0 - $MINTP;}
     return log(1.0-$TP);
   }
+}
+
+
+
+sub binomial {
+   my ($n, $k) = @_;
+   my $retv = 1; 
+  
+   if ($k > $n - $k) {$k = $n - $k;}
+  
+   ## Calculate value of [n * (n-1) *---* (n-k+1)] / [k * (k-1) *----* 1] 
+   for (my $i = 0; $i < $k; ++$i) { 
+     $retv *= ($n - $i); 
+     $retv /= ($i + 1); 
+   } 
+   return $retv; 
+}
+
+
+sub gpui {
+   my ($p, $k) = @_;
+   return $p ** $k;
 }
