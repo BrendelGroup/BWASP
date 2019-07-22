@@ -96,7 +96,6 @@ From: ubuntu:18.04
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
     #### Prerequisites
     apt -y install python3-numpy python3-scipy
-    apt -y install libgd-dev libgd-graph-perl
     cpanm --configure-timeout 3600  --force  ExtUtils::Helpers
     cpanm --configure-timeout 3600  LWP::UserAgent
     #### Install
