@@ -96,12 +96,11 @@ From: ubuntu:18.04
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
     #### Prerequisites
     apt -y install python3-numpy python3-scipy
-    cpanm --configure-timeout 3600  --force  ExtUtils::Helpers
-    cpanm --configure-timeout 3600  LWP::UserAgent
+    cpanm Getopt::Long Math::BigFloat Array::Split Parallel::Loops
+
     #### Install
     cd /opt
     git clone https://github.com/BrendelGroup/BWASP.git
-
 
 %environment
     export LC_ALL=C

@@ -46,6 +46,7 @@ SAMTOOLS_SORT_OPTIONS = -m 10G -@ 6
 TRIM_GALORE_OPTIONS   =
 SORT_BUFFER_SIZE      = 20G
 BME_OPTIONS           = --multicore 8  --buffer_size $(SORT_BUFFER_SIZE)
+MFILTER_NUMPRC        = 8
 
 # Note: The --phred33/64 option to trim_galore is set below according to the output of FastQC
 
@@ -150,7 +151,7 @@ $(SYNONYM)-deduplicated.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.sam
 ### 2.3 Filter reads to remove likely non-BS-treated contaminants.
 #
 $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
-	xfilterMsam NULL p $(SYNONYM)-deduplicated
+	xfilterMsam ${MFILTER_NUMPRC) p $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
 $(SAMPLE)-header.sam:	$(SAMPLE)_1_val_1_bismark_bt2_pe.bam

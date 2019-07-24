@@ -1,20 +1,21 @@
 #!/bin/tcsh -f
 #
 #xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
-#              input (Bismark-produced) BS-seq SAM file.
+#              input (Bismark-produced) BS-seq SAM file using filterMsam.pl (assumed to be in
+#              the executable path).
 #
-#              Version:	July 3, 2016	Author: Volker Brendel (vbrendel@indiana.edu)
+#              Version:	July 22, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
 
 if ( $#argv != 3 ) then
-  echo "Usage: xfilterMsam <path> [p|s] <MsamFile>.sam"
+  echo "Usage: xfilterMsam numprc [p|s] <MsamFile>.sam"
   echo ""
-  echo "       <path> = path to BWASP script filterMsam.pl"
+  echo "       numprc = number of processors to use"
   echo ""
   echo "       p - for paired-end alignment input; s - for single read alignment input"
   echo ""
   echo "       Note that the file argument to xfilterMsam is the stem of the filename with extension .sam."
-  echo "       Example:  xfilterMsam /usr/local/src/BWASP/bin p sample"
-  echo "                 (this will process the sample.sam input file)"
+  echo "       Example:  xfilterMsam 4 p sample"
+  echo "                 (this will process the sample.sam paired read input file with 4 processors)"
   echo ""
   echo "       Any header lines in the input file are ignored.  If you need the header in the output,"
   echo "       you need to re-attach it.  Example:"
@@ -23,15 +24,15 @@ if ( $#argv != 3 ) then
   echo ""
   exit
 else if ( !($argv[2] == "p" || $argv[2] == "s")  ||  ! -e $argv[3].sam ) then
-  echo "Usage: xfilterMsam path [p|s] <MsamFile>.sam"
+  echo "Usage: xfilterMsam numprc [p|s] <MsamFile>.sam"
   echo ""
-  echo "       path = path to BWASP script filterMsam.pl"
+  echo "       numprc = number of processors to use"
   echo ""
   echo "       p - for paired-end alignment input; s - for single read alignment input"
   echo ""
   echo "       Note that the file argument to xfilterMsam is the stem of the filename with extension .sam."
-  echo "       Example:  xfilterMsam /usr/local/src/BWASP/bin p sample"
-  echo "                 (this will process the sample.sam input file)"
+  echo "       Example:  xfilterMsam 4 p sample"
+  echo "                 (this will process the sample.sam paired read input file with 4 processors)"
   echo ""
   echo "       Any header lines in the input file are ignored.  If you need the header in the output,"
   echo "       you need to re-attach it.  Example:"
@@ -45,7 +46,7 @@ else if ( !($argv[2] == "p" || $argv[2] == "s")  ||  ! -e $argv[3].sam ) then
   endif
   exit
 else
-  set BWASPBIN = $argv[1]
+  set numprc   = $argv[1]
   set psflag   = $argv[2]
   set MsamFile = $argv[3]
 endif
@@ -65,17 +66,17 @@ while ( $i <= 10 )
   endif
   echo "Now running:"
   if ( $psflag == "p" ) then
-    echo "filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+    echo "filterMsam.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
     echo ""
-    filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    filterMsam.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
     set x11 = `egrep "^f11cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x01 = `egrep "^f01cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x10 = `egrep "^f10cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     @ x = $x11 + $x01 + $x10
   else
-    echo "filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+    echo "filterMsam.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
     echo ""
-    filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    filterMsam.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
     set x = `tail -n 1 $MsamFile-$i.summary | cut -d"	" -f2`
   endif
   if ( $x == 0 ) then
