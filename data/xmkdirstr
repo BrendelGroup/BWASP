@@ -6,30 +6,63 @@ sample=$3
 nreps=$4
 pors=$5
 
-mkdir $species
-cd $species
-mkdir genome
-cd genome
-cp ../../../makefiles/Makefile_parse_GFF3_template Makefile
-cd ..
-mkdir $study
-cd $study
-mkdir $sample
-cd $sample
-cp ../../../../makefiles/Makefile_merge_template Makefile
-r=0
-while [ $r -lt $nreps ]; do
- ((r++))
- mkdir replicate$r
- cd replicate$r
- ln -s ../../../genome
- if [ $pors == "p" ]; then
-   cp ../../../../../makefiles/Makefile_pe_template Makefile
- else
-   cp ../../../../../makefiles/Makefile_se_template Makefile
- fi
- cd ..
-done
-cd ../../..
+# Template values are needed for replacemet
+MERGE_TEMPLATE_LABEL=Pcan-Queen
+PE_TEMPLATE_LABEL=Pcan-21Q
+SE_TEMPLATE_LABEL=Amel-afbCTRL
 
-ls -RC $species
+# make the genome dir
+mkdir -p ${species}/genome
+
+# only copy GFF parse makefile if it doesn't exist
+if [ ! -f "${species}/genome/Makefile" ]; then
+  cp  ../makefiles/Makefile_parse_GFF3_template ${species}/genome/Makefile
+fi
+
+# check for sample dir
+if [ -d ${species}/${study}/${sample} ]; then
+  echo 'This sample already exists.'
+  exit 1
+fi
+
+mkdir -p ${species}/${study}/${sample}
+
+# copy merge makefile if there are more than one replicates
+if (( "$nreps" > 1 )); then
+  cp ../makefiles/Makefile_merge_template ${species}/${study}/${sample}/Makefile
+  # replace with proper sample name
+  sed -i -e "s/${MERGE_TEMPLATE_LABEL}/${sample}/;" ${species}/${study}/${sample}/Makefile
+fi
+
+
+for ((i=1; i<= $nreps; i++)); do
+ replicate_path=${species}/${study}/${sample}/replicate$i
+ echo ${replicate_path}
+ mkdir -p ${replicate_path}
+ # link the genome to the replicate
+ pushd ${replicate_path}
+ ln -s  ../../../genome
+ popd
+
+ if [ $pors == "p" ]; then
+   cp ../makefiles/Makefile_pe_template ${replicate_path}/Makefile
+
+   # replace with proper sample name
+   if (( "$nreps" == 1 )); then
+     sed -i -e "s/${PE_TEMPLATE_LABEL}/${sample}/;" ${replicate_path}/Makefile
+   else
+     sed -i -e "s/${PE_TEMPLATE_LABEL}/${sample}${i}/;" ${replicate_path}/Makefile
+   fi
+
+ else
+   cp ../makefiles/Makefile_se_template ${replicate_path}/Makefile
+
+   # replace with proper sample name
+   if (( "$nreps" == 1 )); then
+     sed -i -e "s/${SE_TEMPLATE_LABEL}/${sample}/;" ${replicate_path}/Makefile
+   else
+     sed -i -e "s/${SE_TEMPLATE_LABEL}/${sample}${i}/;" ${replicate_path}/Makefile
+   fi
+ fi
+
+done
