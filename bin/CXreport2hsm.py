@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #BWASP python script CXreport2hsm.py
 #
@@ -20,7 +20,7 @@ minnbs = []
 
 minNval = int(sys.argv[2])
 
-with open(sys.argv[1], 'rb') as infile:
+with open(sys.argv[1], 'r') as infile:
   infile.readline()
   for line in infile:
       input = (line.rstrip('\n')).split("\t");
@@ -32,7 +32,7 @@ t=0.01/S_n
 
 
 unique_n = list(set(psites))
-unique_n = map(int,unique_n)
+unique_n = list(map(int,unique_n))
 unique_n.sort()
 for n in range (0,len(unique_n)):
     for m in range(1,int(unique_n[n]+1)):
@@ -51,13 +51,13 @@ scdFile.write("SeqID.Pos" + '\t' + "SequenceID" + '\t' + "Position" + '\t' + "St
 hsmFile.write("SeqID.Pos" + '\t' + "SequenceID" + '\t' + "Position" + '\t' + "Strand" + '\t' + "Coverage" + '\t' + "Prcnt_Meth" +'\t'+ "Prcnt_Unmeth" +'\n')
 nsmFile.write("SeqID.Pos" + '\t' + "SequenceID" + '\t' + "Position" + '\t' + "Strand" + '\t' + "Coverage" + '\t' + "Prcnt_Meth" +'\t'+ "Prcnt_Unmeth" +'\n')
 
-with open(sys.argv[1], 'rb') as infile:
+with open(sys.argv[1], 'r') as infile:
     infile.readline()
     for line in infile:
         line = line.replace('\r','')
         input = (line.rstrip('\n')).split("\t");
         if int(input[3]) in unique_n:
-            if int(input[3]) <> 0:
+            if int(input[3]) is not 0:
                 C_Freq = "{0:.2f}".format((float(input[4])/float(input[3]))*100)
                 T_Freq = "{0:.2f}".format((float(input[5])/float(input[3]))*100)
             else:

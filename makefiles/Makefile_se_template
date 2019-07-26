@@ -41,12 +41,13 @@ SYNONYM = Amel-afbCTRL
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 10 --bowtie2 $(BOWTIE2_OPTIONS)
-FASTQC_OPTIONS        = --threads 2  --extract
-SAMTOOLS_SORT_OPTIONS = -m 7G -@ 4
+BISMARK_OPTIONS       = --multicore 4 --bowtie2 $(BOWTIE2_OPTIONS)
+FASTQC_OPTIONS        = --threads 4  --extract
+SAMTOOLS_SORT_OPTIONS = -m 10G -@ 6
 TRIM_GALORE_OPTIONS   =
 SORT_BUFFER_SIZE      = 20G
-BME_OPTIONS           = --multicore 10  --buffer_size $(SORT_BUFFER_SIZE)
+BME_OPTIONS           = --multicore 8  --buffer_size $(SORT_BUFFER_SIZE)
+MFILTER_NUMPRC        = 8
 
 # Note: The --phred33/64 option to trim_galore is set below according to the output of FastQC
 
@@ -90,10 +91,10 @@ endif
 #
 
 %.sra:
-	download_sra.sh $(SAMPLE)
+	prefetch -f all  $(SAMPLE) -O .
 
 %.fastq: $(SAMPLE).sra
-	fastq-dump  $(SAMPLE).sra
+	fasterq-dump $(SAMPLE).sra -o $(SAMPLE).fastq
 ifeq ("$(wildcard ./FastQC)","")
 	mkdir FastQC
 endif
@@ -145,7 +146,7 @@ $(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed_bismark_bt2.sam
 ### 2.3 Filter reads to remove likely non-BS-treated contaminants.
 #
 $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
-	xfilterMsam NULL s $(SYNONYM)-deduplicated
+	xfilterMsam ${MFILTER_NUMPRC} s $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
 $(SAMPLE)-header.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
@@ -238,6 +239,7 @@ $(GENOME).stats:	./genome/$(GENOME).fa
 cleanup:
 	-\mkdir _SCRATCH
 	-\mv $(SAMPLE).fastq _SCRATCH
+	-\mv $(SAMPLE).sra _SCRATCH
 	-\mv $(SAMPLE)_trimmed.fq _SCRATCH
 	-\mv $(SAMPLE)_trimmed_bismark_bt2.sam _SCRATCH
 	-\mv $(SYNONYM)-deduplicated.sam _SCRATCH
