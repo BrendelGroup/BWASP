@@ -36,7 +36,7 @@ BWASP use via the singularity container is highly recommended, with no known
 drawbacks.
 However, if desired, you can of course install all the required software and
 packages individually on your computer system.
-The singularity [recipe file](./Singularity) in this repository chould serve as
+The singularity [recipe file](./Singularity) in this repository should serve as
 a guide to perform such an installation.
 The `bwasp.simg` container was built on the 
 [current long-term supported Ubuntu 18.04 distribution](https://www.ubuntu.com/download/desktop)
