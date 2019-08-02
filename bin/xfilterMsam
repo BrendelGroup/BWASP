@@ -1,10 +1,10 @@
 #!/bin/tcsh -f
 #
 #xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
-#              input (Bismark-produced) BS-seq SAM file using filterMsam.pl (assumed to be in
-#              the executable path).
+#              input (Bismark-produced) BS-seq SAM file using filterMsam.pl or its parallel version
+#              filterMsamP.pl (perl scripts assumed to be in the executable path).
 #
-#              Version:	July 22, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
+#              Version:	August 2, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
 
 if ( $#argv != 3 ) then
   echo "Usage: xfilterMsam numprc [p|s] <MsamFile>.sam"
@@ -66,17 +66,29 @@ while ( $i <= 10 )
   endif
   echo "Now running:"
   if ( $psflag == "p" ) then
-    echo "filterMsam.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-    echo ""
-    filterMsam.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    if ( $numprc == 1 ) then
+      echo "filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+            filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary 
+      echo ""
+    else
+      echo "filterMsamP.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+            filterMsamP.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+      echo ""
+    endif
     set x11 = `egrep "^f11cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x01 = `egrep "^f01cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x10 = `egrep "^f10cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     @ x = $x11 + $x01 + $x10
   else
-    echo "filterMsam.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-    echo ""
-    filterMsam.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+    if ( $numprc == 1 ) then
+      echo "filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+            filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary 
+      echo ""
+    else
+      echo "filterMsamP.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
+            filterMsamP.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
+      echo ""
+    endif
     set x = `tail -n 1 $MsamFile-$i.summary | cut -d"	" -f2`
   endif
   if ( $x == 0 ) then
