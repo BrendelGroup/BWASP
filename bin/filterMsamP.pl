@@ -332,8 +332,8 @@ if ($paired == 0) {
 	    }
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
-          sleep 20*$_;
-	  while (`ps o state,command axh | egrep "perl \./filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 20*$_};
+          sleep 10*$_;
+	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
 	  return @samstringsChunksLabeled; 
 	});
 }
@@ -360,8 +360,8 @@ else {
 	    }
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
-	  sleep 20*$_;
-	  while (`ps o state,command axh | egrep "perl \./filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 20*$_};
+	  sleep 10*$_;
+	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
 	  return @samstringsChunksLabeled; 
 	});
 }
