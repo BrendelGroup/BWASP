@@ -203,10 +203,10 @@ if ($paired == 0) {
 	$TotalHcount += $Hcount;
 
 	if ($scnt < $bindev[$bin]) {
-	  push($samstringchunks[$bin], [$scnt, $samstring1]);
+	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
 	}
 	else {
-	  push($samstringchunks[$bin], [$scnt, $samstring1]);
+	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
 	  $bin += 1;
 	}
   }
@@ -256,17 +256,17 @@ else {
 	$TotalHcount += $Hcount;
 
 	if ($scnt < $bindev[$bin]) {
-	  push($samstringchunks[$bin], [$scnt/2, $samstring1, $samstring2]);
+	  push(@{$samstringchunks[$bin]}, [$scnt/2, $samstring1, $samstring2]);
 	}
 	else {
-	  push($samstringchunks[$bin], [$scnt/2, $samstring1, $samstring2]);
+	  push(@{$samstringchunks[$bin]}, [$scnt/2, $samstring1, $samstring2]);
 	  $bin += 1;
 	}
   }
 }
 
 foreach ( 0 .. $numprc-1 ) {
-  shift $samstringchunks[$_];
+  shift @{$samstringchunks[$_]};
 }
 
 my ($pz, $pZ, $px, $pX, $ph, $pH);
