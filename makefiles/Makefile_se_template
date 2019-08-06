@@ -146,7 +146,7 @@ $(SYNONYM)-deduplicated.sam:	$(SAMPLE)_trimmed_bismark_bt2.sam
 ### 2.3 Filter reads to remove likely non-BS-treated contaminants.
 #
 $(SYNONYM).sam:	$(SYNONYM)-deduplicated.sam $(SAMPLE)-header.sam
-	xfilterMsam ${MFILTER_NUMPRC} s $(SYNONYM)-deduplicated
+	xfilterMsam $(MFILTER_NUMPRC) s $(SYNONYM)-deduplicated
 	cat $(SAMPLE)-header.sam Accepted-Reads-$(SYNONYM)-deduplicated.sam > $(SYNONYM).sam
 
 $(SAMPLE)-header.sam:	$(SAMPLE)_trimmed_bismark_bt2.bam
