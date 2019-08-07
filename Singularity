@@ -27,7 +27,7 @@ From: ubuntu:18.04
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/ '
     #### Prerequisites
-    apt -y install ncurses-dev
+    apt -y install ncurses-dev libcurl4-openssl-dev
     #### Install
     cd /opt
     git clone git://github.com/samtools/samtools.git samtools
