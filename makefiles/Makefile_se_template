@@ -47,7 +47,7 @@ SAMTOOLS_SORT_OPTIONS = -m 10G -@ 6
 TRIM_GALORE_OPTIONS   =
 SORT_BUFFER_SIZE      = 20G
 BME_OPTIONS           = --multicore 8  --buffer_size $(SORT_BUFFER_SIZE)
-MFILTER_NUMPRC        = 8
+MFILTER_NUMPRC        = 1
 
 # Note: The --phred33/64 option to trim_galore is set below according to the output of FastQC
 
