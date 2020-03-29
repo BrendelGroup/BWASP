@@ -26,7 +26,7 @@ strand = []
 rgb = []
 attribute = []
 
-with open(sys.argv[1], 'rb') as inputa:
+with open(sys.argv[1], 'rt') as inputa:
     linesa = inputa.readlines()
     for rowa in csv.reader(linesa, delimiter='\t'):
         if rowa[6] == '-':
@@ -57,13 +57,13 @@ seqLengthChrName = []
 seqLengtheEndPos = []
 
 
-with open(sys.argv[2], 'rb') as infile1:
+with open(sys.argv[2], 'rt') as infile1:
     for line in infile1:
         if line[0]=='>' :
             row = (line.rstrip('\n')).split()
             altrow= row[0].split('|')
             pattern=filter(None,altrow)
-            lengthpattern= len(pattern)-1
+            lengthpattern= len(list(pattern))-1
 
             if altrow[lengthpattern][0] == '>':
                 alteredChrName = altrow[lengthpattern][1:]
