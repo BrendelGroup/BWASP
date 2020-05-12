@@ -77,7 +77,7 @@ ln GCF_001313835.1_ASM131383v1_genomic.fna Pcan.gdna.fa
 ln GCF_001313835.1_ASM131383v1_genomic.gff Pcan.gff3
 ```
 
-Note that the annotation was not necessary for the basic BWASP run but we downloaded it anyways for use in downstream analysis.
+Note that the annotation was not necessary for the basic BWASP run but we downloaded it anyway for use in downstream analysis.
 Also note that we preferred linking the files to moving (renaming) them to keep the original filenames for future reference.
 
 
@@ -85,7 +85,7 @@ Also note that we preferred linking the files to moving (renaming) them to keep 
 
 Note that the appropriate template *Makefile* was copied into each replicate
 directory.
-This *Makefile* contains the necessary commands (fastq-dump) to download reads
+This *Makefile* contains the necessary commands (fasterq-dump) to download reads
 from [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra), so all we need to do is to
 fill in the appropriate accession numbers.
 
@@ -213,11 +213,28 @@ Take a look and explore.  The _.stats_ and _report_ files would be good
 starting points.
 
 
+### Working with large data sets
+For large data sets, the simple _fasterq\_dump_ command in the _Makefile_
+may not be the best choice.
+You may want to review the options to _fasterq\_dump_.
+For example,
+
+```
+fasterq-dump SRRaccession -e 8 -t /dev/shm -p
+```
+
+would use 8 processors to download _SRRaccession_ and put the result into
+_/dev/shm_, which should be much faster than disk storage.
+The _-p_ option shows the progress of the download.
+You would then deposit the read files (possibly after splitting them into
+manageable chunks that could be treated as pseudo-replicates) into your
+working directories from where you would execute the _make_ command.
+
+
 ### Merging data from multiple replicates
 While it is of interest to look at the methylation statistics across
 different replicate data sets, typically the replicate data are pooled when
 comparing between samples/conditions (_e.g._, Queen versus Worker samples).
-
 
 BWASP provides an additional makefile to merge replicates and provide cumulative
 statistics over all replicates.

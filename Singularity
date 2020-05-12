@@ -9,7 +9,7 @@ From: ubuntu:18.04
 %post
     export DEBIAN_FRONTEND=noninteractive
     apt -y update
-    apt -y install bc git tcsh unzip zip wget tzdata \
+    apt -y install bc git pigz tcsh unzip zip wget tzdata \
                    build-essential \
                    openjdk-11-jre-headless \
                    python-minimal  \
@@ -55,18 +55,11 @@ From: ubuntu:18.04
     unzip fastqc_v0.11.8.zip
     chmod +x FastQC/fastqc
 
-    echo 'Installing Aspera'
-    ######
-    wget https://download.asperasoft.com/download/sw/cli/3.9.1/ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    chmod +x ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    sed  -ie 's/~\/\.aspera/\/opt\/aspera/' ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-    ./ibm-aspera-cli-3.9.1.1401.be67d47-linux-64-release.sh
-
     echo 'Installing SRA Toolkit from https://github.com/ncbi/sra-tools '
     ######
     cd /opt
-    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-ubuntu64.tar.gz
-    tar -xzf sratoolkit.2.9.6-1-ubuntu64.tar.gz
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.5/sratoolkit.2.10.5-ubuntu64.tar.gz
+    tar -xzf sratoolkit.2.10.5-ubuntu64.tar.gz
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ '
     #### Prerequisites
@@ -107,7 +100,7 @@ From: ubuntu:18.04
     export PATH=$PATH:/opt/bowtie2-2.3.5.1-linux-x86_64
     export PATH=$PATH:/opt/Bismark
     export PATH=$PATH:/opt/FastQC
-    export PATH=$PATH:/opt/sratoolkit.2.9.6-1-ubuntu64/bin
+    export PATH=$PATH:/opt/sratoolkit.2.10.5-ubuntu64/bin
     export PATH=$PATH:/opt/TrimGalore-0.6.3
     export PATH=$PATH:/opt/BWASP/bin
     export PATH=$PATH:/opt/aspera/cli/bin

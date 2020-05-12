@@ -3,10 +3,10 @@
 from argparse import ArgumentParser
 from pathlib import Path
 from zipfile import ZipFile
+import sys
 
 
 parser = ArgumentParser(description='Merges replicate Creport files from all subdirectories')
-#parser.add_argument('-i', '--infile', help='input file in fasta format')
 parser.add_argument('-o', '--outfile', help='output file name')
 args=parser.parse_args()
 
@@ -20,10 +20,11 @@ for zipfilepath in list(Path().glob('*/*.zip')) :
         if filename[-8:]=='.Creport' :
             creports.append(zipfile.open(filename))
             break
-print ("Merging {} replicates from files:".format(len(creports)))
+print("Merging {} replicates from files:".format(len(creports)))
 for creport in creports :
     print (creport.name)
 print("Writing into {}.Creport".format(args.outfile))
+sys.stdout.flush()
 
 with open(args.outfile + '.Creport', 'w') as outfile :
 

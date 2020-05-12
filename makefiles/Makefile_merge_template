@@ -1,7 +1,7 @@
-#Makefile_merge_2replicates
+#Makefile_merge_template
 #
 #Makefile to merge BWASP *.Creport files for combined input into workflow step 5.
-#Version: April 23, 2018
+#Version: May 3, 2020
 
 #Usage: make -j 2
 
