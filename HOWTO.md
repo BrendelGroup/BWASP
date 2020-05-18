@@ -220,10 +220,10 @@ You may want to review the options to _fasterq\_dump_.
 For example,
 
 ```
-fasterq-dump SRRaccesion -e 8 -t /dev/shm -p
+fasterq-dump SRRaccession -e 8 -t /dev/shm -p
 ```
 
-would use 8 processors to download _SRRaccessioni_ and put the result into
+would use 8 processors to download _SRRaccession_ and put the result into
 _/dev/shm_, which should be much faster than disk storage.
 The _-p_ option shows the progress of the download.
 You would then deposit the read files (possibly after splitting them into
