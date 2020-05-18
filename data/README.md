@@ -192,7 +192,7 @@ SRAID=( SRR445773 SRR445771 SRR445770 SRR445769 SRR445768 SRR445767 \
 
 What does this all mean?
 First, we are planning to run things on a machine presumably called _bggnomic_, which must have considerable resources: each Bismark run will use 8 cores for _bowtie2_ with 2 processors each (i.e., 16 threads in total).
-Different replicate analyses will be launched after a 30m (_OFFSET_) waiting period (which may still allow for two replicates to run _bowtie2_ simultaneosly, so _bggnomic_ better be big enough to handle this for some time)/
+Different replicate analyses will be launched after a 30m (_OFFSET_) waiting period (which may still allow for two replicates to run _bowtie2_ simultaneosly, so _bggnomic_ better be big enough to handle this for some time),
 
 Second, the _Amel.conf_ file provides instructions on where from to pull the genome sequence and annotation files.
 
@@ -257,4 +257,15 @@ cd ..
 cd ../..
 date
 echo "All done!"
+```
+
+
+#### Comments:
+1. Configuration files we have used are in the _*.cfgdir_ directories.
+
+2. Going back to the first example, how would we set up the _Patalano et al._ (2015) analysis?
+Right, with defaul settings (not recommended; you __should__ think about parameters) it would be as simple as this:
+
+```bash
+setup -s Pcan  Patalano2015
 ```

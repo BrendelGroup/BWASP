@@ -11,6 +11,7 @@ SE_TEMPLATE_GENOME=Amel.gdna
 SE_TEMPLATE_SRA=SRR1270128
 
 OFFSET=20m
+SAVESPACE='false'
 
 ##### Process command line arguments: #####
 mflagset=0
