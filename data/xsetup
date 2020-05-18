@@ -80,12 +80,15 @@ do
   echo "" >> xdoit${study}
 
   echo "date" >> xdoit${study}
-  echo "echo \"Parsing the genome annotation ...\"" >> xdoit${study}
-  echo "cd ${SPECIES}/genome" >> xdoit${study}
-  echo "make >& err" >> xdoit${study}
-  echo "cd .." >> xdoit${study}
-  echo "echo \"  done with genome annotation parsing ...\"" >> xdoit${study}
-  echo "date" >> xdoit${study}
+  echo "if [[ ! -d ${SPECIES}/genome/GFF3DIR ]]; then" >> xdoit${study}
+  echo "  echo \"Parsing the genome annotation ...\"" >> xdoit${study}
+  echo "  cd ${SPECIES}/genome" >> xdoit${study}
+  echo "  make >& err" >> xdoit${study}
+  echo "  cd .." >> xdoit${study}
+  echo "  echo \"  done with genome annotation parsing ...\"" >> xdoit${study}
+  echo "  date" >> xdoit${study}
+  echo "fi" >> xdoit${study}
+  echo "" >> xdoit${study}
 
   echo "cd ${study}" >> xdoit${study}
   i=0
