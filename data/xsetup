@@ -124,13 +124,13 @@ do
         sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/Makefile
       else
         sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/Makefile
+      fi
       echo "echo \"... starting on ${smpl}\"" >> xdoit${study}
-      echo "cd ${smpl}" >> xdoit${study}
       echo "time make -j 4 >& err &" >> xdoit${study}
       echo "sleep ${OFFSET}" >> xdoit${study}
       echo "cd .." >> xdoit${study}
+      echo "" >> xdoit${study}
       ((i++))
-      fi
     else
       j=1
       while [ $i -lt $b ] 
@@ -173,5 +173,6 @@ do
   echo "cd ../.." >> xdoit${study}
   echo "date" >> xdoit${study}
   echo "echo \"All done!\"" >> xdoit${study}
+  chmod a+x xdoit${study}
 
 done
