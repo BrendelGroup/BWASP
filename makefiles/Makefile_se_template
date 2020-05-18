@@ -3,7 +3,7 @@
 # Makefile for BWASP workflow, from downloading SRA data to the Creport and methylation calls.
 #
 # This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-# Version: May 17, 2020.
+# Version: May 18, 2020.
 #
 
 # Note that it is assumed that all required executables are in your $PATH.
@@ -40,13 +40,14 @@ SYNONYM = Amel-afbCTRL
 # Set SAVESPACE to "true" to remove intermediate files once they are no longer needed.
 # By default, they are saved until "make cleanup" followed by "make finishup" are
 # issued.
-#
+
 SAVESPACE = false
 
 # Options for programs called in the BWASP workflow:
 #
 BOWTIE2_OPTIONS       = -p 2  --score_min L,0,-0.6
 BISMARK_OPTIONS       = --multicore 4  --bowtie2 $(BOWTIE2_OPTIONS)
+FASTERQ_DUMP_OPTIONS  = 
 FASTQC_OPTIONS        = --threads 4  --extract
 SAMTOOLS_SORT_OPTIONS = -m 10G  -@ 6
 TRIM_GALORE_OPTIONS   = --cores 4
@@ -95,7 +96,7 @@ endif
 ### 1.2 Obtain the SRA reads from NCBI.
 #
 %.fastq:
-	fasterq-dump $(SAMPLE)
+	fasterq-dump ${FASTERQ_DUMP_OPTIONS} $(SAMPLE)
 
 
 ### 1.3 Run FastQC to check the quality of the reads.

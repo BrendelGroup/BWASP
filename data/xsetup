@@ -63,8 +63,8 @@ if [ ${mflagset} == 1 ]; then
   egrep "SAVESPACE" machines.cfgdir/${machine}.conf | sed -e "s/ //g;"  > tmpcfgins
   source tmpcfgins
   tail -n +7 machines.cfgdir/${machine}.conf  >  tmpcfgins
-  cat ../makefiles/Makefile_pe_template | sed '/^SAVESPACE/,+11d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_pe_template
-  cat ../makefiles/Makefile_se_template | sed '/^SAVESPACE/,+11d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_se_template
+  cat ../makefiles/Makefile_pe_template | sed '/^SAVESPACE/,+12d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_pe_template
+  cat ../makefiles/Makefile_se_template | sed '/^SAVESPACE/,+12d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_se_template
   cp ../makefiles/Makefile_merge_template   ../makefiles/${machine}Makefile_merge_template
   \rm tmpcfgins
 fi
@@ -87,6 +87,8 @@ do
   echo "  cd .." >> xdoit${study}
   echo "  echo \"  done with genome annotation parsing ...\"" >> xdoit${study}
   echo "  date" >> xdoit${study}
+  echo "else" >> xdoit${study}
+  echo "  cd ${SPECIES}" >> xdoit${study}
   echo "fi" >> xdoit${study}
   echo "" >> xdoit${study}
 
@@ -108,14 +110,13 @@ do
       echo "    echo \"Bismark genome preparation ...\"" >> xdoit${study}
       echo "    cd replicate1" >> xdoit${study}
       echo "    make Bisulfite_Genome >& errBSG" >> xdoit${study}
-      echo "    cd ../.." >> xdoit${study}
+      echo "    cd .." >> xdoit${study}
       echo "    echo \"  done with Bismark genome preparation ...\"" >> xdoit${study}
       echo "  fi" >> xdoit${study}
       echo "else" >> xdoit${study}
       echo "  if [[ ! -f errBSG ]]; then" >> xdoit${study}
       echo "    echo \"Bismark genome preparation ...\"" >> xdoit${study}
       echo "    make Bisulfite_Genome >& errBSG" >> xdoit${study}
-      echo "    cd .." >> xdoit${study}
       echo "    echo \"  done with Bismark genome preparation ...\"" >> xdoit${study}
       echo "  fi" >> xdoit${study}
       echo "fi" >> xdoit${study}
