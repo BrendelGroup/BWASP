@@ -19,6 +19,7 @@ mkdir -p ${species}/genome
 # only copy GFF parse makefile if it doesn't exist
 if [ ! -f "${species}/genome/Makefile" ]; then
   cp  ../makefiles/Makefile_parse_GFF3_template ${species}/genome/Makefile
+  sed -i -e "s/Pcan/${species}/g;" ${species}/genome/Makefile
 fi
 
 # check for sample dir
