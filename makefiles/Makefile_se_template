@@ -3,7 +3,7 @@
 # Makefile for BWASP workflow, from downloading SRA data to the Creport and methylation calls.
 #
 # This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-# Version: May 3, 2020.
+# Version: May 17, 2020.
 #
 
 # Note that it is assumed that all required executables are in your $PATH.
@@ -45,10 +45,10 @@ SAVESPACE = false
 
 # Options for programs called in the BWASP workflow:
 #
-BOWTIE2_OPTIONS       = -p 2 --score_min L,0,-0.6
-BISMARK_OPTIONS       = --multicore 4 --bowtie2 $(BOWTIE2_OPTIONS)
+BOWTIE2_OPTIONS       = -p 2  --score_min L,0,-0.6
+BISMARK_OPTIONS       = --multicore 4  --bowtie2 $(BOWTIE2_OPTIONS)
 FASTQC_OPTIONS        = --threads 4  --extract
-SAMTOOLS_SORT_OPTIONS = -m 10G -@ 6
+SAMTOOLS_SORT_OPTIONS = -m 10G  -@ 6
 TRIM_GALORE_OPTIONS   = --cores 4
 SORT_BUFFER_SIZE      = 20G
 BME_OPTIONS           = --multicore 8  --buffer_size $(SORT_BUFFER_SIZE)

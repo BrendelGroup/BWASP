@@ -1,0 +1,176 @@
+#!/bin/bash
+
+# This is a script to generate the necessary directory structure
+# and fill in the relevant accession numbers for all publicly available
+# bisulfite sequencing experiments on SPECIES
+
+PE_TEMPLATE_GENOME=Pcan.gdna
+PE_TEMPLATE_SRA=SRR1519132
+
+SE_TEMPLATE_GENOME=Amel.gdna
+SE_TEMPLATE_SRA=SRR1270128
+
+OFFSET=20m
+
+##### Process command line arguments: #####
+mflagset=0
+sflagset=0
+species=""
+studies=()
+
+while getopts ":m:s:" optname
+  do
+    case "$optname" in
+      "m")
+        mflagset=1
+        machine=$OPTARG
+        ;;
+      "s")
+        sflagset=1
+        species=$OPTARG
+        ;;
+      "?")
+        echo "Unknown option $OPTARG."
+        ;;
+    esac
+  done
+shift $(( OPTIND - 1 ))
+
+for study in "$@"; do
+  studies[${#studies[@]}]=${study}
+done
+
+if [ ${#studies[@]} == 0 ]; then
+    echo "USAGE: xsetup [-m machine] [-s species]  study1 [study2 study3 ...]"
+    echo ""
+    echo "Required arguments:"
+    echo "	at least one study (with corresponding config file in ./studies.cfgdir/${species}/)"
+    echo ""
+    echo "Optional arguments:"
+    echo "	machine (with corresponding config file in ./machines.cfgdir)"
+    echo "	species (pull study*.conf files from ./studies.cfgdir/${species}/ directory)"
+    echo ""
+    exit
+else
+  echo "Running xsetup with -m ${machine} -s ${species} and studies ${studies[@]} ..."
+fi
+
+
+if [ ${mflagset} == 1 ]; then
+  head -n 3 machines.cfgdir/${machine}.conf  >  tmpcfgins
+  source tmpcfgins
+  egrep "SAVESPACE" machines.cfgdir/${machine}.conf | sed -e "s/ //g;"  > tmpcfgins
+  source tmpcfgins
+  tail -n +7 machines.cfgdir/${machine}.conf  >  tmpcfgins
+  cat ../makefiles/Makefile_pe_template | sed '/^SAVESPACE/,+11d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_pe_template
+  cat ../makefiles/Makefile_se_template | sed '/^SAVESPACE/,+11d' | sed '42 r tmpcfgins' > ../makefiles/${machine}Makefile_se_template
+  cp ../makefiles/Makefile_merge_template   ../makefiles/${machine}Makefile_merge_template
+  \rm tmpcfgins
+fi
+
+
+for study in "${studies[@]}"
+do
+  source ./studies.cfgdir/${species}/${study}.conf
+  source xmkGenome ${SPECIES}
+
+  echo "#!/bin/bash" > xdoit${study}
+  echo "#" >> xdoit${study}
+  echo "" >> xdoit${study}
+
+  echo "date" >> xdoit${study}
+  echo "echo \"Parsing the genome annotation ...\"" >> xdoit${study}
+  echo "cd ${SPECIES}/genome" >> xdoit${study}
+  echo "make >& err" >> xdoit${study}
+  echo "cd .." >> xdoit${study}
+  echo "echo \"  done with genome annotation parsing ...\"" >> xdoit${study}
+  echo "date" >> xdoit${study}
+
+  echo "cd ${study}" >> xdoit${study}
+  i=0
+  r=0
+  b=${NREPS[$r]}
+  
+  for smpl in "${SAMPLES[@]}"
+  do
+    echo "./xmkdirstr ${SPECIES} ${STUDY} ${smpl} ${NREPS[$r]} ${PORS[$r]} ${machine}"
+    ./xmkdirstr ${SPECIES} ${STUDY} ${smpl} ${NREPS[$r]} ${PORS[$r]} ${machine}
+  
+    echo "cd ${smpl}" >> xdoit${study}
+
+    if [ ${smpl} == ${SAMPLES[0]} ]; then
+      echo "if [[ -d replicate1 ]]; then" >> xdoit${study}
+      echo "  if [[ ! -f replicate1/errBSG ]]; then" >> xdoit${study}
+      echo "    echo \"Bismark genome preparation ...\"" >> xdoit${study}
+      echo "    cd replicate1" >> xdoit${study}
+      echo "    make Bisulfite_Genome >& errBSG" >> xdoit${study}
+      echo "    cd ../.." >> xdoit${study}
+      echo "    echo \"  done with Bismark genome preparation ...\"" >> xdoit${study}
+      echo "  fi" >> xdoit${study}
+      echo "else" >> xdoit${study}
+      echo "  if [[ ! -f errBSG ]]; then" >> xdoit${study}
+      echo "    echo \"Bismark genome preparation ...\"" >> xdoit${study}
+      echo "    make Bisulfite_Genome >& errBSG" >> xdoit${study}
+      echo "    cd .." >> xdoit${study}
+      echo "    echo \"  done with Bismark genome preparation ...\"" >> xdoit${study}
+      echo "  fi" >> xdoit${study}
+      echo "fi" >> xdoit${study}
+    fi
+    echo "" >> xdoit${study}
+
+    if [ ${NREPS[$r]} -eq 1 ]; then
+      if [ ${PORS[$r]} = 'p' ]; then
+        sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/Makefile
+      else
+        sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/Makefile
+      echo "echo \"... starting on ${smpl}\"" >> xdoit${study}
+      echo "cd ${smpl}" >> xdoit${study}
+      echo "time make -j 4 >& err &" >> xdoit${study}
+      echo "sleep ${OFFSET}" >> xdoit${study}
+      echo "cd .." >> xdoit${study}
+      ((i++))
+      fi
+    else
+      j=1
+      while [ $i -lt $b ] 
+      do
+        if [ ${PORS[$r]} = 'p' ]; then
+          sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/replicate${j}/Makefile
+        else
+          sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/replicate${j}/Makefile
+        fi
+        echo "cd replicate${j}" >> xdoit${study}
+        echo "date" >> xdoit${study}
+        echo "echo \" starting on replicate${j} ...\"" >> xdoit${study}
+        echo "time make -j 4 >& err &" >> xdoit${study}
+        echo "sleep ${OFFSET}" >> xdoit${study}
+        echo "cd .." >> xdoit${study}
+        ((i++))
+        ((j++))
+      done
+      echo "wait" >> xdoit${study}
+      echo "date" >> xdoit${study}
+      echo "echo \"  done with ${smpl} replicates ...\"" >> xdoit${study}
+      echo "" >> xdoit${study}
+      echo "echo \"   now merging ${smpl} data ...\"" >> xdoit${study}
+      echo "time make -j 4 >& err &" >> xdoit${study}
+      echo "wait" >> xdoit${study}
+      if [ ${SAVESPACE} = 'true' ]; then
+        echo "make cleanup" >> xdoit${study}
+        echo "make finishup & " >> xdoit${study}
+        echo "echo \"  running make finishup in the background ...\"" >> xdoit${study}
+      fi
+      echo "cd .." >> xdoit${study}
+      echo "echo \"  done with ${smpl} merge ...\"" >> xdoit${study}
+      echo "date" >> xdoit${study}
+      echo "" >> xdoit${study}
+      echo "" >> xdoit${study}
+      ((r++))
+      if [ $r -lt ${#NREPS[@]} ]; then b=$(( $b + ${NREPS[$r]} )); fi
+    fi
+  done
+  echo "cd ../.." >> xdoit${study}
+  echo "date" >> xdoit${study}
+  echo "echo \"All done!\"" >> xdoit${study}
+
+done
