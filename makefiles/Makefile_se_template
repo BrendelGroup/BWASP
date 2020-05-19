@@ -95,7 +95,7 @@ endif
 
 ### 1.2 Obtain the SRA reads from NCBI.
 #
-%_1.fastq %_2.fastq:
+%.fastq:
 	n=0; \
 	until [ $$n -ge 8 ]; do \
 		fasterq-dump ${FASTERQ_DUMP_OPTIONS} ${SAMPLE} && break; \
