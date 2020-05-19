@@ -57,7 +57,22 @@ else
 fi
 
 
+if [ ${sflagset} == 1 ]; then
+  if [ ! -d studies.cfgdir/${species} ]; then
+    echo ""
+    echo "Error: studies.cfgdir/${species} directory not found."
+    echo "Please check."
+    exit
+  fi
+fi
+
 if [ ${mflagset} == 1 ]; then
+  if [ ! -f machines.cfgdir/${machine}.conf ]; then
+    echo ""
+    echo "Error: machines.cfgdir/${machine}.conf not found."
+    echo "Please check."
+    exit
+  fi
   head -n 3 machines.cfgdir/${machine}.conf  >  tmpcfgins
   source tmpcfgins
   egrep "SAVESPACE" machines.cfgdir/${machine}.conf | sed -e "s/ //g;"  > tmpcfgins
@@ -72,6 +87,12 @@ fi
 
 for study in "${studies[@]}"
 do
+  if [ ! -f studies.cfgdir/${species}/${study}.conf ]; then
+    echo ""
+    echo "Error: studies.cfgdir/${species}/${study}.conf not found."
+    echo "Please check."
+    exit
+  fi
   source ./studies.cfgdir/${species}/${study}.conf
   source xmkGenome ${SPECIES}
 
@@ -174,6 +195,7 @@ do
       if [ $r -lt ${#NREPS[@]} ]; then b=$(( $b + ${NREPS[$r]} )); fi
     fi
   done
+  echo "wait" >> xdoit${study}
   echo "cd ../.." >> xdoit${study}
   echo "date" >> xdoit${study}
   echo "echo \"All done!\"" >> xdoit${study}
