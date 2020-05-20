@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: August 2, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: May 20, 2020	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -328,7 +328,6 @@ if ($paired == 0) {
 	      push(@returnL, 1);
 	    } else {
 	      push(@returnL, 0);
-	      push(@samstringsChunksLabeled, 0);
 	    }
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
@@ -375,11 +374,11 @@ foreach ( 0 .. $numprc-1 ) {
 	if ($paired == 0) {
 	  if( $$v2[1] == 1) {
 	    $f11cnt++;
-	    print MSF11FILE "$samstring";
+	    print MSF11FILE "@$samstring[1]";
 	  }
 	  else {
 	    $pcnt++;
-	    print MSPFILE "$samstring";
+	    print MSPFILE "@$samstring[1]";
 	  }
 	}
 
