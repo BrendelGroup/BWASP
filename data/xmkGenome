@@ -1,0 +1,10 @@
+#!/bin/bash
+
+SPECIES=$1
+
+if [ ! -f ${SPECIES}/genome/${SPECIES}.gdna.fa ]; then
+  mkdir -p ${SPECIES}/genome
+  pushd ${SPECIES}/genome
+  source ../../species.cfgdir/${SPECIES}.conf
+  popd
+fi

@@ -2,7 +2,7 @@
 
 # This is a script to generate the necessary directory structure
 # and fill in the relevant accession numbers for all publicly available
-# bisulfite sequencing experiments on Apis Mellifera
+# bisulfite sequencing experiments on Apis mellifera
 
 PE_TEMPLATE_GENOME=Pcan.gdna
 PE_TEMPLATE_SRA=SRR1519132
@@ -57,9 +57,9 @@ EXPERIMENT=Lyko2010 # https://doi.org/10.1371/journal.pbio.1000506
 ./xmkdirstr Amel ${EXPERIMENT} queen 1 p
 ./xmkdirstr Amel ${EXPERIMENT} worker 1 p
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR039815/;" Amel/${EXPERIMENT}/queen/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR039815/;" Amel/${EXPERIMENT}/queen/Makefile
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR039814/;" Amel/${EXPERIMENT}/worker/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR039814/;" Amel/${EXPERIMENT}/worker/Makefile
 
 
 EXPERIMENT=Foret # https://doi.org/10.1371/journal.pbio.1000506
@@ -113,9 +113,9 @@ EXPERIMENT=Li-Byarlay2013 # https://doi.org/10.1073/pnas.1310735110
 ./xmkdirstr Amel ${EXPERIMENT} control 1 s
 ./xmkdirstr Amel ${EXPERIMENT} knockdown 1 s
 
-sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR1270128/;" Amel/${EXPERIMENT}/control/replicate1/Makefile
+sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR1270128/;" Amel/${EXPERIMENT}/control/Makefile
 
-sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR1270129/;" Amel/${EXPERIMENT}/knockdown/replicate1/Makefile
+sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR1270129/;" Amel/${EXPERIMENT}/knockdown/Makefile
 
 
 EXPERIMENT=Cingolani2013 # https://dx.doi.org/10.1186/1471-2164-14-666
@@ -123,9 +123,9 @@ EXPERIMENT=Cingolani2013 # https://dx.doi.org/10.1186/1471-2164-14-666
 ./xmkdirstr Amel ${EXPERIMENT} european 1 s
 ./xmkdirstr Amel ${EXPERIMENT} africanized 1 s
 
-sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989671/;" Amel/${EXPERIMENT}/european/replicate1/Makefile
+sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989671/;" Amel/${EXPERIMENT}/european/Makefile
 
-sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989670/;" Amel/${EXPERIMENT}/africanized/replicate1/Makefile
+sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/SRR989670/;" Amel/${EXPERIMENT}/africanized/Makefile
 
 
 EXPERIMENT=Drewell2014 # https://dx.doi.org/10.1242/dev.110163
@@ -134,11 +134,11 @@ EXPERIMENT=Drewell2014 # https://dx.doi.org/10.1242/dev.110163
 ./xmkdirstr Amel ${EXPERIMENT} haploid_egg 1 p
 ./xmkdirstr Amel ${EXPERIMENT} sperm 1 p
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316836/;" Amel/${EXPERIMENT}/drone/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316836/;" Amel/${EXPERIMENT}/drone/Makefile
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316837/;" Amel/${EXPERIMENT}/haploid_egg/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316837/;" Amel/${EXPERIMENT}/haploid_egg/Makefile
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316838/;" Amel/${EXPERIMENT}/sperm/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR9316838/;" Amel/${EXPERIMENT}/sperm/Makefile
 
 
 EXPERIMENT=Remnant2016 # https://dx.doi.org/10.1186/s12864-016-2506-8
@@ -146,9 +146,9 @@ EXPERIMENT=Remnant2016 # https://dx.doi.org/10.1186/s12864-016-2506-8
 ./xmkdirstr Amel ${EXPERIMENT} fembryo 1 p
 ./xmkdirstr Amel ${EXPERIMENT} tembryo 1 p
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR1994693/;" Amel/${EXPERIMENT}/fembryo/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR1994693/;" Amel/${EXPERIMENT}/fembryo/Makefile
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR1994694/;" Amel/${EXPERIMENT}/tembryo/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR1994694/;" Amel/${EXPERIMENT}/tembryo/Makefile
 
 
 EXPERIMENT=Li2017 # https://dx.doi.org/10.1038/s41598-017-17046-1
@@ -156,9 +156,9 @@ EXPERIMENT=Li2017 # https://dx.doi.org/10.1038/s41598-017-17046-1
 ./xmkdirstr Amel ${EXPERIMENT} control 1 p
 ./xmkdirstr Amel ${EXPERIMENT} trained 1 p
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR5312519/;" Amel/${EXPERIMENT}/control/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR5312519/;" Amel/${EXPERIMENT}/control/Makefile
 
-sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR5295651/;" Amel/${EXPERIMENT}/trained/replicate1/Makefile
+sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/SRR5295651/;" Amel/${EXPERIMENT}/trained/Makefile
 
 
 EXPERIMENT=Herb2018 # https://dx.doi.org/10.1186/s12864-018-4594-0
