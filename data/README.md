@@ -272,9 +272,9 @@ xsetup -s Pcan  Patalano2015
 
 3. In some studies, biological samples were split and run on different sequencer lanes.
 These are recorded at NCBI SRA as different _runs_.
-In such cases, the run data should be combined to reflect the entirety of the biological sample.
+In such case, the run data should be combined to reflect the entirety of the biological sample.
 This is important, for example, for removal of PCR duplicates.
-[xgetSRAacc](../master/bin/xgetSRAcc) creates such combined read sets if the constituent SRA accessions are separated by _\__ instead of a space in the  studies configuration file.
+[xgetSRAacc](../bin/xgetSRAcc) creates such combined read sets if the constituent SRA accessions are separated by \_ instead of a space in the  studies configuration file.
 For example,
 
 ```bash_
@@ -289,4 +289,4 @@ SRAID=( SRR039327_SRR039328 \
 ```
 
 indicates that accessions _SRR039327_ and _SRR39328_ will be combined before analysis.
-Note that the configuratio file correctly states that the study involved only one replicate.
+Note that the configuration file correctly states that the study involved only one replicate.
