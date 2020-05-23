@@ -67,24 +67,25 @@ if [ ${#runa[@]} -gt 1 ]; then
     done
     catcmd1="${catcmd1} > ${SAMPLE}_1.fastq"
     catcmd2="${catcmd2} > ${SAMPLE}_2.fastq"
+    echo ""
+    echo ${catcmd1}
+    eval ${catcmd1}
+    echo ${catcmd2}
+    eval ${catcmd2}
   elif [ -f ${run}.fastq ]; then
     for run in ${runs}; do
       catcmd1="${catcmd1} ${run}.fastq"
     done
     catcmd1="${catcmd1} > ${SAMPLE}.fastq"
+    echo ""
+    echo ${catcmd1}
+    eval ${catcmd1}
   else
     echo ""
     echo "Error: neither ${run}.fastq nor ${run}_1.fastq found."
     echo "Please check."
     echo ""
     exit
-  fi
-  echo ""
-  echo ${catcmd1}
-  eval ${catcmd1}
-  if [ ! ${catcmd2} == "cat" ]; then
-    echo ${catcmd2}
-    eval ${catcmd2}
   fi
   if [ -f ${run}_1.fastq ]; then
     for run in ${runs}; do
