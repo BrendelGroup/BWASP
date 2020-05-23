@@ -267,5 +267,26 @@ echo "All done!"
 Right, with defaul settings (not recommended; you __should__ think about parameters) it would be as simple as this:
 
 ```bash
-setup -s Pcan  Patalano2015
+xsetup -s Pcan  Patalano2015
 ```
+
+3. In some studies, biological samples were split and run on different sequencer lanes.
+These are recorded at NCBI SRA as different _runs_.
+In such cases, the run data should be combined to reflect the entirety of the biological sample.
+This is important, for example, for removal of PCR duplicates.
+[xgetSRAacc](../master/bin/xgetSRAcc) creates such combined read sets if the constituent SRA accessions are separated by _\__ instead of a space in the  studies configuration file.
+For example,
+
+```bash_
+SPECIES=Amel
+GENOME=Amel.gdna
+STUDY=Feng2010  # https://doi.org/10.1073/pnas.1002720107
+SAMPLES=( immature_male )
+NREPS=( 1 )
+PORS=( s )
+SRAID=( SRR039327_SRR039328 \
+      )
+```
+
+indicates that accessions _SRR039327_ and _SRR39328_ will be combined before analysis.
+Note that the configuratio file correctly states that the study involved only one replicate.
