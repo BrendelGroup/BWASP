@@ -274,7 +274,7 @@ xsetup -s Pcan  Patalano2015
 These are recorded at NCBI SRA as different _runs_.
 In such case, the run data should be combined to reflect the entirety of the biological sample.
 This is important, for example, for removal of PCR duplicates.
-[xgetSRAacc](../bin/xgetSRAcc) creates such combined read sets if the constituent SRA accessions are separated by \_ instead of a space in the  studies configuration file.
+[xgetSRAacc](../bin/xgetSRAacc) creates such combined read sets if the constituent SRA accessions are separated by \_ instead of a space in the  studies configuration file.
 For example,
 
 ```bash_

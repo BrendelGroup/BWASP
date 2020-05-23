@@ -6,7 +6,7 @@ At this stage, you should have completed the BWASP installation steps
 documented in the [INSTALL](./INSTALL.md) document; we'll assume that you have
 downloaded the `bwasp.simg` singularity container.
 
-The BWASP script [xgetSRAacc](../master/bin/xgetSRAacc) uses NCBI SRA Toolkit to download data from NCBI SRA.
+The BWASP script [xgetSRAacc](./bin/xgetSRAacc) uses NCBI SRA Toolkit to download data from NCBI SRA.
 If you have been using SRA Toolkit already and allow local file-caching, you need to make sure that your file-caching location is accessible to singularity.
 We recommend to disable local file-caching.
 To do this, run:
