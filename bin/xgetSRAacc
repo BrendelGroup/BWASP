@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+
+if [ $# -eq 0 ]; then
+  echo ""
+  echo "Usage: xgetSRAacc accession <'fasterq-dump options'>"
+  echo ""
+  echo "Examples:"
+  echo "	xgetSRAcc SRR1270128"
+  echo "		(will retrieve SRR1270128)"
+  echo ""
+  echo "	xgetSRAcc SRR1270128 '-t /dev/shm'"
+  echo "		(will retrieve SRR1270128 using /dev/shm as tmp directory)"
+  echo ""
+  echo "	xgetSRAcc SRR1270128_SRR1270129_SRR1270130 '-e 8 /dev/shm'"
+  echo "		(will retrieve SRR1270128, SRR1270129, and SRR1270130"
+  echo "                 using 8 processors and then combine the data to files"
+  echo "                 SRR1270128_SRR1270129_SRR1270130*.fastq using /dev/shm as"
+  echo "                 tmp directory)"
+  echo ""
+  exit
+fi 
+
+SAMPLE=$1
+FASTERQ_DUMP_OPTIONS=$2
+
+echo ""
+echo "Running xgetSRAcc ${SAMPLE} ${FASTERQ_DUMP_OPTIONS} ..."
+echo ""
+
+runs=${SAMPLE//_/ }
+
+tmpdir=$(grep -o '\-t [^\S]*' <<< ${FASTERQ_DUMP_OPTIONS})
+tmpdir=$(grep -o ' [^\S]*' <<< ${tmpdir})
+if  [ -z "${tmpdir}" ]; then
+  tmpdir=./
+fi
+echo "tmp directory set to:	${tmpdir}"
+echo ""
+
+for run in ${runs}; do
+  echo "... attempting to get ${run} from NCBI SRA"
+  n=0
+  until [ $n -ge 8 ]; do
+    fasterq-dump ${FASTERQ_DUMP_OPTIONS} ${run} && break
+    touch ${tmpdir}/fasterq.tmp. && \rm -rf ${tmpdir}/fasterq.tmp.*
+    n=$((n+1))
+    sleep 30
+  done
+  if [ $n -eq 8 ]; then \
+    echo "Time to figure out a different way to download the data from NCBI."; \
+    echo "Or wait for better internet connection ..."; \
+  else
+    echo "... done"
+  fi
+done
+
+
+runa=( ${runs} )
+if [ ${#runa[@]} -gt 1 ]; then
+  catcmd1="cat"
+  catcmd2="cat"
+  if [ -f ${run}_1.fastq ]; then
+    for run in ${runs}; do
+      catcmd1="${catcmd1} ${run}_1.fastq "
+      catcmd2="${catcmd2} ${run}_2.fastq "
+    done
+    catcmd1="${catcmd1} > ${SAMPLE}_1.fastq"
+    catcmd2="${catcmd2} > ${SAMPLE}_2.fastq"
+  elif [ -f ${run}.fastq ]; then
+    for run in ${runs}; do
+      catcmd1="${catcmd1} ${run}.fastq"
+    done
+    catcmd1="${catcmd1} > ${SAMPLE}.fastq"
+  else
+    echo ""
+    echo "Error: neither ${run}.fastq nor ${run}_1.fastq found."
+    echo "Please check."
+    echo ""
+    exit
+  fi
+  echo ""
+  echo ${catcmd1}
+  eval ${catcmd1}
+  if [ ! ${catcmd2} == "cat" ]; then
+    echo ${catcmd2}
+    eval ${catcmd2}
+  fi
+  if [ -f ${run}_1.fastq ]; then
+    for run in ${runs}; do
+      \rm ${run}_1.fastq ${run}_2.fastq
+    done
+  else
+    for run in ${runs}; do
+      \rm ${run}.fastq
+    done
+  fi
+fi
