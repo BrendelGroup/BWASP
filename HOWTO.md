@@ -1,5 +1,10 @@
 # BWASP HOWTO - an example for how to use the software
 
+## For the impatient or those just needing a reminder
+
+Please go to [data/README](../data/README.md) for production-level workflow scripting (pretty cool!).
+
+
 ## Preparation
 
 At this stage, you should have completed the BWASP installation steps
