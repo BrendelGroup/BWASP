@@ -2,7 +2,7 @@
 
 ## For the impatient or those just needing a reminder
 
-Please go to [data/README](../data/README.md) for production-level workflow scripting (pretty cool!).
+Please go to [data/README](./data/README.md) for production-level workflow scripting (pretty cool!).
 
 
 ## Preparation
