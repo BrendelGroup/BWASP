@@ -107,7 +107,7 @@ Execute some test runs and monitor CPU, memory, and disk usage.
 The workflow assumes that each replicate (or single sample) directory either contains the BS-seq read files or that the _Makefile_ specifies the NCBI SRA accession number for the reads.
 In the latter case, _make_ will first download the read data before proceeding with read quality control and mapping.
 What to do when you want to analyze your own pre-publication data, fresh off the sequencer?
-Easy enough: just put the read into the same directory and edit the _Makefile_ appropriately.
+Easy enough: just put the read files into the same directory and edit the _Makefile_ appropriately.
 
 For example, assume that your sequencing facility provided you with two files _FacilityIDsampleXrunY.1.fq_ and _FacilityIDsampleXrunY.2.fq_ for a paired-read expriment on your sample _queen-brain_, and this was replicate 1.
 Then you could save the first file as _sampleXrunY\_1.fastq_ and the second file as _sampleXrunY\_2.fastq_ and set in the _Makefile_:
@@ -118,7 +118,7 @@ SYNONYM = queen-brain-1
 ```
 
 instead of the template values, and you are good to go.
-Please note that the programs assume read file endings of _\_1.fastq_ and _\_2.fastq_ for paired-end reads and _.fastq_ for single-end reads.
+__Please note that the programs assume read file endings of _\_1.fastq_ and _\_2.fastq_ for paired-end reads and _.fastq_ for single-end reads.__
 
 
 ## The next level of automation: Using config files to produce the data directory structure and machine-specific execution scripts
