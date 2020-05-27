@@ -1,10 +1,30 @@
 # BWASP HOWTO - an example for how to use the software
 
+## For the impatient or those just needing a reminder
+
+Please go to [data/README](./data/README.md) for production-level workflow scripting (pretty cool!).
+
+
 ## Preparation
 
 At this stage, you should have completed the BWASP installation steps
 documented in the [INSTALL](./INSTALL.md) document; we'll assume that you have
 downloaded the `bwasp.simg` singularity container.
+
+The BWASP script [xgetSRAacc](./bin/xgetSRAacc) uses NCBI SRA Toolkit to download data from NCBI SRA.
+If you have been using SRA Toolkit already and allow local file-caching, you need to make sure that your file-caching location is accessible to singularity.
+We recommend to disable local file-caching.
+To do this, run:
+
+```bash
+  singularity exec -e bwasp.simg  vdb-config -i
+```
+
+navigate to CACHE by entering C and disable local file-caching by toggeling i, followed by x for exit, and possibley o for ok.
+
+__Note: If this is the first time you are using SRA Toolkit on the current machine, you will have to invoke _vdb-config_ at least once to set your preferences (as per NCBI instructions).__
+
+
 We explain BWASP use with an example from our
 [publication](http://brendelgroup.org/).
 
@@ -113,12 +133,12 @@ installation instructions) and confirm that the `BWASP_EXEC` variable is set by
 checking the output of `echo $BWASP_EXEC`.
 This is merely a convenience variable that holds a command that has all the
 relevant singularity parameters set for the user.
-For example, if user `muroztur` has access to plenty of disk space on
-`/N/dc2/scratch/muroztur/`, this user's $BWASP_EXCE might look like the
+For example, if user `bumblebee` has access to plenty of disk space on
+`/bigdata/bumblebee/`, this user's $BWASP_EXCE might look like the
 following:
 
 ```
-singularity exec -e -B /N/dc2/scratch/muroztur/BWASP/data /N/dc2/scratch/muroztur/BWASP/bwasp.simg
+singularity exec -e -B /bigdata/bumblebee/BWASP/data /bigdata/bumblebee/BWASP/bwasp.simg
 ```
 
 Finally, we can run the `make`-enabled workflow (from directory _replicateX_):

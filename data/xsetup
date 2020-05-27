@@ -167,7 +167,7 @@ do
         fi
         echo "cd replicate${j}" >> xdoit${study}
         echo "date" >> xdoit${study}
-        echo "echo \" starting on replicate${j} ...\"" >> xdoit${study}
+        echo "echo \" starting on ${smpl} replicate${j} ...\"" >> xdoit${study}
         echo "time make -j 4 >& err &" >> xdoit${study}
         echo "sleep ${OFFSET}" >> xdoit${study}
         echo "cd .." >> xdoit${study}

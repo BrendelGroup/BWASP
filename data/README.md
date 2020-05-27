@@ -99,7 +99,26 @@ The _makefile_ templates are from the [../makefiles/ directory](../makefiles).
 Instructions on how to modify the _makefiles_ are provided as comments in the files.
 
 4. In particular, __make sure that your computer has enough resources__ to do what is asked in the _makefiles_.
-Execute some test runs and monitor CPU, memory, and disk usage
+Execute some test runs and monitor CPU, memory, and disk usage.
+
+
+## Adding the data
+
+The workflow assumes that each replicate (or single sample) directory either contains the BS-seq read files or that the _Makefile_ specifies the NCBI SRA accession number for the reads.
+In the latter case, _make_ will first download the read data before proceeding with read quality control and mapping.
+What to do when you want to analyze your own pre-publication data, fresh off the sequencer?
+Easy enough: just put the read files into the same directory and edit the _Makefile_ appropriately.
+
+For example, assume that your sequencing facility provided you with two files _FacilityIDsampleXrunY.1.fq_ and _FacilityIDsampleXrunY.2.fq_ for a paired-read expriment on your sample _queen-brain_, and this was replicate 1.
+Then you could save the first file as _sampleXrunY\_1.fastq_ and the second file as _sampleXrunY\_2.fastq_ and set in the _Makefile_:
+
+```bash
+SAMPLE  = sampleXrunY
+SYNONYM = queen-brain-1
+```
+
+instead of the template values, and you are good to go.
+__Please note that the programs assume read file endings of _\_1.fastq_ and _\_2.fastq_ for paired-end reads and _.fastq_ for single-end reads.__
 
 
 ## The next level of automation: Using config files to produce the data directory structure and machine-specific execution scripts
@@ -192,7 +211,7 @@ SRAID=( SRR445773 SRR445771 SRR445770 SRR445769 SRR445768 SRR445767 \
 
 What does this all mean?
 First, we are planning to run things on a machine presumably called _bggnomic_, which must have considerable resources: each Bismark run will use 8 cores for _bowtie2_ with 2 processors each (i.e., 16 threads in total).
-Different replicate analyses will be launched after a 30m (_OFFSET_) waiting period (which may still allow for two replicates to run _bowtie2_ simultaneosly, so _bggnomic_ better be big enough to handle this for some time),
+Different replicate analyses will be launched after a 30m (_OFFSET_) waiting period (which may still allow for two replicates to run _bowtie2_ simultaneously, so _bggnomic_ better be big enough to handle this for some time),
 
 Second, the _Amel.conf_ file provides instructions on where from to pull the genome sequence and annotation files.
 
@@ -264,8 +283,29 @@ echo "All done!"
 1. Configuration files we have used are in the _*.cfgdir_ directories.
 
 2. Going back to the first example, how would we set up the _Patalano et al._ (2015) analysis?
-Right, with defaul settings (not recommended; you __should__ think about parameters) it would be as simple as this:
+Right, with default settings (not recommended; you __should__ think about parameters) it would be as simple as this:
 
 ```bash
-setup -s Pcan  Patalano2015
+xsetup -s Pcan  Patalano2015
 ```
+
+3. In some studies, biological samples were split and run on different sequencer lanes.
+These are recorded at NCBI SRA as different _runs_.
+In such case, the run data should be combined to reflect the entirety of the biological sample.
+This is important, for example, for removal of PCR duplicates.
+[xgetSRAacc](../bin/xgetSRAacc) creates such combined read sets if the constituent SRA accessions are separated by \_ instead of a space in the  studies configuration file.
+For example,
+
+```bash_
+SPECIES=Amel
+GENOME=Amel.gdna
+STUDY=Feng2010  # https://doi.org/10.1073/pnas.1002720107
+SAMPLES=( immature_male )
+NREPS=( 1 )
+PORS=( s )
+SRAID=( SRR039327_SRR039328 \
+      )
+```
+
+indicates that accessions _SRR039327_ and _SRR39328_ will be combined before analysis.
+Note that the configuration file correctly states that the study involved only one replicate.

@@ -3,7 +3,7 @@
 # Makefile for BWASP workflow, from downloading SRA data to the Creport and methylation calls.
 #
 # This is the single-read version.  For paired-read analysis, use Makefile_WF1-6pe_template.
-# Version: May 19, 2020.
+# Version: May 22, 2020.
 #
 
 # Note that it is assumed that all required executables are in your $PATH.
@@ -96,17 +96,7 @@ endif
 ### 1.2 Obtain the SRA reads from NCBI.
 #
 %.fastq:
-	n=0; \
-	until [ $$n -ge 8 ]; do \
-		fasterq-dump ${FASTERQ_DUMP_OPTIONS} ${SAMPLE} && break; \
-		touch fasterq.tmp. && \rm -rf fasterq.tmp.*; \
-		n=$$((n+1)); \
-		sleep 30; \
-	done; \
-	if [ $$n -eq 8 ]; then \
-		echo "Time to figure out a different way to download the data from NCBI."; \
-		echo "Or wait for better internet connection ..."; \
-	fi
+	xgetSRAacc ${SAMPLE} '${FASTERQ_DUMP_OPTIONS}'
 
 
 ### 1.3 Run FastQC to check the quality of the reads.
