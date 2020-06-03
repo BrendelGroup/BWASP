@@ -44,7 +44,7 @@ SAVESPACE = false
 
 # Options for programs called in the BWASP workflow:
 #
-BOWTIE2_OPTIONS       = -p 2 i --score_min L,0,-0.6
+BOWTIE2_OPTIONS       = -p 2  --score_min L,0,-0.6
 BISMARK_OPTIONS       = --multicore 4  --bowtie2 $(BOWTIE2_OPTIONS)
 FASTERQ_DUMP_OPTIONS  = 
 FASTQC_OPTIONS        = --threads 4  --extract
