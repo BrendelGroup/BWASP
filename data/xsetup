@@ -99,8 +99,13 @@ do
   echo "#!/bin/bash" > xdoit${study}
   echo "#" >> xdoit${study}
   echo "" >> xdoit${study}
-
   echo "date" >> xdoit${study}
+
+  echo "#!/bin/bash" > xgetd${study}
+  echo "#" >> xgetd${study}
+  echo "" >> xgetd${study}
+  echo "date" >> xgetd${study}
+
   echo "if [[ ! -d ${SPECIES}/genome/GFF3DIR ]]; then" >> xdoit${study}
   echo "  echo \"Parsing the genome annotation ...\"" >> xdoit${study}
   echo "  cd ${SPECIES}/genome" >> xdoit${study}
@@ -114,6 +119,7 @@ do
   echo "" >> xdoit${study}
 
   echo "cd ${study}" >> xdoit${study}
+  echo "cd ${SPECIES}/${study}" >> xgetd${study}
   i=0
   r=0
   b=${NREPS[$r]}
@@ -124,6 +130,7 @@ do
     ./xmkdirstr ${SPECIES} ${STUDY} ${smpl} ${NREPS[$r]} ${PORS[$r]} ${machine}
   
     echo "cd ${smpl}" >> xdoit${study}
+    echo "cd ${smpl}" >> xgetd${study}
 
     if [ ${smpl} == ${SAMPLES[0]} ]; then
       echo "if [[ -d replicate1 ]]; then" >> xdoit${study}
@@ -152,13 +159,15 @@ do
       fi
       echo "echo \"... starting on ${smpl}\"" >> xdoit${study}
       echo "time make -j 4 >& err &" >> xdoit${study}
+      echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
       echo "sleep ${OFFSET}" >> xdoit${study}
       echo "cd .." >> xdoit${study}
+      echo "cd .." >> xgetd${study}
       echo "" >> xdoit${study}
       ((i++))
     else
       j=1
-      while [ $i -lt $b ] 
+      while [ $i -lt $b ]
       do
         if [ ${PORS[$r]} = 'p' ]; then
           sed -i -e "s/${PE_TEMPLATE_GENOME}/${GENOME}/; s/${PE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/replicate${j}/Makefile
@@ -166,11 +175,14 @@ do
           sed -i -e "s/${SE_TEMPLATE_GENOME}/${GENOME}/; s/${SE_TEMPLATE_SRA}/${SRAID[$i]}/;" ${SPECIES}/${STUDY}/${smpl}/replicate${j}/Makefile
         fi
         echo "cd replicate${j}" >> xdoit${study}
+        echo "cd replicate${j}" >> xgetd${study}
         echo "date" >> xdoit${study}
         echo "echo \" starting on ${smpl} replicate${j} ...\"" >> xdoit${study}
         echo "time make -j 4 >& err &" >> xdoit${study}
+        echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
         echo "sleep ${OFFSET}" >> xdoit${study}
         echo "cd .." >> xdoit${study}
+        echo "cd .." >> xgetd${study}
         ((i++))
         ((j++))
       done
@@ -187,6 +199,7 @@ do
         echo "echo \"  running make finishup in the background ...\"" >> xdoit${study}
       fi
       echo "cd .." >> xdoit${study}
+      echo "cd .." >> xgetd${study}
       echo "echo \"  done with ${smpl} merge ...\"" >> xdoit${study}
       echo "date" >> xdoit${study}
       echo "" >> xdoit${study}
@@ -200,5 +213,9 @@ do
   echo "date" >> xdoit${study}
   echo "echo \"All done!\"" >> xdoit${study}
   chmod a+x xdoit${study}
+  echo "cd ../.." >> xgetd${study}
+  echo "date" >> xgetd${study}
+  echo "echo \"All done!\"" >> xgetd${study}
+  chmod a+x xgetd${study}
 
 done
