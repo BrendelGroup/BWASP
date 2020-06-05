@@ -218,4 +218,11 @@ do
   echo "echo \"All done!\"" >> xgetd${study}
   chmod a+x xgetd${study}
 
+  if [ ! -z "${EXCEPTIONS}" ]; then
+    echo ""
+    echo "EXCEPTION WARNING:"
+    echo "  ${EXCEPTIONS}"
+    echo ""
+  fi
+
 done
