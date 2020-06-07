@@ -159,7 +159,11 @@ do
       fi
       echo "echo \"... starting on ${smpl}\"" >> xdoit${study}
       echo "time make -j 4 >& err &" >> xdoit${study}
-      echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
+      if [ ${PORS[$r]} = 'p' ]; then
+        echo "make ${SRAID[$i]}_1.fastq" >> xgetd${study}
+      else
+        echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
+      fi
       echo "sleep ${OFFSET}" >> xdoit${study}
       echo "cd .." >> xdoit${study}
       echo "cd .." >> xgetd${study}
@@ -179,7 +183,11 @@ do
         echo "date" >> xdoit${study}
         echo "echo \" starting on ${smpl} replicate${j} ...\"" >> xdoit${study}
         echo "time make -j 4 >& err &" >> xdoit${study}
-        echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
+        if [ ${PORS[$r]} = 'p' ]; then
+          echo "make ${SRAID[$i]}_1.fastq" >> xgetd${study}
+        else
+          echo "make ${SRAID[$i]}.fastq" >> xgetd${study}
+        fi
         echo "sleep ${OFFSET}" >> xdoit${study}
         echo "cd .." >> xdoit${study}
         echo "cd .." >> xgetd${study}
