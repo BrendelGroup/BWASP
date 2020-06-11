@@ -12,7 +12,7 @@ if [ $# -eq 0 ]; then
   echo "	xgetSRAcc SRR1270128 '-t /dev/shm'"
   echo "		(will retrieve SRR1270128 using /dev/shm as tmp directory)"
   echo ""
-  echo "	xgetSRAcc SRR1270128_SRR1270129_SRR1270130 '-e 8 /dev/shm'"
+  echo "	xgetSRAcc SRR1270128_SRR1270129_SRR1270130 '-e 8 -t /dev/shm'"
   echo "		(will retrieve SRR1270128, SRR1270129, and SRR1270130"
   echo "                 using 8 processors and then combine the data to files"
   echo "                 SRR1270128_SRR1270129_SRR1270130*.fastq using /dev/shm as"
@@ -40,8 +40,11 @@ echo ""
 
 for run in ${runs}; do
   echo "... attempting to get ${run} from NCBI SRA"
-  n=0
+  n=1
   until [ $n -ge 8 ]; do
+    echo ""
+    echo "... attempt $n: if successful, ${run}*.fastq will have been deposited."
+    echo ""
     fasterq-dump ${FASTERQ_DUMP_OPTIONS} ${run} && break
     touch ${tmpdir}/fasterq.tmp. && \rm -rf ${tmpdir}/fasterq.tmp.*
     n=$((n+1))
