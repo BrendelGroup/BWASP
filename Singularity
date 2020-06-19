@@ -9,7 +9,7 @@ From: ubuntu:18.04
 %post
     export DEBIAN_FRONTEND=noninteractive
     apt -y update
-    apt -y install bc git pigz tcsh unzip zip wget tzdata \
+    apt -y install bc git pigz tcsh unar unzip zip wget tzdata \
                    build-essential \
                    openjdk-11-jre-headless \
                    python-minimal  \
