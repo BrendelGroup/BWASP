@@ -2,7 +2,6 @@
 #
 use strict;
 use Getopt::Std;
-use Data::Dumper qw(Dumper);
 
 
 #------------------------------------------------------------------------------
@@ -69,7 +68,6 @@ for (my $i = 0; $i < $nf; $i++) {
   my $lc = 0;
   while(defined($line=<INF>)){
     if ( ++$lc % 100000 == 0 ) {print STDERR "... line $lc \n";}
-#   if ( ++$lc % 100000 == 0 ) {print STDERR "... line $lc \n"; last;}
     my @l = split(/\t/,$line);
     if ( ! exists $scdmatrix{$l[0]} ) {
       my @tmpa = @ba;
@@ -91,14 +89,12 @@ for (my $i = 0; $i < $nf; $i++) {
   my $lc = 0;
   while(defined($line=<INF>)){
     if ( ++$lc % 10000  == 0 ) {print STDERR "... line $lc \n";}
-#   if ( ++$lc % 10000  == 0 ) {print STDERR "... line $lc \n"; last;}
     my @l = split(/\t/,$line);
     $scdmatrix{$l[0]}[$i] = 2;
   }
   close (INF);
 }
   
-#print Dumper \%scdmatrix;
 my %patcount;
 
 foreach my $site (keys %scdmatrix) {
@@ -109,7 +105,7 @@ foreach my $site (keys %scdmatrix) {
     if ($scdmatrix{$site}[$i] == 1) {++$m;                    } # ... number of nsm sites
     if ($scdmatrix{$site}[$i] == 2) {++$n; $pat = $pat . "$i";} # ... number of hsm sites
   }
-  if ( $m +$n  == 8           ) {
+  if ( $m +$n  == $nf ) {
     if ( ! exists $patcount{$pat} ) {
       $patcount{$pat} = 1;
     }
