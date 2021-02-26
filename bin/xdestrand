@@ -37,8 +37,8 @@ awk -v hdr="$header" -v dblf=$dblfile -v sglf=$sglfile '
         {buf=$0; seq=$2; pos=$3;}
 	END {if (c == 1) {print "... detected sgl:" seq "." pos | "cat 1>&2"; print buf >> sglf; ++cntsgl;}
 	     printf("\n");
-	     printf("Number of doublets: %d\t(%6.2f%)\n", cntdbl, 100.*cntdbl/(cntdbl+cntsgl));
-	     printf("Number of singlets: %d\t(%6.2f%)\n", cntsgl, 100.*cntsgl/(cntdbl+cntsgl));
+	     printf("Number of doublets: %d\t(%6.2f%%)\n", cntdbl, 100.*cntdbl/(cntdbl+cntsgl));
+	     printf("Number of singlets: %d\t(%6.2f%%)\n", cntsgl, 100.*cntsgl/(cntdbl+cntsgl));
 	     printf("\n");
 	    }
 '
