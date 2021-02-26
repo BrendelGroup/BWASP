@@ -2,39 +2,43 @@
 #
 use strict;
 use Getopt::Std;
+use Data::Dumper qw(Dumper);
 
 
 #------------------------------------------------------------------------------
-my $USAGE="\nUsage: $0 -s scdlist -h hsmlist\n
+my $USAGE="\nUsage: $0 -s scdlist -h hsmlist -l labels\n
 
 ** $0 will take as input two lists of files (scdlist = *scd.mcalls files; and
-   hsmlist = *hsm.mcalls files) and then produce a summary of which sites are methylated
-   in which sets of samples compared to not being methylated in the complementary sets.
+   hsmlist = *hsm.mcalls files) and a string of sample labels, then produce a summary of
+   which sites are methylated in which sets of samples compared to not being methylated
+   in the complementary sets.
 
    Sample usage:
 
-   hsmsetcmp.pl -s scdlist -h hsmlist                                                  > hsmSetsCompared
+   hsmsetcmp.pl -s scdlist -h hsmlist -l 's1 s2 s3 s4'                                 > hsmSetsCompared
    cat <(head -n 8 hsmSetsCompared) <(tail -n +9 hsmSetsCompared | sort -t':' -k4 -nr) > hsmSetsOrdered
 
    \n";
 
 
 my %args;
-getopts('s:h:', \%args);
+getopts('s:h:l:', \%args);
 
 if (!defined($args{s})) {
-  print "\n!! Please specify an input scdlist file.\n\n";
+  print STDERR "\n!! Please specify an input scdlist file.\n\n";
   die $USAGE;
 }
 my $scdfile = $args{s};
 if (!defined($args{h})) {
-  print "\n!! Please specify an input hsmlist file.\n\n";
+  print STDERR "\n!! Please specify an input hsmlist file.\n\n";
   die $USAGE;
 }
 my $hsmfile = $args{h};
-
-my %scdmatrix;
-my @l;
+if (!defined($args{l})) {
+  print STDERR "\n!! Please specify a string of labels.\n\n";
+  die $USAGE;
+}
+my @labels= split(' ',$args{l});
 
 open (IN, "<$scdfile");
 chomp(my @scdfiles=<IN>);
@@ -43,7 +47,15 @@ open (IN, "<$hsmfile");
 chomp(my @hsmfiles=<IN>);
 close (IN);
 
+if ( $#scdfiles != $#hsmfiles || $#hsmfiles != $#labels ) {
+  print STDERR "\n!! Number of scd files must be equal to number of hsm files and number of labels.\n";
+  print STDERR "Please check and correct.\n";
+  die $USAGE;
+}
 
+
+my %scdmatrix;
+my @l;
 my $nf = @scdfiles;
 my @ba = (0) x $nf;
 
@@ -57,6 +69,7 @@ for (my $i = 0; $i < $nf; $i++) {
   my $lc = 0;
   while(defined($line=<INF>)){
     if ( ++$lc % 100000 == 0 ) {print STDERR "... line $lc \n";}
+#   if ( ++$lc % 100000 == 0 ) {print STDERR "... line $lc \n"; last;}
     my @l = split(/\t/,$line);
     if ( ! exists $scdmatrix{$l[0]} ) {
       my @tmpa = @ba;
@@ -78,12 +91,14 @@ for (my $i = 0; $i < $nf; $i++) {
   my $lc = 0;
   while(defined($line=<INF>)){
     if ( ++$lc % 10000  == 0 ) {print STDERR "... line $lc \n";}
+#   if ( ++$lc % 10000  == 0 ) {print STDERR "... line $lc \n"; last;}
     my @l = split(/\t/,$line);
     $scdmatrix{$l[0]}[$i] = 2;
   }
   close (INF);
 }
   
+#print Dumper \%scdmatrix;
 my %patcount;
 
 foreach my $site (keys %scdmatrix) {
@@ -105,8 +120,7 @@ foreach my $site (keys %scdmatrix) {
 }
 
 
-my @a = (0, 1, 2, 3, 4, 5, 6, 7);
-my @labels = ( 'BA1', 'BA2', 'BB1', 'BB2', 'RA1', 'RA2', 'RB1', 'RB2' );
+my @a = (0 .. $nf-1);
 my @tmp = ();
 my $cpattern = "p";
 
