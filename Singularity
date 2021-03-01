@@ -1,5 +1,5 @@
 bootstrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 
 %help
     This container provides portable & reproducible components for BWASP:
@@ -12,7 +12,6 @@ From: ubuntu:18.04
     apt -y install bc git pigz tcsh unar unzip zip wget tzdata \
                    build-essential \
                    openjdk-11-jre-headless \
-                   python-minimal  \
                    python3-pip \
                    cpanminus
 
