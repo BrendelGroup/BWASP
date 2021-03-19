@@ -94,7 +94,8 @@ for (my $i = 0; $i < $nf; $i++) {
   }
   close (INF);
 }
-  
+
+my $allscdsites = 0;
 my %patcount;
 
 foreach my $site (keys %scdmatrix) {
@@ -102,10 +103,11 @@ foreach my $site (keys %scdmatrix) {
   my $n = 0;
   my $pat = "p";
   for (my $i = 0; $i < $nf; $i++) {
-    if ($scdmatrix{$site}[$i] == 1) {++$m;                    } # ... number of nsm sites
-    if ($scdmatrix{$site}[$i] == 2) {++$n; $pat = $pat . "$i";} # ... number of hsm sites
+    if ($scdmatrix{$site}[$i] == 1) {++$m;                     } # ... number of nsm sites
+    if ($scdmatrix{$site}[$i] == 2) {++$n; $pat = $pat . "-$i";} # ... number of hsm sites
   }
   if ( $m +$n  == $nf ) {
+    $allscdsites++;
     if ( ! exists $patcount{$pat} ) {
       $patcount{$pat} = 1;
     }
@@ -114,43 +116,52 @@ foreach my $site (keys %scdmatrix) {
     }
   }
 }
+printf "Total number of sites that are scd in all samples: %9d\n", $allscdsites;
 
 
 my @a = (0 .. $nf-1);
 my @tmp = ();
 my $cpattern = "p";
 
-print "Occurrence of patterns of hsm sites versus nsm sites.\n";
-print "x-y: x samples are hsm, y samples are nsm.\n";
-print "Sample sets compared are as shown (by numerical and synonym labels).\n";
-print "cCounts are the counts for the complementary comparison.\n";
-print "sCounts are the symmetrized counts, i.e. the number of sites\n";
-print "that are all hsm in one set and all nsm in the other, or the other way around.\n\n\n";
+print "Breakdown in terms of occurrence of patterns of hsm sites versus nsm sites:\n";
+print " x-y denotes x samples are hsm and y samples are nsm.\n";
+print " Sample sets compared are as shown (by numerical and synonym labels).\n";
+print " Counts add up to the total number of sites that are scd in all samples.\n";
+print " cCounts are the counts for the complementary comparison.\n";
+print " sCounts are the symmetrized counts, i.e. the number of sites that are\n";
+print "  all hsm in one set and all nsm in the other, or the other way around.\n\n\n";
 
 foreach my $pattern (sort keys %patcount) {
-  my @parts = split //, $pattern;
+  my $lgthpattern = 0;
+  my @parts = split /-/, $pattern;
   shift @parts;
   @tmp = @a;
   foreach my $letter (@parts) {
     for (my $i = 0; $i < $nf; $i++) {
-      if ( $tmp[$i] == $letter ) { $tmp[$i]-= 2*$nf; }
+      if ( $tmp[$i] == $letter ) { $tmp[$i]-= 2*$nf; $lgthpattern++;}
     }
   }
   $cpattern = "p";
+  my $lgthcpattern = 0;
   for (my $i = 0; $i < $nf; $i++) {
-    if ( $tmp[$i] >= 0 ) { $cpattern = $cpattern . "$i";}
+    if ( $tmp[$i] >= 0 ) { $cpattern = $cpattern . "-$i"; $lgthcpattern++;}
   }
 
-  print length($pattern)-1, "-", length($cpattern)-1, "\t$pattern\t";
+  print $lgthpattern, "-", $lgthcpattern, "\t$pattern\t";
   foreach my $letter (@parts) {
    print "${labels[$letter]} ";
   }
   print "\tvs. ";
   print $cpattern, "\t";
-  @parts = split //, $cpattern;
+  @parts = split /-/, $cpattern;
   shift @parts;
   foreach my $letter (@parts) {
     print "${labels[$letter]} ";
+  }
+#NOT GOOD: we can have 0 = nscd, 1 = scd, or 2 = hsm; for pat, no 0; but cpat could have, ie does not exist
+#
+  if ( ! exists $patcount{$cpattern} ) {
+    $patcount{$cpattern} = 0;
   }
   printf "\tCount: %8d\tcCount: %8d\tsCount: %8d\n",
 	 $patcount{$pattern}, $patcount{$cpattern},
