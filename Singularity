@@ -12,21 +12,25 @@ From: ubuntu:20.04
     apt -y install bc git pigz tcsh unar unzip zip wget tzdata \
                    build-essential \
                    openjdk-11-jre-headless \
-                   python3-pip \
+                   python3-pip python3-pycurl python3-yaml python3-pandas \
                    cpanminus
+    # Make sure "python" is found:
+    ln -s /usr/bin/python3 /usr/bin/python
+
 
     echo 'Installing HTSLIB from http://www.htslib.org/ '
     #### Prerequisites
-    apt -y install zlib1g-dev libbz2-dev liblzma-dev
+    apt -y install libcurl4-openssl-dev zlib1g-dev libbz2-dev liblzma-dev
     #### Install
     cd /opt
     git clone git://github.com/samtools/htslib.git htslib
     cd htslib
+    git submodule update --init --recursive
     make && make install
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/ '
     #### Prerequisites
-    apt -y install ncurses-dev libcurl4-openssl-dev
+    apt -y install ncurses-dev
     #### Install
     cd /opt
     git clone git://github.com/samtools/samtools.git samtools
@@ -73,9 +77,9 @@ From: ubuntu:20.04
     apt -y install libcairo2-dev libpango1.0-dev
     #### Install
     cd /opt
-    wget http://genometools.org/pub/genometools-1.5.10.tar.gz
-    tar -xzf genometools-1.5.10.tar.gz
-    cd genometools-1.5.10/
+    wget http://genometools.org/pub/genometools-1.6.1.tar.gz
+    tar -xzf genometools-1.6.1.tar.gz
+    cd genometools-1.6.1/
     make && make install
 
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/ '
