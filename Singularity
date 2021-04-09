@@ -26,7 +26,7 @@ From: ubuntu:20.04
     git clone git://github.com/samtools/htslib.git htslib
     cd htslib
     git submodule update --init --recursive
-    make && make install
+    make && make install && make clean
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/ '
     #### Prerequisites
@@ -35,7 +35,7 @@ From: ubuntu:20.04
     cd /opt
     git clone git://github.com/samtools/samtools.git samtools
     cd samtools
-    make && make install
+    make && make install && make clean
 
     echo 'Installing Bowtie2 from https://github.com/BenLangmead/bowtie2 '
     ######
@@ -80,14 +80,21 @@ From: ubuntu:20.04
     wget http://genometools.org/pub/genometools-1.6.1.tar.gz
     tar -xzf genometools-1.6.1.tar.gz
     cd genometools-1.6.1/
-    make && make install
+    make && make install && make clean
+
+    echo 'Installing bedtools from https://github.com/arq5x/bedtools2/ '
+    ######
+    cd /opt
+    git clone https://github.com/arq5x/bedtools2.git
+    cd bedtools2/
+    make && make install && make clean
 
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/ '
     ######
     cd /opt
     git clone https://github.com/BrendelGroup/AEGeAn.git
     cd AEGeAn/
-    make && make install
+    make && make install && make clean
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
     #### Prerequisites
