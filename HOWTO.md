@@ -9,7 +9,7 @@ Please go to [data/README](./data/README.md) for production-level workflow scrip
 
 At this stage, you should have completed the BWASP installation steps
 documented in the [INSTALL](./INSTALL.md) document; we'll assume that you have
-downloaded the `bwasp.simg` singularity container.
+downloaded the `bwasp.sif` singularity container.
 
 The BWASP script [xgetSRAacc](./bin/xgetSRAacc) uses NCBI SRA Toolkit to download data from NCBI SRA.
 If you have been using SRA Toolkit already and allow local file-caching, you need to make sure that your file-caching location is accessible to singularity.
@@ -17,7 +17,7 @@ We recommend to disable local file-caching.
 To do this, run:
 
 ```bash
-  singularity exec -e bwasp.simg  vdb-config -i
+  singularity exec -e bwasp.sif  vdb-config -i
 ```
 
 navigate to CACHE by entering C and disable local file-caching by toggeling i, followed by x for exit, and possibley o for ok.
@@ -138,7 +138,7 @@ For example, if user `bumblebee` has access to plenty of disk space on
 following:
 
 ```
-singularity exec -e -B /bigdata/bumblebee/BWASP/data /bigdata/bumblebee/BWASP/bwasp.simg
+singularity exec -e -B /bigdata/bumblebee/BWASP/data /bigdata/bumblebee/BWASP/bwasp.sif
 ```
 
 Finally, we can run the `make`-enabled workflow (from directory _replicateX_):
