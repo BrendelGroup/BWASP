@@ -19,9 +19,10 @@ From: ubuntu:20.04
 
 
     echo 'Installing HTSLIB from http://www.htslib.org/ '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     apt -y install libcurl4-openssl-dev zlib1g-dev libbz2-dev liblzma-dev
-    #### Install
+    ##### Install
     cd /opt
     git clone git://github.com/samtools/htslib.git htslib
     cd htslib
@@ -29,9 +30,10 @@ From: ubuntu:20.04
     make && make install && make clean
 
     echo 'Installing SAMTOOLS from http://www.htslib.org/ '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     apt -y install ncurses-dev
-    #### Install
+    ##### Install
     cd /opt
     git clone git://github.com/samtools/samtools.git samtools
     cd samtools
@@ -44,15 +46,16 @@ From: ubuntu:20.04
     unzip bowtie2-2.3.5.1-linux-x86_64.zip
 
     echo 'Installing BISMARK from http://www.bioinformatics.babraham.ac.uk/projects/bismark/ '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     apt -y install libgd-dev libgd-graph-perl
-    #####
+    ######
     cd /opt
     git clone https://github.com/BrendelGroup/Bismark
     # Note that we are using the slightly modified Brendel Group version of Bismark
 
     echo 'Installing FastQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ '
-    #### Install
+    ######
     cd /opt
     wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip
     unzip fastqc_v0.11.8.zip
@@ -65,17 +68,19 @@ From: ubuntu:20.04
     tar -xzf sratoolkit.2.10.7-ubuntu64.tar.gz
 
     echo 'Installing TRIM_GALORE from http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     pip3 install cutadapt
-    #### Install
+    ##### Install
     cd /opt
     wget --content-disposition https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.zip
     unzip TrimGalore-0.6.3.zip
 
     echo 'Installing GENOMETOOLS from from http://genometools.org/ '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     apt -y install libcairo2-dev libpango1.0-dev
-    #### Install
+    ##### Install
     cd /opt
     wget http://genometools.org/pub/genometools-1.6.1.tar.gz
     tar -xzf genometools-1.6.1.tar.gz
@@ -89,6 +94,22 @@ From: ubuntu:20.04
     cd bedtools2/
     make && make install && make clean
 
+    echo 'Installing meme from http://meme-suite.org/meme-software/5.3.3/meme_5.3.3.tar.gz '
+    ######
+    ##### Prerequisites
+    apt -y install libexpat-dev libxml2-dev imagemagick
+    cpanm File::Which HTML::Template HTML::TreeBuilder JSON
+    cpanm XML::Simple XML::Parser::Expat Log::Log4perl Math::CDF
+    cpanm XML::Compile::SOAP11 XML::Compile::WSDL11 XML::Compile::Transport::SOAPHTTP
+    ##### Install
+    cd /opt
+    wget https://meme-suite.org/meme/meme-software/5.3.3/meme-5.3.3.tar.gz
+    tar -xzf meme-5.3.3.tar.gz
+    cd meme-5.3.3
+    ./configure --prefix=/opt/meme \
+	--enable-build-libxml2 --enable-build-libxslt --with-url="http://meme-suite.org"
+    make && make install && make clean
+
     echo 'Installing AEGeAn from https://github.com/BrendelGroup/AEGeAn/ '
     ######
     cd /opt
@@ -97,11 +118,11 @@ From: ubuntu:20.04
     make && make install && make clean
 
     echo 'Installing BWASP from https://github.com/BrendelGroup/BWASP.git '
-    #### Prerequisites
+    ######
+    ##### Prerequisites
     apt -y install python3-numpy python3-scipy
     cpanm Getopt::Long Math::BigFloat Array::Split Parallel::Loops
-
-    #### Install
+    ##### Install
     cd /opt
     git clone https://github.com/BrendelGroup/BWASP.git
 
@@ -112,6 +133,7 @@ From: ubuntu:20.04
     export PATH=$PATH:/opt/FastQC
     export PATH=$PATH:/opt/sratoolkit.2.10.7-ubuntu64/bin
     export PATH=$PATH:/opt/TrimGalore-0.6.3
+    export PATH=$PATH:/opt/meme/bin
     export PATH=$PATH:/opt/BWASP/bin
     export PATH=$PATH:/opt/aspera/cli/bin
 
