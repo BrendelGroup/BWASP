@@ -12,13 +12,13 @@
 ## Installation as a singularity container
 
 Assuming _git_ and  _singularity_ are installed on your system, you can get the
-BWASP code from GitHub and the container from the
-[Singularity Hub](https://www.singularity-hub.org/collections/1203) as follows:
+BWASP code from GitHub and the container from our
+[Singularity Hub](http://BrendelGroup.org/SingularityHub) as follows:
 
 ```bash
 git clone https://github.com/brendelgroup/BWASP.git
 cd BWASP
-singularity pull --name bwasp.simg shub://BrendelGroup/BWASP
+singularity pull http://BrendelGroup.org/SingularityHub/bwasp.sif
 source bin/bwasp_env.sh
 ```
 
@@ -38,8 +38,8 @@ However, if desired, you can of course install all the required software and
 packages individually on your computer system.
 The singularity [recipe file](./Singularity) in this repository should serve as
 a guide to perform such an installation.
-The `bwasp.simg` container was built on the 
-[current long-term supported Ubuntu 18.04 distribution](https://www.ubuntu.com/download/desktop)
+The `bwasp.sif` container was built on the 
+[current long-term supported Ubuntu 20.04 distribution](https://www.ubuntu.com/download/desktop)
 and thus the instructions apply to that particular Linux version.
 
 
