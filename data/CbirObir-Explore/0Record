@@ -1,0 +1,111 @@
+#!bin/bash
+#
+
+# 1. Tally of gene and DMG numbers comparing Cbir and Obir.
+#
+./xcmplists Cbir Obir ../../MCALLS/Cbir/genome/Cbir.gff3 ../../MCALLS/Obir/genome/Obir.gff3 ../../RWORK/Cbir/OUT-Cb_LIp/DMSG/dmg-Cb_LIp.txt ../../RWORK/Obir/OUT-Ob_LIp/DMSG/dmg-Ob_LIp.txt   > ListComparison.txt
+
+# ... with output:
+#
+#Comparing geneIDs of
+#  Cbir (../../MCALLS/Cbir/genome/Cbir.gff3)
+#with
+#  Obir (../../MCALLS/Obir/genome/Obir.gff3)
+#
+#Number of Cbir genes:	13380	(file: geneIDs_Cbir)
+#Number of Obir genes:	13755	(file: geneIDs_Obir)
+#Number of common genes:	11737	(file: geneIDs_CbirAndObir)
+#Number of unique Cbir genes:	1643	(file: geneIDs_CbirOnly)
+#Number of unique Obir genes:	2018	(file: geneIDs_ObirOnly)
+#
+#Comparing differentially methylated gene lists
+#  ../../RWORK/Cbir/OUT-Cb_LIp/DMSG/dmg-Cb_LIp.txt
+#with
+#  ../../RWORK/Obir/OUT-Ob_LIp/DMSG/dmg-Ob_LIp.txt
+#
+#Number of Cbir DMGs:	1533	(file: DMGs_Cbir)
+#Number of Obir DMGs:	1618	(file: DMGs_Obir)
+#Number of common DMGs:	1281	(file: DMGs_CbirAndObir)
+#Number of DMGs unique to Cbir:	252	(file: DMGs_CbirOnly)
+#  = DMGs not in the Obir annotation:	55	(file: DMGs_CbirNotInObir)
+#  + Obir genes that are not DMGs:	197	(file: DMGs_CbirNotObir)
+#Number of DMGs unique to Obir:	337	(file: DMGs_ObirOnly)
+#  = DMGs not in the Cbir annotation:	52	(file: DMGs_ObirNotInCbir)
+#  + Cbir genes that are not DMGs:	285	(file: DMGs_ObirNotCbir)
+
+
+
+# 2. A closer look at changed DMG status for common GeneID's: are these minor
+#    changes (one differently classified site in a gene) or more dramatic
+#    (based on revised gene models, e.g. split of previously fused gene models)?
+#
+./xmktsvNdms   > DMSsInDMGs.txt
+
+# ... with output:
+#
+#There are 285 DMGs in Obir that are not DMG in Cbir (file DMGs_ObirNotCbir).
+#Breakdown (number of genes with specified numbers of DMSs; file gene-ndmsCb-ndmsOb):
+#
+##dmsCb	#dmsOb	#genes
+#0	1 251
+#0	2 27
+#0	3 4
+#0	4 1
+#0	5 1
+#0	6 1
+#
+#
+#There are 197 DMGs in Cbir that are not DMG in Obir (file DMGs_CbirNotObir).
+#Breakdown (number of genes with specified numbers of DMSs; file gene-ndmsCb-ndmsOb):
+#
+##dmsCb	#dmsOb	#genes
+#1	0 185
+#2	0 5
+#3	0 7
+
+# ... or in words:
+#
+#  of the 285 DMGs in Obir only, 251 have just one DMS, 27 have two DMSs, 4 have three DMSs,
+#   and 3 DMGs have 4, 5, and 6 DMSs, respectively
+#  of the 197 DMGs in Cbir only, 185 have just one DMS, 5 have two DMSs, and 7 have three DMSs
+
+
+
+# 3. A closer look at DMGs with unique GeneIDs in either Obir or Cbir.
+#
+./xtypegenes > genetypes.txt
+
+# ... with output:
+#
+#Number of genes that are DMGs_ObirNotInCbir:	52
+#  of these 30 are protein_coding
+#  of these 21 are lncRNA
+#  others? (shown if present)
+#NC_039513.1	tRNAscan-SE	gene	10316282	10316354	.	-	.	ID=gene-Trnaf-gaa-2;Dbxref=GeneID:113562498;Name=Trnaf-g
+#aa;gbkey=Gene;gene=Trnaf-gaa;gene_biotype=tRNA
+#
+#
+#Number of genes that are DMGs_CbirNotInObir:	55
+#  of these 43 are protein_coding
+#  of these 12 are lncRNA
+#  others? (shown if present)
+
+
+
+# 4. Exploring specific gene models:
+#
+echo ""
+echo ""
+echo "--------------------------------------------------------------------------------"
+echo "Example of a conserved DMG:"
+./xplrgenes 105274699
+echo ""
+echo ""
+echo "--------------------------------------------------------------------------------"
+echo "Example of a Cbir DMG that is not DMG in Obir:"
+./xplrgenes 105275382
+echo ""
+echo ""
+echo "--------------------------------------------------------------------------------"
+echo "Example of a Obir DMG that is not DMG in Cbir:"
+./xplrgenes 105274643

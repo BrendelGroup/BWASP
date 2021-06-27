@@ -1,0 +1,12 @@
+Data analysis for workflow results comparing the Cerapachys biroi (Cbir) and
+Ooceraea biroi (Obir) genome assembies/annotations.
+
+For a directory structure including
+	<root>/MCALLS
+	<root>/RWORK
+	<root>/bwasp.sif
+	<root>/analyses/CbirObir-Explore	# copy of this directory
+with appropriate BWASP/R output in MCALLS and RWORK, the following should do:
+
+
+singularity exec -e -B ${PWD}/../.. ../../bwasp.sif  bash 0Record
