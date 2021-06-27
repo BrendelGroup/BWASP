@@ -99,13 +99,79 @@ echo ""
 echo "--------------------------------------------------------------------------------"
 echo "Example of a conserved DMG:"
 ./xplrgenes 105274699
+# ... with output:
+#
+#GeneID:	105274699
+#
+#Results will be deposited in directory GeneID_105274699.
+#
+# in Obir (4 exons, 70 hsm sites):
+#NC_039515.1	1443748	1446133
+#
+# in Cbir (4 exons, 69 hsm sites):
+#NW_011924947.1	58838	61228
+#
+#... see files sitesIn*_105274699 (format: position	coverage	#numCs)
+#
+#
+#The alignment of the Cbir gene 105274699 (file: Cbir_GeneID_105274699) with the
+# Obir gene (file: Obir_GeneID_105274699) is summarized in file
+# ObirCbirGeneID_105274699.blastn.
+#
+#Matches of the Cbir gene 105274699 exons (file: Cbir_GeneID_105274699_exons.fa) with the
+# Obir gene exons (file: Obir_GeneID_105274699_exons.fa) are shown in files
+# ObirExonsCbirGeneID_105274699.blastn and CbirExonsObirGeneID_105274699.blastn.
 echo ""
 echo ""
 echo "--------------------------------------------------------------------------------"
 echo "Example of a Cbir DMG that is not DMG in Obir:"
 ./xplrgenes 105275382
+# ... with output:
+#
+#GeneID:	105275382
+#
+#Results will be deposited in directory GeneID_105275382.
+#
+# in Obir (10 exons, 105 hsm sites):
+#NC_039516.1	13323838	13330279
+#
+# in Cbir (16 exons, 181 hsm sites):
+#NW_011924973.1	1261180	1270410
+#
+#... see files sitesIn*_105275382 (format: position	coverage	#numCs)
+#
+#
+#The alignment of the Cbir gene 105275382 (file: Cbir_GeneID_105275382) with the
+# Obir gene (file: Obir_GeneID_105275382) is summarized in file
+# ObirCbirGeneID_105275382.blastn.
+#
+#Matches of the Cbir gene 105275382 exons (file: Cbir_GeneID_105275382_exons.fa) with the
+# Obir gene exons (file: Obir_GeneID_105275382_exons.fa) are shown in files
+# ObirExonsCbirGeneID_105275382.blastn and CbirExonsObirGeneID_105275382.blastn.
 echo ""
 echo ""
 echo "--------------------------------------------------------------------------------"
 echo "Example of a Obir DMG that is not DMG in Cbir:"
 ./xplrgenes 105274643
+# ... with output:
+#
+#GeneID:	105274643
+#
+#Results will be deposited in directory GeneID_105274643.
+#
+# in Obir (14 exons, 127 hsm sites):
+#NC_039516.1	717142	730846
+#
+# in Cbir (10 exons, 73 hsm sites):
+#NW_011924946.1	3174063	3182435
+#
+#... see files sitesIn*_105274643 (format: position	coverage	#numCs)
+#
+#
+#The alignment of the Cbir gene 105274643 (file: Cbir_GeneID_105274643) with the
+# Obir gene (file: Obir_GeneID_105274643) is summarized in file
+# ObirCbirGeneID_105274643.blastn.
+#
+#Matches of the Cbir gene 105274643 exons (file: Cbir_GeneID_105274643_exons.fa) with the
+# Obir gene exons (file: Obir_GeneID_105274643_exons.fa) are shown in files
+# ObirExonsCbirGeneID_105274643.blastn and CbirExonsObirGeneID_105274643.blastn.
