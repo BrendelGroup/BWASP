@@ -14,8 +14,8 @@ my $USAGE="\nUsage: $0 -s scdlist -h hsmlist -l labels\n
 
    Sample usage:
 
-   hsmsetcmp.pl -s scdlist -h hsmlist -l 's1 s2 s3 s4'                                 > hsmSetsCompared
-   cat <(head -n 8 hsmSetsCompared) <(tail -n +9 hsmSetsCompared | sort -t':' -k4 -nr) > hsmSetsOrdered
+   hsmsetcmp.pl -s scdlist -h hsmlist -l 's1 s2 s3 s4'                                   > hsmSetsCompared
+   cat <(head -n 10 hsmSetsCompared) <(tail -n +11 hsmSetsCompared | sort -t':' -k4 -nr) > hsmSetsOrdered
 
    \n";
 
