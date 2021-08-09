@@ -8,7 +8,9 @@ if [ "$#" -ne 1 ] || [ $1 = "-h" ]; then
   echo " are added and displayed as sums in position i in output file"
   echo " dbl-*.mcalls. Singlet sites for which only one of positions i"
   echo " or i+1 have an entry in the *.mcalls file are displayed unchanged"
-  echo " in file sgl-*.mcalls."
+  echo " in file sgl-*.mcalls except for the position. Thus, R strand singlets"
+  echo " are identified as in position i (but with R instead of F as strand);
+  echo " this allows destranded between-sample comparisons."
   echo ""
   echo "Usage: $0 mcallsfile"
   echo ""
@@ -28,14 +30,24 @@ header=`head -1 ${mcallsfile}`
 
 tail -n +2 ${mcallsfile} |
 awk -v hdr="$header" -v dblf=$dblfile -v sglf=$sglfile '
-	BEGIN {seq=""; pos=""; c=0; print hdr > dblf; print hdr > sglf;}
-        {if (++c == 2) {
-          if ($2 == seq && $3 == pos+1) {print "... detected dbl:" seq "." pos | "cat 1>&2"; print buf >> dblf; ++cntdbl; c=0;}
-          else                          {print "... detected sgl:" seq "." pos | "cat 1>&2"; print buf >> sglf; ++cntsgl; c=1;}
-         }
+	BEGIN {seq=""; pos=""; str=""; c=0; print hdr > dblf; print hdr > sglf;}
+	{if (++c == 2) {
+	  if ($2 == seq && $3 == pos+1) {print "... detected dbl:" seq "." pos | "cat 1>&2"; print buf >> dblf; ++cntdbl; c=0;}
+	  else {
+	    if (str == "F") {print "... detected sgl:" seq "." pos | "cat 1>&2"; print buf >> sglf;}
+	    else {print "... detected sgl:" seq "." pos | "cat 1>&2";
+		   print seq "." pos-1 "\t" seq "\t" pos-1 "\t" str "\t" cov "\t" pcntm "\t" pcntu >> sglf;}
+	    ++cntsgl; c=1;
+	  }
+	 }
 	}
-        {buf=$0; seq=$2; pos=$3;}
-	END {if (c == 1) {print "... detected sgl:" seq "." pos | "cat 1>&2"; print buf >> sglf; ++cntsgl;}
+	{buf=$0; seq=$2; pos=$3; str=$4; cov=$5; pcntm=$6; pcntu=$7;}
+	END {if (c == 1) {
+	      if (str == "F") {print "... detected sgl:" seq "." pos | "cat 1>&2"; print buf >> sglf;}
+	      else {print "... detected sgl:" seq "." pos | "cat 1>&2";
+		     print seq "." pos-1 "\t" seq "\t" pos-1 "\t" str "\t" cov "\t" pcntm "\t" pcntu >> sglf;}
+	      ++cntsgl;
+	     }
 	     printf("\n");
 	     printf("Number of doublets: %d\t(%6.2f%%)\n", cntdbl, 100.*cntdbl/(cntdbl+cntsgl));
 	     printf("Number of singlets: %d\t(%6.2f%%)\n", cntsgl, 100.*cntsgl/(cntdbl+cntsgl));
