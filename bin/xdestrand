@@ -9,7 +9,7 @@ if [ "$#" -ne 1 ] || [ $1 = "-h" ]; then
   echo " dbl-*.mcalls. Singlet sites for which only one of positions i"
   echo " or i+1 have an entry in the *.mcalls file are displayed unchanged"
   echo " in file sgl-*.mcalls except for the position. Thus, R strand singlets"
-  echo " are identified as in position i (but with R instead of F as strand);
+  echo " are identified as in position i (but with R instead of F as strand);"
   echo " this allows destranded between-sample comparisons."
   echo ""
   echo "Usage: $0 mcallsfile"
