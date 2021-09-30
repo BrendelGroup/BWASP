@@ -47,9 +47,10 @@ document for a complete example of how to implement and run a workflow.
 
 ## Reference
 
-Amy L. Toth, Murat Ozturk, Saranya Sankaranarayanan, and Volker P. Brendel
-(2018) _Estimating the size and dynamics of the CpG methylome of social
-insects._ To be submitted.
+Claire Morandine and Volker P. Brendel
+(2021) _Tools and applications for integrative analysis of DNA methylation
+in social insects._ In review.
+Pre-print: [at BioRxiv](https://www.biorxiv.org/content/10.1101/2021.08.19.457008v2)
 
 
 ## Contact
