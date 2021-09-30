@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# xcmplists - a script to compare lists of differentially methylated genes
+
+label1=$1
+label2=$2
+genes1=$3
+genes2=$4
+list1=$5
+list2=$6
+#
+# Intended usage (example):
+#
+# ./xcmplists Cbir Obir \
+#   ../../MCALLS/Cbir/genome/Cbir.gff3 ../../MCALLS/Obir/genome/Obir.gff3 \
+#   ../../RWORK/Cbir/OUT-Cb_LIp/DMSG/dmg-Cb_LIp.txt ../../RWORK/Obir/OUT-Ob_LIp/DMSG/dmg-Ob_LIp.txt
+
+echo "Comparing geneIDs of"
+echo "  $label1 ($genes1)"
+echo "with"
+echo "  $label2 ($genes2)"
+echo ""
+
+# Note: The following processing assumes a specific structure to the GFF3 input files, as seen in
+#       the Cbir, Obir annotation files.
+#
+egrep "	gene	" $genes1 | cut -d"=" -f3 | cut -d";" -f1 | cut -d":" -f2 | sort -u > geneIDs_${label1}
+egrep "	gene	" $genes2 | cut -d"=" -f3 | cut -d";" -f1 | cut -d":" -f2 | sort -u > geneIDs_${label2}
+comm -23 geneIDs_${label1} geneIDs_${label2} > geneIDs_${label1}Only
+comm -13 geneIDs_${label1} geneIDs_${label2} > geneIDs_${label2}Only
+comm -12 geneIDs_${label1} geneIDs_${label2} > geneIDs_${label1}And${label2}
+n=`cat geneIDs_${label1} | wc -l`
+echo "Number of $label1 genes:	$n	(file: geneIDs_${label1})"
+n=`cat geneIDs_${label2} | wc -l`
+echo "Number of $label2 genes:	$n	(file: geneIDs_${label2})"
+n=`cat geneIDs_${label1}And${label2} | wc -l`
+echo "Number of common genes:	$n	(file: geneIDs_${label1}And${label2})"
+n=`cat geneIDs_${label1}Only | wc -l`
+echo "Number of unique ${label1} genes:	$n	(file: geneIDs_${label1}Only)"
+n=`cat geneIDs_${label2}Only | wc -l`
+echo "Number of unique ${label2} genes:	$n	(file: geneIDs_${label2}Only)"
+echo ""
+
+echo "Comparing differentially methylated gene lists"
+echo "  $list1"
+echo "with"
+echo "  $list2"
+echo ""
+
+cut -f11 $list1 | sed 's/GeneID://g' | sed 1d | sort > DMGs_${label1}
+n=`cat DMGs_${label1} | wc -l`
+echo "Number of $label1 DMGs:	$n	(file: DMGs_${label1})"
+cut -f11 $list2 | sed 's/GeneID://g' | sed 1d | sort > DMGs_${label2}
+n=`cat DMGs_${label2} | wc -l`
+echo "Number of $label2 DMGs:	$n	(file: DMGs_${label2})"
+
+comm -12 DMGs_${label1} DMGs_${label2} > DMGs_${label1}And${label2}
+# there are 1281 genes that are DMGs for both ${label1} and ${label2}
+n=`cat DMGs_${label1}And${label2} | wc -l`
+echo "Number of common DMGs:	$n	(file: DMGs_${label1}And${label2})"
+
+comm -23 DMGs_${label1} DMGs_${label2} > DMGs_${label1}Only
+n=`cat DMGs_${label1}Only | wc -l`
+echo "Number of DMGs unique to $label1:	$n	(file: DMGs_${label1}Only)"
+# there are 252 genes DMGs in ${label1} but not in ${label2}
+comm -12 DMGs_${label1}Only geneIDs_${label1}Only > DMGs_${label1}NotIn${label2}
+n=`cat DMGs_${label1}NotIn${label2} | wc -l`
+echo "  = DMGs not in the ${label2} annotation:	$n	(file: DMGs_${label1}NotIn${label2})"
+#55
+comm -12 DMGs_${label1}Only geneIDs_${label1}And${label2} > DMGs_${label1}Not${label2}
+#197
+n=`cat DMGs_${label1}Not${label2} | wc -l`
+echo "  + $label2 genes that are not DMGs:	$n	(file: DMGs_${label1}Not${label2})"
+
+comm -13 DMGs_${label1} DMGs_${label2} > DMGs_${label2}Only
+n=`cat DMGs_${label2}Only | wc -l`
+echo "Number of DMGs unique to $label2:	$n	(file: DMGs_${label2}Only)"
+# there are 252 genes DMGs in ${label1} but not in ${label2}
+comm -12 DMGs_${label2}Only geneIDs_${label2}Only > DMGs_${label2}NotIn${label1}
+n=`cat DMGs_${label2}NotIn${label1} | wc -l`
+echo "  = DMGs not in the ${label1} annotation:	$n	(file: DMGs_${label2}NotIn${label1})"
+#55
+comm -12 DMGs_${label2}Only geneIDs_${label1}And${label2} > DMGs_${label2}Not${label1}
+#197
+n=`cat DMGs_${label2}Not${label1} | wc -l`
+echo "  + $label1 genes that are not DMGs:	$n	(file: DMGs_${label2}Not${label1})"

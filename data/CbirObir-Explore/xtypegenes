@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+
+mcallsdir=../../MCALLS
+
+cat DMGs_ObirNotInCbir | xargs -d"\n" -I % sh -c "egrep '	gene	.*GeneID:%' ${mcallsdir}/Obir/genome/Obir.gff3" > genes_DMGs_ObirNotInCbir
+n=`cat DMGs_ObirNotInCbir | wc -l`
+echo "Number of genes that are DMGs_ObirNotInCbir:	$n"
+n=`cat genes_DMGs_ObirNotInCbir | egrep "biotype=protein_coding" | wc -l`
+echo "  of these $n are protein_coding"
+n=`cat genes_DMGs_ObirNotInCbir | egrep "biotype=lncRNA" | wc -l`
+echo "  of these $n are lncRNA"
+echo "  others? (shown if present)"
+egrep -v "biotype=protein_coding|biotype=lncRNA"         genes_DMGs_ObirNotInCbir
+echo ""
+echo ""
+
+
+cat DMGs_CbirNotInObir | xargs -d"\n" -I % sh -c "egrep '	gene	.*GeneID:%' ${mcallsdir}/Cbir/genome/Cbir.gff3" > genes_DMGs_CbirNotInObir
+n=`cat DMGs_CbirNotInObir | wc -l`
+echo "Number of genes that are DMGs_CbirNotInObir:	$n"
+n=`cat genes_DMGs_CbirNotInObir | egrep "biotype=protein_coding" | wc -l`
+echo "  of these $n are protein_coding"
+n=`cat genes_DMGs_CbirNotInObir | egrep "biotype=lncRNA" | wc -l`
+echo "  of these $n are lncRNA"
+echo "  others? (shown if present)"
+egrep -v "biotype=protein_coding|biotype=lncRNA"         genes_DMGs_CbirNotInObir

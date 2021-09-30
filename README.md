@@ -25,13 +25,13 @@ workflow, but configuration and execution is via
 [GNU make](https://www.gnu.org/software/make/) using edited copies of the
 makefiles provided in the _makefiles_ directory.
 All the BWASP dependencies are encapsulated in a
-[Singularity](https://www.sylabs.io/docs/) container available from
-[Singularity Hub](https://singularity-hub.org/).
+[Singularity](https://www.sylabs.io/docs/) container available from our
+[Singularity Hub](http://BrendelGroup.org/SingularityHub/).
 Thus, once you know what you are doing, execution could be as simple as
 
 ```
-singularity pull --name bwasp.simg shub://BrendelGroup/BWASP
-singularity exec bwasp.simg make
+singularity pull http://BrendelGroup.org/SingularityHub/bwasp.sif
+singularity exec bwasp.sif make
 ```
 
 (assuming you have prepared a suitable makefile in your working directory).

@@ -61,7 +61,7 @@ with open(sys.argv[1], 'r') as infile:
       input = line.rstrip('\n').split('\t');
 
       coverage = int(input[3]) + int(input[4])
-      if coverage is not 0:
+      if coverage != 0:
           C_Freq = int(input[3])
           T_Freq = int(input[4])
       else:

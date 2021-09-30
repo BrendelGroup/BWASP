@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+
+rworkdir=../../RWORK
+genes=$(cat DMGs_ObirNotCbir DMGs_CbirNotObir)
+
+if [ -f gene-ndmsCb-ndmsOb.tsv ]; then
+	\rm gene-ndmsCb-ndmsOb.tsv
+fi
+
+for gene in $genes
+do
+	m=`egrep $gene ${rworkdir}/Cbir/OUT-Cb_LIp/DMSG/dmg-Cb_LIp_BCphase.vs.Rphase_details.txt | egrep -c TRUE`
+	n=`egrep $gene ${rworkdir}/Obir/OUT-Ob_LIp/DMSG/dmg-Ob_LIp_BCphase.vs.Rphase_details.txt | egrep -c TRUE`
+	echo "$gene	$m	$n"	>> gene-ndmsCb-ndmsOb.tsv
+done
+
+n=`cat DMGs_ObirNotCbir | wc -l`
+echo "There are $n DMGs in Obir that are not DMG in Cbir (file DMGs_ObirNotCbir)."
+echo "Breakdown (number of genes with specified numbers of DMSs; file gene-ndmsCb-ndmsOb):"
+echo ""
+echo "#dmsCb	#dmsOb	#genes"
+cut -f2,3 gene-ndmsCb-ndmsOb.tsv | sort -u | egrep "^0" | xargs -d"\n" -I % sh -c 'n=`egrep "	%" gene-ndmsCb-ndmsOb.tsv | wc -l`; echo "% $n"'
+echo ""
+echo ""
+
+n=`cat DMGs_CbirNotObir | wc -l`
+echo "There are $n DMGs in Cbir that are not DMG in Obir (file DMGs_CbirNotObir)."
+echo "Breakdown (number of genes with specified numbers of DMSs; file gene-ndmsCb-ndmsOb):"
+echo ""
+echo "#dmsCb	#dmsOb	#genes"
+cut -f2,3 gene-ndmsCb-ndmsOb.tsv | sort -u | egrep "0$" | xargs -d"\n" -I % sh -c 'n=`egrep "	%" gene-ndmsCb-ndmsOb.tsv | wc -l`; echo "% $n"'

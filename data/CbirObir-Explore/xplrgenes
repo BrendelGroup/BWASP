@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+
+rworkdir=../../RWORK
+mcallsdir=../../MCALLS
+geneid=$1
+
+
+echo "GeneID:	$geneid"
+echo ""
+echo "Results will be deposited in directory GeneID_${geneid}."
+echo ""
+mkdir GeneID_${geneid}
+
+m=`egrep GeneID:$geneid  ${mcallsdir}/Obir/genome/Obir.gff3 | egrep "	exon	" | wc -l`
+egrep GeneID:$geneid ${rworkdir}/Obir/OUT*LIp/RNK/sites-in-genes*BC* | cut -f2,6,7  > sitesInObirGeneID_$geneid
+n=`cat sitesInObirGeneID_$geneid | wc -l`
+echo " in Obir ($m exons, $n hsm sites):"
+egrep GeneID:$geneid ${mcallsdir}/Obir/genome/Obir.gff3 | egrep "	gene	" | cut -f1,4,5
+echo ""
+m=`egrep GeneID:$geneid ${mcallsdir}/Cbir/genome/Cbir.gff3 | egrep "	exon	" | wc -l`
+egrep GeneID:$geneid ${rworkdir}/Cbir/OUT*LIp/RNK/sites-in-genes*BC* | cut -f2,6,7  > sitesInCbirGeneID_$geneid
+n=`cat sitesInCbirGeneID_$geneid | wc -l`
+echo " in Cbir ($m exons, $n hsm sites):"
+egrep GeneID:$geneid ${mcallsdir}/Cbir/genome/Cbir.gff3 | egrep "	gene	" | cut -f1,4,5
+echo ""
+echo "... see files sitesIn*_$geneid (format: position	coverage	#numCs)"
+echo ""
+
+
+egrep GeneID:$geneid ${mcallsdir}/Cbir/genome/Cbir.gff3 | egrep "	gene	" | convert2bed --input=gff - > CbirGeneID_${geneid}.bed
+bedtools getfasta -fi ${mcallsdir}/Cbir/genome/Cbir.gdna.fa -bed CbirGeneID_${geneid}.bed                     > CbirGeneID_${geneid}.fa
+egrep GeneID:$geneid ${mcallsdir}/Obir/genome/Obir.gff3 | egrep "	gene	" | convert2bed --input=gff - > ObirGeneID_${geneid}.bed
+bedtools getfasta -fi ${mcallsdir}/Obir/genome/Obir.gdna.fa -bed ObirGeneID_${geneid}.bed                     > ObirGeneID_${geneid}.fa
+blastn -query ObirGeneID_${geneid}.fa -subject CbirGeneID_${geneid}.fa -dust no -outfmt 6                     > ObirCbirGeneID_${geneid}.blastn
+
+echo ""
+echo "The alignment of the Cbir gene ${geneid} (file: Cbir_GeneID_${geneid}) with the"
+echo " Obir gene (file: Obir_GeneID_${geneid}) is summarized in file"
+echo " ObirCbirGeneID_${geneid}.blastn."
+
+
+egrep GeneID:$geneid ${mcallsdir}/Cbir/genome/Cbir.gff3 | egrep "	exon	" | convert2bed --input=gff - > CbirGeneID_${geneid}_exons.bed
+bedtools getfasta -fi ${mcallsdir}/Cbir/genome/Cbir.gdna.fa -bed CbirGeneID_${geneid}_exons.bed               > CbirGeneID_${geneid}_exons.fa
+egrep GeneID:$geneid ${mcallsdir}/Obir/genome/Obir.gff3 | egrep "	exon	" | convert2bed --input=gff - > ObirGeneID_${geneid}_exons.bed
+bedtools getfasta -fi ${mcallsdir}/Obir/genome/Obir.gdna.fa -bed ObirGeneID_${geneid}_exons.bed               > ObirGeneID_${geneid}_exons.fa
+blastn -query ObirGeneID_${geneid}_exons.fa -subject CbirGeneID_${geneid}_exons.fa -dust no -outfmt 1         > ObirExonsCbirGeneID_${geneid}.blastn
+blastn -query CbirGeneID_${geneid}_exons.fa -subject ObirGeneID_${geneid}_exons.fa -dust no -outfmt 1         > CbirExonsObirGeneID_${geneid}.blastn
+
+echo ""
+echo "Matches of the Cbir gene ${geneid} exons (file: Cbir_GeneID_${geneid}_exons.fa) with the"
+echo " Obir gene exons (file: Obir_GeneID_${geneid}_exons.fa) are shown in files"
+echo " ObirExonsCbirGeneID_${geneid}.blastn and CbirExonsObirGeneID_${geneid}.blastn."
+
+
+mv sitesInObirGeneID_$geneid sitesInCbirGeneID_$geneid \
+   CbirGeneID_${geneid}.bed CbirGeneID_${geneid}.fa \
+   ObirGeneID_${geneid}.bed ObirGeneID_${geneid}.fa \
+   ObirCbirGeneID_${geneid}.blastn \
+   CbirGeneID_${geneid}_exons.bed CbirGeneID_${geneid}_exons.fa \
+   ObirGeneID_${geneid}_exons.bed ObirGeneID_${geneid}_exons.fa \
+   ObirExonsCbirGeneID_${geneid}.blastn CbirExonsObirGeneID_${geneid}.blastn \
+ GeneID_${geneid}/
