@@ -112,7 +112,7 @@ ifeq ("$(wildcard ./FastQC)","")
 endif
 
 
-### 1.4 Trim the reads to remove low quality bases and adapater sequences.
+### 1.4 Trim the reads to remove low quality bases and adapter sequences.
 #
 %_trimmed.fq:	%.fastq FastQC/$(SAMPLE)_fastqc/fastqc_data.txt
 	$(eval ENCODING = $(shell awk 'NR==6' FastQC/$(SAMPLE)_fastqc/fastqc_data.txt | awk -F" " '{printf("%s",$$5)}'))
@@ -237,7 +237,7 @@ $(SYNONYM).bam:	$(SYNONYM).sam
 	samtools view -bS $(SYNONYM).sam | samtools sort $(SAMTOOLS_SORT_OPTIONS) -o $(SYNONYM).bam -
 
 #Note: sstats-se.sh is using "samtools depth" to obtain the total aligned base count and, by dividing that value by the genome size,
-#      the genome coverage); the sorted bam file produced above is required for that step.
+#      the genome coverage; the sorted bam file produced above is required for that step.
 
 
 ### 4.3 Generate and print genome statistics.
