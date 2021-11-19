@@ -112,7 +112,7 @@ fill in the appropriate accession numbers.
 For our example, the template _Makefile_ already has the accession number for
 the first queen replicate.
 We could manually edit numbers for the other two replicates or, better, use the
-following commands to subsitute the SRA accession number and sample labels for
+following commands to substitute the SRA accession number and sample labels for
 the other two replicates:
 
 ```bash
@@ -134,7 +134,7 @@ checking the output of `echo $BWASP_EXEC`.
 This is merely a convenience variable that holds a command that has all the
 relevant singularity parameters set for the user.
 For example, if user `bumblebee` has access to plenty of disk space on
-`/bigdata/bumblebee/`, this user's $BWASP_EXCE might look like the
+`/bigdata/bumblebee/`, this user's $BWASP_EXEC might look like the
 following:
 
 ```
