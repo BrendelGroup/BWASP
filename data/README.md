@@ -286,7 +286,7 @@ echo "All done!"
 Right, with default settings (not recommended; you __should__ think about parameters) it would be as simple as this:
 
 ```bash
-xsetup -s Pcan  Patalano2015
+./xsetup -s Pcan  Patalano2015
 ```
 
 3. In some studies, biological samples were split and run on different sequencer lanes.

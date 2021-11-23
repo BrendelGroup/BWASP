@@ -38,10 +38,14 @@ if (( "$nreps" == 1 )); then
     cp ../makefiles/${machine}Makefile_pe_template ${species}/${study}/${sample}/Makefile
     # replace with proper sample name
     sed -i -e "s/${PE_TEMPLATE_LABEL}/${sample}/;" ${species}/${study}/${sample}/Makefile
-  else
+  elif [ $pors == "s" ]; then
     cp ../makefiles/${machine}Makefile_se_template ${species}/${study}/${sample}/Makefile
     # replace with proper sample name
     sed -i -e "s/${SE_TEMPLATE_LABEL}/${sample}/;" ${species}/${study}/${sample}/Makefile
+  else
+    echo "Please select 'p' for paired-end or 's' for single read data."
+    echo " (Your selection ${pors} is not valid."
+    exit 1
   fi
 else # ... there are multiple replicates
   # copy merge makefile if there are more than one replicates
@@ -62,10 +66,14 @@ else # ... there are multiple replicates
       cp ../makefiles/${machine}Makefile_pe_template ${replicate_path}/Makefile
       # replace with proper sample name
       sed -i -e "s/${PE_TEMPLATE_LABEL}/${sample}${i}/;" ${replicate_path}/Makefile
-    else
+    elif [ $pors == "s" ]; then
       cp ../makefiles/${machine}Makefile_se_template ${replicate_path}/Makefile
       # replace with proper sample name
       sed -i -e "s/${SE_TEMPLATE_LABEL}/${sample}${i}/;" ${replicate_path}/Makefile
+    else
+      echo "Please select 'p' for paired-end or 's' for single read data."
+      echo " (Your selection ${pors} is not valid.)"
+      exit 1
     fi
   done
 fi
