@@ -12,7 +12,7 @@ results; it is __open__ (source) and designed to be __scalable__ and
 __easy__ to use.
 
 
-## Quick Start [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1203)
+## Quick Start
 
 Input to the BWASP workflow consists of accession numbers or fastq files of
 bisulfite-sequencing reads as well as the appropriate genome assembly (and, if
@@ -25,7 +25,7 @@ workflow, but configuration and execution is via
 [GNU make](https://www.gnu.org/software/make/) using edited copies of the
 makefiles provided in the _makefiles_ directory.
 All the BWASP dependencies are encapsulated in a
-[Singularity](https://www.sylabs.io/docs/) container available from our
+[Singularity](https://apptainer.org/) container available from our
 [Singularity Hub](http://BrendelGroup.org/SingularityHub/).
 Thus, once you know what you are doing, execution could be as simple as
 
@@ -47,9 +47,9 @@ document for a complete example of how to implement and run a workflow.
 
 ## Reference
 
-Claire Morandine and Volker P. Brendel
-(2021) _Tools and applications for integrative analysis of DNA methylation
-in social insects._ Molecular Ecology Resources, in print.
+__Claire Morandine and Volker P. Brendel (2021)__
+ _Tools and applications for integrative analysis of DNA methylation in social insects._
+[Molecular Ecology Resources 00, 1-19](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998).
 Pre-print: [at BioRxiv](https://www.biorxiv.org/content/10.1101/2021.08.19.457008v3)
 
 

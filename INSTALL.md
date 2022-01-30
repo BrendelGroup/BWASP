@@ -2,7 +2,7 @@
 
 ## Requirements
 
-  * BWASP should run on any platform that supports [Singularity](https://www.sylabs.io/docs/) (Linux, MacOS, Windows), although we have only tested on Linux.
+  * BWASP should run on any platform that supports [Singularity](https://apptainer.org/) (Linux, MacOS), although we have only tested on Linux.
 
   * BWASP can execute on a single processor machine, but realistically you would want to have 10-20 cores available.
 
@@ -36,7 +36,7 @@ BWASP use via the singularity container is highly recommended, with no known
 drawbacks.
 However, if desired, you can of course install all the required software and
 packages individually on your computer system.
-The singularity [recipe file](./Singularity) in this repository should serve as
+The Singularity [definition file](./bwasp.def) in this repository should serve as
 a guide to perform such an installation.
 The `bwasp.sif` container was built on the 
 [current long-term supported Ubuntu 20.04 distribution](https://www.ubuntu.com/download/desktop)
