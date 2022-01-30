@@ -47,7 +47,7 @@ document for a complete example of how to implement and run a workflow.
 
 ## Reference
 
-__Claire Morandine and Volker P. Brendel (2021)__
+__Claire Morandin and Volker P. Brendel (2021)__
  _Tools and applications for integrative analysis of DNA methylation in social insects._
 Molecular Ecology Resources, 00, 1-19. [https://doi.org/10.1111/1755-0998.13566](https://doi.org/10.1111/1755-0998.13566).
 
