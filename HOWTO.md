@@ -9,7 +9,7 @@ Please go to [data/README](./data/README.md) for production-level workflow scrip
 
 At this stage, you should have completed the BWASP installation steps
 documented in the [INSTALL](./INSTALL.md) document; we'll assume that you have
-downloaded the `bwasp.sif` singularity container.
+downloaded the `bwasp.sif` Singularity container.
 
 The BWASP script [xgetSRAacc](./bin/xgetSRAacc) uses NCBI SRA Toolkit to download data from NCBI SRA.
 If you have been using SRA Toolkit already and allow local file-caching, you need to make sure that your file-caching location is accessible to singularity.
@@ -20,13 +20,13 @@ To do this, run:
   singularity exec -e bwasp.sif  vdb-config -i
 ```
 
-navigate to CACHE by entering C and disable local file-caching by toggeling i, followed by x for exit, and possibley o for ok.
+navigate to CACHE by entering C and disable local file-caching by toggeling i, followed by x for exit, and possibly o for ok.
 
 __Note: If this is the first time you are using SRA Toolkit on the current machine, you will have to invoke _vdb-config_ at least once to set your preferences (as per NCBI instructions).__
 
 
 We explain BWASP use with an example from our
-[publication](http://brendelgroup.org/).
+[2021 publication](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13566).
 
 
 ## Samples
@@ -150,7 +150,7 @@ $BWASP_EXEC make &> bwasp.log
 ```
 
 The preceding `$BWASP_EXEC` makes sure that `make` runs from inside the
-singularity container, where we made sure all the moving parts are in working
+Singularity container, where we made sure all the moving parts are in working
 condition (i.e. all required binaries are of correct version and in the path).
 
 The first *make* command with the -n flag simply shows what _make_ will do and
@@ -172,7 +172,7 @@ After completion of the BWASP workflow, the working directory should contain a
 fair number of output files.
 Please refer to the documentation of the various constituent programs for
 details as well as our
-[manuscript](http://brendelgroup.org/research/publications.php).
+[2021 publication](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13566).
 To remove unneeded intermediate files and archive files that may be of
 interest later but are not needed in subsequent __BWASP__ analysis steps
 we recommend running the following commands at this stage:
