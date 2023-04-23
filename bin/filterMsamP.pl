@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: May 20, 2020	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: April 23, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -332,7 +332,7 @@ if ($paired == 0) {
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
           sleep 10*$_;
-	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
+	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl.*$MsamFile" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
 	  return @samstringsChunksLabeled; 
 	});
 }
@@ -360,7 +360,7 @@ else {
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
 	  sleep 10*$_;
-	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
+	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl.*$Msamfile" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
 	  return @samstringsChunksLabeled; 
 	});
 }
