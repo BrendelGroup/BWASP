@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: August 2, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: April 24, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -49,15 +49,15 @@ Usage: filterMsam.pl <options> --p|--s MsamFile
 ";
 
 # Get options from the command line
-my $MsamFile    = "";
-my $paired      = "";
-my $single      = "";
-my $psoption    = "";
-my $outfile1    = "";
-my $outfile11   = "";
-my $outfile01   = "";
-my $outfile10   = "";
-my $outpfile    = "";
+my $MsamFile    = '';
+my $paired      = '';
+my $single      = '';
+my $psoption    = '';
+my $outfile1    = '';
+my $outfile11   = '';
+my $outfile01   = '';
+my $outfile10   = '';
+my $outpfile    = '';
 my $help        = '';
 
 GetOptions(
@@ -76,13 +76,13 @@ my $MsamFile = shift(@ARGV)
 if ( !-e $MsamFile ) {
   die("\n\nError: Msam file $MsamFile does not exist.\n$usage $!");
 }
-if ($paired) {
+if ($paired ne '') {
 	$psoption = "--p";
 }
 else {
 	$psoption = "--s";
 }
-if ($paired) {
+if ($paired ne '') {
   printf( STDERR "\nRunning filterMsam.pl with the following options:
     MsamFile     = %s
     --s|--p      = %s
@@ -109,7 +109,7 @@ else {
 	$outfile1     = $outfile1 . ".pass";
 }
 if ($outfile11 eq "") {
-	if ($paired) {
+	if ($paired ne '') {
 		$outfile11     = $MsamFile . ".11fail";
 		$outfile01     = $MsamFile . ".01fail";
 		$outfile10     = $MsamFile . ".10fail";
@@ -119,7 +119,7 @@ if ($outfile11 eq "") {
 	}
 }
 else {
-	if ($paired) {
+	if ($paired ne '') {
 		$outfile01     = $outfile11 . ".01fail";
 		$outfile10     = $outfile11 . ".10fail";
 		$outfile11     = $outfile11 . ".11fail";
@@ -134,7 +134,7 @@ if ($outpfile eq "") {
 open( MSFILE,  "< $MsamFile" );
 open( MSPFILE, "> $outfile1" );
 open( MSF11FILE, "> $outfile11" );
-if ($paired) {
+if ($paired ne '') {
   open( MSF01FILE, "> $outfile01" );
   open( MSF10FILE, "> $outfile10" );
 }
@@ -233,17 +233,7 @@ while ( $samstring = <MSFILE> ) {
 
 	$logP = read_calls_probability($mthstring);
 
-	if ($paired == 0) {
-		if ($logP < $logS  &&  $zxhcount < $fraction * $ZXHcount) {
-			$f11cnt++;
-			print MSF11FILE "$samstring";
-		}
-		else {
-			$pcnt++;
-			print MSPFILE "$samstring";
-		}
-	}
-	else {	# ... paired
+	if ($paired ne '') {  # ... paired-read data
 		if ($logP < $logS  &&  $zxhcount < $fraction * $ZXHcount) {
 			$reject_read1 = 1;
 		}
@@ -281,32 +271,42 @@ while ( $samstring = <MSFILE> ) {
 			}
 		}
 	}
+	else {	# ... single-read data
+		if ($logP < $logS  &&  $zxhcount < $fraction * $ZXHcount) {
+			$f11cnt++;
+			print MSF11FILE "$samstring";
+		}
+		else {
+			$pcnt++;
+			print MSPFILE "$samstring";
+		}
+	}
 
 	if ($scnt%1000000 == 0) {
-	  if ($paired == 0) {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
+	  if ($paired ne '') {
+	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
 	  }
 	  else {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
+	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
 	  }
 	}
 }
 printf OUTFILE "\nThreshold:	logS=%12.2f\n", $logS;
 printf OUTFILE "\nscnt=\t%12d", $scnt;
 printf OUTFILE "\npcnt=\t%12d", $pcnt;
-if ($paired == 0) {
-  printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
-}
-else {
+if ($paired ne '') {
   printf OUTFILE "\nf11cnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
   printf OUTFILE   "f01cnt=\t%12d\t(%6.2f%%)\n", $f01cnt, 100.0*$f01cnt/$scnt;
   printf OUTFILE   "f10cnt=\t%12d\t(%6.2f%%)\n", $f10cnt, 100.0*$f10cnt/$scnt;
+}
+else {
+  printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
 }
 
 
 close MSFILE;
 close MSF11FILE;
-if ($paired) {
+if ($paired ne '') {
   close MSF01FILE;
   close MSF10FILE;
 }

@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: April 23, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: April 24, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -51,16 +51,16 @@ Usage: filterMsamP.pl <options> --p|--s MsamFile
 ";
 
 # Get options from the command line
-my $MsamFile    = "";
-my $paired      = "";
-my $single      = "";
-my $psoption    = "";
+my $MsamFile    = '';
+my $paired      = '';
+my $single      = '';
+my $psoption    = '';
 my $numprc      =  4;
-my $outfile1    = "";
-my $outfile11   = "";
-my $outfile01   = "";
-my $outfile10   = "";
-my $outpfile    = "";
+my $outfile1    = '';
+my $outfile11   = '';
+my $outfile01   = '';
+my $outfile10   = '';
+my $outpfile    = '';
 my $help        = '';
 
 GetOptions(
@@ -82,13 +82,13 @@ if ( !-e $MsamFile ) {
 }
 
 
-if ($paired) {
+if ($paired ne '') {
 	$psoption = "--p";
 }
 else {
 	$psoption = "--s";
 }
-if ($paired) {
+if ($paired ne '') {
   printf( STDERR "\nRunning filterMsamP.pl with the following options:
     MsamFile     = %s
     --s|--p      = %s
@@ -121,7 +121,7 @@ else {
 	$outfile1     = $outfile1 . ".pass";
 }
 if ($outfile11 eq "") {
-	if ($paired) {
+	if ($paired ne '') {
 		$outfile11     = $MsamFile . ".11fail";
 		$outfile01     = $MsamFile . ".01fail";
 		$outfile10     = $MsamFile . ".10fail";
@@ -131,7 +131,7 @@ if ($outfile11 eq "") {
 	}
 }
 else {
-	if ($paired) {
+	if ($paired ne '') {
 		$outfile01     = $outfile11 . ".01fail";
 		$outfile10     = $outfile11 . ".10fail";
 		$outfile11     = $outfile11 . ".11fail";
@@ -146,7 +146,7 @@ if ($outpfile eq "") {
 open( MSFILE,  "< $MsamFile" );
 open( MSPFILE, "> $outfile1" );
 open( MSF11FILE, "> $outfile11" );
-if ($paired) {
+if ($paired ne '') {
   open( MSF01FILE, "> $outfile01" );
   open( MSF10FILE, "> $outfile10" );
 }
@@ -176,42 +176,7 @@ $bindev[$numprc-1] = $n;
 
 
 my $bin = 0;
-if ($paired == 0) {
-  while ( $samstring1 = <MSFILE> ) {
-	if ($samstring1 =~ /^\@(HD|SQ|RG|PG)(\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring1 =~ /^\@CO\t.*/) {
-#         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
-	  next;
-	}
-	$scnt++;
-	if ($scnt%1000000 == 0) {
-	  printf STDERR "scnt= %12d\n", $scnt;
-	}
-	my @a = split( "\t", $samstring1 );
-	$mthstring = substr($a[13],5);
-	$zcount = ($mthstring =~ tr/z//);
-	$Zcount = ($mthstring =~ tr/Z//);
-	$xcount = ($mthstring =~ tr/x//);
-	$Xcount = ($mthstring =~ tr/X//);
-	$hcount = ($mthstring =~ tr/h//);
-	$Hcount = ($mthstring =~ tr/H//);
-
-	$Totalzcount += $zcount;
-	$TotalZcount += $Zcount;
-	$Totalxcount += $xcount;
-	$TotalXcount += $Xcount;
-	$Totalhcount += $hcount;
-	$TotalHcount += $Hcount;
-
-	if ($scnt < $bindev[$bin]) {
-	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
-	}
-	else {
-	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
-	  $bin += 1;
-	}
-  }
-}
-else {
+if ($paired ne '') {  # ... paired-end reads; process read data in pairs
   while ( $samstring1 = <MSFILE> ) {
 	if ($samstring1 =~ /^\@(HD|SQ|RG|PG)(\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring1 =~ /^\@CO\t.*/) {
 #         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
@@ -260,6 +225,41 @@ else {
 	}
 	else {
 	  push(@{$samstringchunks[$bin]}, [$scnt/2, $samstring1, $samstring2]);
+	  $bin += 1;
+	}
+  }
+}
+else {
+  while ( $samstring1 = <MSFILE> ) {
+	if ($samstring1 =~ /^\@(HD|SQ|RG|PG)(\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$/ || $samstring1 =~ /^\@CO\t.*/) {
+#         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
+	  next;
+	}
+	$scnt++;
+	if ($scnt%1000000 == 0) {
+	  printf STDERR "scnt= %12d\n", $scnt;
+	}
+	my @a = split( "\t", $samstring1 );
+	$mthstring = substr($a[13],5);
+	$zcount = ($mthstring =~ tr/z//);
+	$Zcount = ($mthstring =~ tr/Z//);
+	$xcount = ($mthstring =~ tr/x//);
+	$Xcount = ($mthstring =~ tr/X//);
+	$hcount = ($mthstring =~ tr/h//);
+	$Hcount = ($mthstring =~ tr/H//);
+
+	$Totalzcount += $zcount;
+	$TotalZcount += $Zcount;
+	$Totalxcount += $xcount;
+	$TotalXcount += $Xcount;
+	$Totalhcount += $hcount;
+	$TotalHcount += $Hcount;
+
+	if ($scnt < $bindev[$bin]) {
+	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
+	}
+	else {
+	  push(@{$samstringchunks[$bin]}, [$scnt, $samstring1]);
 	  $bin += 1;
 	}
   }
@@ -316,27 +316,7 @@ my $logP;
 my $reject_read1;
 
 
-if ($paired == 0) {
-	@returnedChunkLabels = $pl->foreach( [0 .. $numprc-1], sub {
-	  my @samstringsChunksLabeled = (); 
-	  foreach my $samstring ( @{$samstringchunks[$_]} ) {
-	    my @returnL = ( @$samstring[0] );
-	    my @a = split( "\t", @$samstring[1] );
-	    $mthstring = substr($a[13],5);
-	    $logP = read_calls_probability($mthstring);
-	    if ($logP < $logS  &&  $zxhcount < $fraction * $ZXHcount) {
-	      push(@returnL, 1);
-	    } else {
-	      push(@returnL, 0);
-	    }
-	    push(@samstringsChunksLabeled, [ @returnL ]);
-	  }
-          sleep 10*$_;
-	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl.*$MsamFile" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
-	  return @samstringsChunksLabeled; 
-	});
-}
-else {
+if ($paired ne '') {
 	@returnedChunkLabels = $pl->foreach( [0 .. $numprc-1], sub {
 	  my @samstringsChunksLabeled = (); 
 	  foreach my $samstring ( @{$samstringchunks[$_]} ) {
@@ -359,8 +339,24 @@ else {
 	    }
 	    push(@samstringsChunksLabeled, [ @returnL ]);
 	  }
-	  sleep 10*$_;
-	  while (`ps o state,command axh | egrep "perl.*filterMsamP.pl.*$Msamfile" | egrep -v "grep" | egrep "^[R]" | wc -l` > 0) {sleep 10*$_};
+	  return @samstringsChunksLabeled; 
+	});
+}
+else {
+	@returnedChunkLabels = $pl->foreach( [0 .. $numprc-1], sub {
+	  my @samstringsChunksLabeled = (); 
+	  foreach my $samstring ( @{$samstringchunks[$_]} ) {
+	    my @returnL = ( @$samstring[0] );
+	    my @a = split( "\t", @$samstring[1] );
+	    $mthstring = substr($a[13],5);
+	    $logP = read_calls_probability($mthstring);
+	    if ($logP < $logS  &&  $zxhcount < $fraction * $ZXHcount) {
+	      push(@returnL, 1);
+	    } else {
+	      push(@returnL, 0);
+	    }
+	    push(@samstringsChunksLabeled, [ @returnL ]);
+	  }
 	  return @samstringsChunksLabeled; 
 	});
 }
@@ -371,18 +367,7 @@ foreach ( 0 .. $numprc-1 ) {
 	$scnt++;
 	my $v2 = shift @sortedChunkLabels;
 
-	if ($paired == 0) {
-	  if( $$v2[1] == 1) {
-	    $f11cnt++;
-	    print MSF11FILE "@$samstring[1]";
-	  }
-	  else {
-	    $pcnt++;
-	    print MSPFILE "@$samstring[1]";
-	  }
-	}
-
-	else {	# ... paired
+	if ($paired ne '') {
 	  if( $$v2[1] == 1) {
 	    if( $$v2[2] == 1) {
 	      $f11cnt++;
@@ -407,9 +392,24 @@ foreach ( 0 .. $numprc-1 ) {
 	    }
 	  }
 	}
+	else {	# ... single-read data
+	  if( $$v2[1] == 1) {
+	    $f11cnt++;
+	    print MSF11FILE "@$samstring[1]";
+	  }
+	  else {
+	    $pcnt++;
+	    print MSPFILE "@$samstring[1]";
+	  }
+	}
 
 	if ($scnt%1000000 == 0) {
-	  printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
+	  if ($paired ne '') {
+	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
+	  }
+	  else {
+	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
+	  }
 	}
 }}
 
@@ -417,18 +417,18 @@ foreach ( 0 .. $numprc-1 ) {
 printf OUTFILE "\nThreshold:	logS=%12.2f\n", $logS;
 printf OUTFILE "\nscnt=\t%12d", $scnt;
 printf OUTFILE "\npcnt=\t%12d", $pcnt;
-if ($paired == 0) {
-  printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
-}
-else {
+if ($paired ne '') {
   printf OUTFILE "\nf11cnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
   printf OUTFILE   "f01cnt=\t%12d\t(%6.2f%%)\n", $f01cnt, 100.0*$f01cnt/$scnt;
   printf OUTFILE   "f10cnt=\t%12d\t(%6.2f%%)\n", $f10cnt, 100.0*$f10cnt/$scnt;
 }
+else {
+  printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
+}
 
 
 close MSF11FILE;
-if ($paired) {
+if ($paired ne '') {
   close MSF01FILE;
   close MSF10FILE;
 }
