@@ -183,7 +183,9 @@ if ($paired ne '') {  # ... paired-end reads; process read data in pairs
 	  next;
 	}
 	$scnt++;
-	if ($scnt%1000000 == 0) {
+	if ($scnt%100000  == 0) {
+          $datestring = localtime();
+          printf STDERR "Local date and time $datestring\n";
 	  printf STDERR "scnt= %12d\n", $scnt;
 	}
 	my @a = split( "\t", $samstring1 );
@@ -236,7 +238,9 @@ else {
 	  next;
 	}
 	$scnt++;
-	if ($scnt%1000000 == 0) {
+	if ($scnt%100000  == 0) {
+          $datestring = localtime();
+          printf STDERR "Local date and time $datestring\n";
 	  printf STDERR "scnt= %12d\n", $scnt;
 	}
 	my @a = split( "\t", $samstring1 );
@@ -403,7 +407,9 @@ foreach ( 0 .. $numprc-1 ) {
 	  }
 	}
 
-	if ($scnt%1000000 == 0) {
+	if ($scnt%100000  == 0) {
+          $datestring = localtime();
+          printf STDERR "Local date and time $datestring\n";
 	  if ($paired ne '') {
 	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
 	  }
