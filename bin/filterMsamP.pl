@@ -5,7 +5,7 @@
 
 =begin comment
 
-Latest version: April 24, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
+Latest version: May 6, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
 
 This script will take as input a combined alignment/methylation call file in SAM format,
 such as produced by Bismark, for either paired-end reads or single reads.  The script
@@ -368,7 +368,7 @@ else {
 }
 my @sortedChunkLabels = sort { $a->[0] <=> $b->[0] } @returnedChunkLabels;
 my $datestring = localtime();
-printf STDERR "\nDone chunking at $datestringi\n\n";
+printf STDERR "\nDone chunking at $datestring\n\n";
 
 foreach ( 0 .. $numprc-1 ) {
   foreach my $samstring ( @{$samstringchunks[$_]} ) {
