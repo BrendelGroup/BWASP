@@ -140,6 +140,8 @@ if ($paired ne '') {
 }
 open( OUTFILE, "> $outpfile" );
 
+my $datestring = localtime();
+printf STDERR "Start at $datestring:\n";
 
 my ( $samstring, $mthstring, $samstring2 );
 my ( $zcount, $Zcount, $xcount, $Xcount, $hcount, $Hcount);
@@ -154,7 +156,9 @@ while ( $samstring = <MSFILE> ) {
 	}
 	$scnt++;
 	if ($scnt%1000000 == 0) {
-	  printf STDERR "scnt= %12d\n", $scnt;
+          my $datestring = localtime();
+          printf STDERR "Uploaded at $datestring:\n";
+	  printf STDERR "  scnt= %12d\n", $scnt;
 	}
 	my @a = split( "\t", $samstring );
 	$mthstring = substr($a[13],5);
@@ -283,11 +287,13 @@ while ( $samstring = <MSFILE> ) {
 	}
 
 	if ($scnt%1000000 == 0) {
+	  my $datestring = localtime();
+          printf STDERR "Filtering status at $datestring:\n";
 	  if ($paired ne '') {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
+	    printf STDERR "  scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
 	  }
 	  else {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
+	    printf STDERR "  scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
 	  }
 	}
 }
@@ -302,6 +308,8 @@ if ($paired ne '') {
 else {
   printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
 }
+my $datestring = localtime();
+printf STDERR "Done at $datestring:\n";
 
 
 close MSFILE;

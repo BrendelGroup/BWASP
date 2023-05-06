@@ -152,6 +152,8 @@ if ($paired ne '') {
 }
 open( OUTFILE, "> $outpfile" );
 
+my $datestring = localtime();
+printf STDERR "Start at $datestring:\n";
 
 my ( $samstring1, $mthstring, $samstring2, @samstrings );
 my ( $zcount, $Zcount, $xcount, $Xcount, $hcount, $Hcount);
@@ -183,10 +185,10 @@ if ($paired ne '') {  # ... paired-end reads; process read data in pairs
 	  next;
 	}
 	$scnt++;
-	if ($scnt%100000  == 0) {
+	if ($scnt%1000000 == 0) {
           my $datestring = localtime();
-          printf STDERR "Local date and time $datestring\n";
-	  printf STDERR "scnt= %12d\n", $scnt;
+          printf STDERR "Uploaded at $datestring\n";
+	  printf STDERR "  scnt= %12d\n", $scnt;
 	}
 	my @a = split( "\t", $samstring1 );
 	$mthstring = substr($a[13],5);
@@ -238,10 +240,10 @@ else {
 	  next;
 	}
 	$scnt++;
-	if ($scnt%100000  == 0) {
+	if ($scnt%1000000 == 0) {
           my $datestring = localtime();
-          printf STDERR "Local date and time $datestring\n";
-	  printf STDERR "scnt= %12d\n", $scnt;
+          printf STDERR "Uploaded at $datestring\n";
+	  printf STDERR "  scnt= %12d\n", $scnt;
 	}
 	my @a = split( "\t", $samstring1 );
 	$mthstring = substr($a[13],5);
@@ -365,6 +367,8 @@ else {
 	});
 }
 my @sortedChunkLabels = sort { $a->[0] <=> $b->[0] } @returnedChunkLabels;
+my $datestring = localtime();
+printf STDERR "\nDone chunking at $datestringi\n\n";
 
 foreach ( 0 .. $numprc-1 ) {
   foreach my $samstring ( @{$samstringchunks[$_]} ) {
@@ -407,14 +411,14 @@ foreach ( 0 .. $numprc-1 ) {
 	  }
 	}
 
-	if ($scnt%100000  == 0) {
+	if ($scnt%1000000 == 0) {
           my $datestring = localtime();
-          printf STDERR "Local date and time $datestring\n";
+          printf STDERR "Filtering status at $datestring\n";
 	  if ($paired ne '') {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
+	    printf STDERR "  scnt= %12d: pcnt= %12d, fcnt11= %12d, fcnt01= %12d, fcnt10= %12d\n", $scnt, $pcnt, $f11cnt, $f01cnt, $f10cnt;
 	  }
 	  else {
-	    printf STDERR "scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
+	    printf STDERR "  scnt= %12d: pcnt= %12d, fcnt= %12d\n", $scnt, $pcnt, $f11cnt;
 	  }
 	}
 }}
@@ -431,6 +435,8 @@ if ($paired ne '') {
 else {
   printf OUTFILE "\nfcnt=\t%12d\t(%6.2f%%)\n", $f11cnt, 100.0*$f11cnt/$scnt;
 }
+my $datestring = localtime();
+printf STDERR "Done at $datestring:\n";
 
 
 close MSF11FILE;
