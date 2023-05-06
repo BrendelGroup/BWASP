@@ -184,12 +184,12 @@ if ($paired ne '') {  # ... paired-end reads; process read data in pairs
 #         ... ignore SAM header lines, identified as per http://samtools.github.io/hts-specs/SAMv1.pdf
 	  next;
 	}
-	$scnt++;
 	if ($scnt%1000000 == 0) {
           my $datestring = localtime();
           printf STDERR "Uploaded at $datestring\n";
 	  printf STDERR "  scnt= %12d\n", $scnt;
 	}
+	$scnt++;
 	my @a = split( "\t", $samstring1 );
 	$mthstring = substr($a[13],5);
 	$zcount = ($mthstring =~ tr/z//);
