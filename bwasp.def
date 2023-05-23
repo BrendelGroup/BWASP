@@ -130,7 +130,7 @@ From: ubuntu:22.04
     ##### Install
     cd /opt
     git clone https://github.com/BrendelGroup/BWASP.git
-    cd BWASP
+
 
 %environment
     export LC_ALL=C
