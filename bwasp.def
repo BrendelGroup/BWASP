@@ -86,9 +86,9 @@ From: ubuntu:22.04
     apt -y install libcairo2-dev libpango1.0-dev
     ##### Install
     cd /opt
-    wget http://genometools.org/pub/genometools-1.6.1.tar.gz
-    tar -xzf genometools-1.6.1.tar.gz
-    cd genometools-1.6.1/
+    wget http://genometools.org/pub/genometools-1.6.2.tar.gz
+    tar -xzf genometools-1.6.2.tar.gz
+    cd genometools-1.6.2/
     make && make install && make clean
 
     echo 'Installing bedtools from https://github.com/arq5x/bedtools2/ '
@@ -147,4 +147,4 @@ From: ubuntu:22.04
 
 %labels
     Maintainer vpbrendel
-    Version v1.0
+    Version v1.3
