@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# xsplitsam - will split a (SAM) file into the specified number of chunks,
+#             with the constraint that each chunk should have an even
+#             number of lines (this is important for processing paired-read
+#             SAM input)
+#
+# Usage: ./xsplitsam SAMinputfile p
+#
+#  where p is the number of chunks to be generated.
+#  Output will be p files named chunk_SAMinputfile_* (where * is the chunk
+#  number).
+# This script is used in xfilterMsam.
+#
+# Version:    May 17, 2023    Author: Volker Brendel (vbrendel@indiana.edu)
+
+infile=$1
+p=$2
+
+l=`cat "$infile" | wc -l`
+n=$(($l/$p + $l/$p%2))
+
+split -d -l $n $infile chunk_${infile}_
+
+if [[ $p -lt 10 ]]; then
+  if [[ -e chunk_${infile}_0$p ]]; then
+    q=$(($p -1))
+    cat chunk_${infile}_0$q chunk_${infile}_0$p > tmpchunk_${infile}_
+    mv tmpchunk_${infile}_ chunk_${infile}_0$q
+    \rm chunk_${infile}_0$p
+  fi
+elif [[ $p == 10 ]]; then
+  if [[ -e chunk_${infile}_$p ]]; then
+    q=$(($p -1))
+    cat chunk_${infile}_0$q chunk_${infile}_$p > tmpchunk_${infile}_
+    mv tmpchunk_${infile}_ chunk_${infile}_0$q
+    \rm chunk_${infile}_$p
+  fi
+else
+  if [[ -e chunk_${infile}_$p ]]; then
+    q=$(($p -1))
+    cat chunk_${infile}_$q chunk_${infile}_$p > tmpchunk_${infile}_
+    mv tmpchunk_${infile}_ chunk_${infile}_$q
+    \rm chunk_${infile}_$p
+  fi
+fi

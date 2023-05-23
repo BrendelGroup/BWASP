@@ -1,29 +1,12 @@
 #!/bin/tcsh -f
 #
-#xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
-#              input (Bismark-produced) BS-seq SAM file using filterMsam.pl or its parallel version
-#              filterMsamP.pl (perl scripts assumed to be in the executable path).
+# xfilterMsam - a shell script to iteratively remove likely unconverted BS-seq read pairs from an
+#               input (Bismark-produced) BS-seq SAM file using filterMsam.pl
+#               (perl scripts assumed to be in the executable path).
 #
-#              Version:	August 2, 2019	Author: Volker Brendel (vbrendel@indiana.edu)
+#               Version:	May 17, 2023	Author: Volker Brendel (vbrendel@indiana.edu)
 
-if ( $#argv != 3 ) then
-  echo "Usage: xfilterMsam numprc [p|s] <MsamFile>.sam"
-  echo ""
-  echo "       numprc = number of processors to use"
-  echo ""
-  echo "       p - for paired-end alignment input; s - for single read alignment input"
-  echo ""
-  echo "       Note that the file argument to xfilterMsam is the stem of the filename with extension .sam."
-  echo "       Example:  xfilterMsam 4 p sample"
-  echo "                 (this will process the sample.sam paired read input file with 4 processors)"
-  echo ""
-  echo "       Any header lines in the input file are ignored.  If you need the header in the output,"
-  echo "       you need to re-attach it.  Example:"
-  echo "         samtools view -SH sample.sam > header.sam"
-  echo "         cat header.sam Accepted-Reads-sample.sam > Cleaned-sample.sam"
-  echo ""
-  exit
-else if ( !($argv[2] == "p" || $argv[2] == "s")  ||  ! -e $argv[3].sam ) then
+if ( $#argv != 3  ||  !($argv[2] == "p" || $argv[2] == "s")  ||  ! -e $argv[3].sam ) then
   echo "Usage: xfilterMsam numprc [p|s] <MsamFile>.sam"
   echo ""
   echo "       numprc = number of processors to use"
@@ -51,6 +34,7 @@ else
   set MsamFile = $argv[3]
 endif
 
+set debug = 0
 
 set i = 1
 while ( $i <= 10 )
@@ -64,32 +48,64 @@ while ( $i <= 10 )
     @ k = $i - 2
     \rm $MsamFile-$k.pass
   endif
-  echo "Now running:"
+  echo "Now running xfilterMsam $numprc $psflag $MsamFile round $i ..."
+
+  # Chunk the input file into $numprc pieces:
+  #
+  xsplitsam  $inputfile $numprc
+
+  if ( $debug == 1 ) then
+    echo "... $numprc chunks created:"
+    wc -l chunk_${inputfile}_*
+  endif
+
+  # Count methylation calls in the chunks and store them in counts* files:
+  #
+  foreach cfile ( chunk_${inputfile}_[0-9][0-9] )
+    countMcalls.pl  $cfile &
+  end
+  wait
+  if ( $debug == 1 ) then
+    echo "... $numprc count files created:"
+    wc -l counts_chunk_${inputfile}_*
+  endif
+
+  # Filter each chunk based on the cumulated counts.
+  # This creates files chunk*pass, chunk*fail, and chunk*summary.
+  #
+  foreach cfile ( chunk_${inputfile}_[0-9][0-9] )
+    echo "filterMsam.pl  --${psflag} ${cfile} ${inputfile}"
+    filterMsam.pl  --${psflag} ${cfile} ${inputfile} &
+  end
+  wait
+
+  # Cumulate results from the chunks:
+  #
+  echo "summarizeMcalls.pl --${psflag} --round $i ${MsamFile}"
+  summarizeMcalls.pl --${psflag} --round $i ${MsamFile}
+  
+  cat chunk_${inputfile}_[0-9][0-9].pass   > ${MsamFile}"-"$i.pass
   if ( $psflag == "p" ) then
-    if ( $numprc == 1 ) then
-      echo "filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-            filterMsam.pl --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary 
-      echo ""
-    else
-      echo "filterMsamP.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-            filterMsamP.pl --n $numprc --p $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
-      echo ""
-    endif
+    cat chunk_${inputfile}_[0-9][0-9].01fail > ${MsamFile}"-"$i.01fail
+    cat chunk_${inputfile}_[0-9][0-9].10fail > ${MsamFile}"-"$i.10fail
+    cat chunk_${inputfile}_[0-9][0-9].11fail > ${MsamFile}"-"$i.11fail
+  else
+    cat chunk_${inputfile}_[0-9][0-9].fail > ${MsamFile}"-"$i.fail
+  endif
+
+  # Clean-up:
+  #
+  if ( $debug == 0 ) then
+    \rm chunk_${inputfile}_* counts_chunk_${inputfile}_* 
+  endif
+
+  if ( $psflag == "p" ) then
     set x11 = `egrep "^f11cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x01 = `egrep "^f01cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     set x10 = `egrep "^f10cnt" $MsamFile-$i.summary | cut -d"	" -f2`
     @ x = $x11 + $x01 + $x10
   else
-    if ( $numprc == 1 ) then
-      echo "filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-            filterMsam.pl --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary 
-      echo ""
-    else
-      echo "filterMsamP.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary"
-            filterMsamP.pl --n $numprc --s $inputfile --outfile1 $MsamFile-$i --outfile2 $MsamFile-$i --outpfile $MsamFile-$i.summary
-      echo ""
-    endif
-    set x = `tail -n 1 $MsamFile-$i.summary | cut -d"	" -f2`
+    set x = `tail -n 1 ${MsamFile}-$i.summary | cut -d"	" -f2`
   endif
   if ( $x == 0 ) then
     break
@@ -97,6 +113,10 @@ while ( $i <= 10 )
   @ i = $i + 1
 end
 
+echo "xfilterMsam is done. Please see FilterMsam-Report-$MsamFile for a result summary."
+
+# Ready to finish up:
+#
 echo "Summary of xfilterMsam results" >  FilterMsam-Report-$MsamFile
 echo ""                               >> FilterMsam-Report-$MsamFile
 
